@@ -1,0 +1,45 @@
+export const theme = {
+  colors: {
+    gray: {
+      gray100: '#FFFFFF',
+      gray200: '#F6F6F6',
+      gray300: '#E6E6E6',
+      gray400: '#CCCCCC',
+      gray500: '#B3B3B3',
+      gray600: '#999999',
+      gray700: '#808080',
+      gray800: '#666666',
+      gray900: '#4D4D4D',
+      gray1000: '#333333',
+      gray1100: '#1A1A1A',
+    },
+    blue: {
+      gray100: '#F4F7FF',
+      gray200: '#E5ECFF',
+      gray300: '#CCDAFF',
+      gray400: '#99B5FF',
+      gray500: '#6690FF',
+      gray600: '#336BFF',
+    },
+    purple: {
+      gray100: '#F3F2FF',
+      gray200: '#E6E5FF',
+      gray300: '#CDCCFF',
+      gray400: '#B4B2FF',
+      gray500: '#8280FF',
+      gray600: '#3733FF',
+      gray700: '#2C29CC',
+      gray800: '#1E1B99',
+      gray900: '#161466',
+    },
+    red: {
+      gray100: '#FFE2EC',
+      gray200: '#FF2070',
+    },
+    yellow: {
+      gray100: '#FFFEE5',
+      gray200: '#FFFB99',
+      gray300: '#FFF733',
+    },
+  },
+};
