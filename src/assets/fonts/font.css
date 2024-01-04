@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'Pretendard';
+  src: url('./Pretendard-Regular.otf') format('opentype'),
+    url('./Pretendard-Medium.otf') format('opentype'),
+    url('./Pretendard-SemiBold.otf') format('opentype');
+
+  font-weight: 400;
+  font-style: normal;
+}
