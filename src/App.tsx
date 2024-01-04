@@ -1,14 +1,16 @@
-import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Landing from './pages/Landing';
-import Onboard from './pages/Onboard';
-import Main from './pages/Main';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import GlobalStyle from "./style/GlobalStyle";
+import Landing from "./pages/Landing";
+import Onboard from "./pages/Onboard";
+import Main from "./pages/Main";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 function App() {
   const queryClient = new QueryClient();
   return (
     <BrowserRouter>
+      <GlobalStyle />
       <QueryClientProvider client={queryClient}>
         <Routes>
           <Route path="/" element={<Landing />} />
