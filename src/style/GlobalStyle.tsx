@@ -24,7 +24,7 @@ ${reset}
         height: 100%;
         font-family: "Pretendard", sans-serif;
         font-size: 62.5%;  // 1rem을 10px로 설정        
-        background-color: #ffffff;
+        background-color: #F4F7FF;
     }
     * {
     font-family: "Pretendard", sans-serif;
