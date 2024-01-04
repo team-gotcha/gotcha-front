@@ -42,4 +42,115 @@ export const theme = {
       yellow300: '#FFF733',
     },
   },
+  fontStyles: {
+    display: {
+      displayRegular: `
+        font-family: "Pretendard-Regular";
+        font-size: 4rem;
+        line-height: 140%;
+    `,
+    },
+    headline: {
+      headlineRegular: `
+        font-family: "Pretendard-Regular";
+        font-size: 2.4rem;
+        line-height: 140%;
+    `,
+      headlineBold: `
+        font-family: "Pretendard-SemiBold";
+        font-size: 2.4rem;
+        line-height: 155%;
+    `,
+      headlineMedium: `
+        font-family: "Pretendard-Regular";
+        font-size: 2.4rem;
+        line-height: 155%;
+    `,
+    },
+    title: {
+      titleRegular: `
+        font-family: "Pretendard-Regular";
+        font-size: 2rem;
+        line-height: 140%;
+    `,
+      titleBold: `
+        font-family: "Pretendard-Medium";
+        font-size: 2rem;
+        line-height: 140%;
+    `,
+      titleMedium: `
+        font-family: "Pretendard-Medium";
+        font-size: 2rem;
+        line-height: 160%;
+    `,
+    },
+    subtitle: {
+      subtitleRegular: `
+        font-family: "Pretendard-Regular";
+        font-size: 1.6rem;
+        line-height: 155%;
+    `,
+      subtitleBold: `
+        font-family: "Pretendard-Bold";
+        font-size: 1.6rem;
+        line-height: 155%;
+    `,
+      subtitleSemibold: `
+        font-family: "Pretendard-SemiBold";
+        font-size: 1.6rem;
+        line-height: 155%;
+    `,
+      subtitleMedium: `
+        font-family: "Pretendard-Medium";
+        font-size: 1.6rem;
+        line-height: 155%;
+    `,
+    },
+    body: {
+      bodyRegular: `
+        font-family: "Pretendard-Regular";
+        font-size: 1.4rem;
+        line-height: 160%;
+    `,
+      bodyBold: `
+        font-family: "Pretendard-Bold";
+        font-size: 1.4rem;
+        line-height: 160%;
+    `,
+      bodySemibold: `
+        font-family: "Pretendard-SemiBold";
+        font-size: 1.6rem;
+        line-height: 155%;
+    `,
+      bodyMedium: `
+        font-family: "Pretendard-Medium";
+        font-size: 1.6rem;
+        line-height: 155%;
+    `,
+    },
+    caption: {
+      captionRegular: `
+        font-family: "Pretendard-Regular";
+        font-size: 1.2rem;
+        line-height: 160%;
+    `,
+      captionSemibold: `
+        font-family: "Pretendard-SemiBold";
+        font-size: 1.2rem;
+        line-height: 160%;
+    `,
+      captionSmall: `
+        font-family: "Pretendard-Regular";
+        font-size: 1rem;
+        line-height: 155%;
+    `,
+    },
+    button: {
+      buttonLarge: `
+        font-family: "Pretendard-SemiBold";
+        font-size: 1.8rem;
+        line-height: 160%;
+    `,
+    },
+  },
 };
