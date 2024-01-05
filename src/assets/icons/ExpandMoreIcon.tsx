@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 const ExpandMoreIcon = (props: any) => (
   <svg
     width={24}
@@ -11,7 +11,7 @@ const ExpandMoreIcon = (props: any) => (
     <mask
       id="mask0_1319_27085"
       style={{
-        maskType: 'alpha',
+        maskType: "alpha",
       }}
       maskUnits="userSpaceOnUse"
       x={0}
@@ -24,7 +24,7 @@ const ExpandMoreIcon = (props: any) => (
     <g mask="url(#mask0_1319_27085)">
       <path
         d="M12 15.375L6 9.37501L7.4 7.97501L12 12.575L16.6 7.97501L18 9.37501L12 15.375Z"
-        fill="#1A1A1A"
+        fill="current"
       />
     </g>
   </svg>

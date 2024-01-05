@@ -1,11 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
+
+import DropDownBox from "../components/common/DropDownBox";
 
 const Main = () => {
   return (
-    <div>
-      <h1>This is Main</h1>
-    </div>
+    <>
+      This is MainPage
+      <DropDownBox />
+    </>
   );
 };
 
