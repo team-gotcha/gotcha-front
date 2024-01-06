@@ -3,10 +3,9 @@ import { styled } from 'styled-components';
 import StarOffIcon from '../../assets/icons/StarOffIcon';
 import CommonTag from '../common/CommonTag';
 import MessageIcon from '../../assets/icons/MessageIcon';
+import ThinMessageIcon from '../../assets/icons/ThinMessageIcon';
 
-interface ViewListStackProps {
-  isFirst?: boolean; //첫요소 leftTop 라운드처리
-  isLast?: boolean; //마지막요소 leftBottom 라운드처리
+interface ViewBoardStackProps {
   tagList?: Array<string>; //키워드리스트 첫입력 3개 고정(성향,스킬,경험순)
   memoNum?: number; //새로 추가된 메모 개수 (1개 이상 시 색변경)
 
@@ -17,64 +16,100 @@ interface ViewListStackProps {
   isStar?: boolean; //즐찾표시 여부
 }
 
-const ViewListStack = ({ ...props }: ViewListStackProps) => {
+const ViewBoardStack = ({ ...props }: ViewBoardStackProps) => {
   return (
     <Wrapper>
-      <ApplierName>가차린</ApplierName>
-      <TagList>
-        <CommonTag children="태그" />
-        <CommonTag children="태그" />
-        <CommonTag children="태그" />
-      </TagList>
-      <MemoBox>
-        <MessageIcon width={'1.625rem'} height={'1.625rem'} />
-        <MessageAlert>0</MessageAlert>
-      </MemoBox>
-      <GroupMemberList>
-        <GroupMemberImg>K</GroupMemberImg>
-        <GroupMemberImg>P</GroupMemberImg>
-        <GroupMemberImg>A</GroupMemberImg>
-        <GroupMemberImg>A</GroupMemberImg>
-        <GroupMemberImg>C</GroupMemberImg>
-      </GroupMemberList>
-      <InterviewState>면접 진행 단계</InterviewState>
-      <InterviewDate>2023.12.11 월</InterviewDate>
-      <FavoriteState>
-        <StarOffIcon />
-      </FavoriteState>
+      <BoardTop>
+        <ApplierName>가차린</ApplierName>
+        <InterviewDate>12/15</InterviewDate>
+        <FavoriteState>
+          <StarOffIcon />
+        </FavoriteState>
+      </BoardTop>
+
+      <BoardBottom>
+        <ThinMessageIcon width="1.37rem" height="1.32rem" />
+        <TagList>
+          <CommonTag children="태그" />
+          <CommonTag children="태그" />
+          <CommonTag children="태그" />
+        </TagList>
+        <GroupMemberList>
+          <GroupMemberImg>K</GroupMemberImg>
+          <GroupMemberImg>P</GroupMemberImg>
+          <GroupMemberImg>A</GroupMemberImg>
+          <GroupMemberImg>A</GroupMemberImg>
+        </GroupMemberList>
+      </BoardBottom>
     </Wrapper>
   );
 };
 
-export default ViewListStack;
+export default ViewBoardStack;
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
 
-  width: 90%;
-  height: 3.5625rem;
+  width: 30rem;
+  height: 6.3125rem;
+  flex-shrink: 0;
 
+  border-radius: 0.75rem 0.75rem 0rem 0rem;
+  border: 1px solid ${(props) => props.theme.colors.purple.purple200};
   background-color: ${(props) => props.theme.colors.gray.gray100};
-  border-bottom: 0.1rem solid ${(props) => props.theme.colors.purple.purple200};
-  border-left: 0.5rem solid ${(props) => props.theme.colors.purple.purple600};
+`;
+
+const BoardTop = styled.div`
+  width: 100%;
+  height: 2.94rem;
+  border-bottom: 1px solid ${(props) => props.theme.colors.purple.purple200};
+
+  padding-right: 2.77rem;
+  padding-left: 2.44rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const BoardBottom = styled.div`
+  width: 100%;
+  height: 3.38rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding-left: 3.38rem;
+  padding-right: 2.44rem;
 `;
 
 const ApplierName = styled.div`
   display: flex;
-  width: 16.25rem;
+  width: 19rem;
 
-  ${(props) => props.theme.fontStyles.body.bodyMedium};
-  font-size: 0.875rem;
-  font-weight: 500;
+  ${(props) => props.theme.fontStyles.body.bodySemibold};
+  font-size: 1.125rem;
+  font-weight: 600;
 
   color: ${(props) => props.theme.colors.gray.gray1100};
 `;
+
+const InterviewDate = styled.div`
+  ${(props) => props.theme.fontStyles.subtitle.subtitleRegular};
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  color: ${(props) => props.theme.colors.gray.gray900};
+
+  display: flex;
+  justify-content: center;
+`;
+
 const TagList = styled.div`
-  width: 18.75rem;
-  gap: 1.25rem;
+  gap: 0.25rem;
 
   display: flex;
   justify-content: center;
@@ -136,16 +171,6 @@ const InterviewState = styled.div`
   font-size: 0.875rem;
   font-weight: 400;
   color: ${(props) => props.theme.colors.blue.blue600};
-
-  display: flex;
-  width: 10rem;
-  justify-content: center;
-`;
-const InterviewDate = styled.div`
-  ${(props) => props.theme.fontStyles.body.bodyRegular};
-  font-size: 0.875rem;
-  font-weight: 400;
-  color: ${(props) => props.theme.colors.gray.gray1100};
 
   display: flex;
   width: 10rem;
