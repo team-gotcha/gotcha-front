@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import CloseIcon from '../../../assets/icons/CloseIcon';
+import CommonInput from '../CommomInput';
 
 /**
  * 사용예시
@@ -17,7 +18,9 @@ const AddProjectModal = ({ ...props }: AddProjectModalProps) => {
         <Title>새 프로젝트 추가</Title>
         <CloseIcon width="1.5rem" />
       </ModalTop>
-      <ModalBody></ModalBody>
+      <ModalBody>
+        <CommonInput placeholder="대주제명" size="small" type="err" />
+      </ModalBody>
     </Wrapper>
   );
 };
