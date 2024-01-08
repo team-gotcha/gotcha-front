@@ -1,5 +1,5 @@
-import { createGlobalStyle } from "styled-components";
-import reset from "styled-reset";
+import { createGlobalStyle } from 'styled-components';
+import reset from 'styled-reset';
 
 const GlobalStyle = createGlobalStyle`
 ${reset}
@@ -37,6 +37,9 @@ ${reset}
         background: transparent;
         cursor: pointer;
     }
+    input:focus {
+    outline: none;
+  }
 
 body {
   font-family: "Pretendard";
