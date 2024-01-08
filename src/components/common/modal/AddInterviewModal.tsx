@@ -2,21 +2,32 @@ import styled, { css } from 'styled-components';
 import CloseIcon from '../../../assets/icons/CloseIcon';
 import CommonInput from '../CommomInput';
 import CommonButton from '../CommonButton';
+import DropDown from '../DropDown';
+import { useState } from 'react';
+import DropDownBox from '../DropDownBox';
 
 /**
  * 사용예시
  * <CommonButton color={'lineGray'} size={'large'} children="텍스트" />
  */
 
-interface AddProjectModalProps {
+interface AddInterviewModalProps {
   children?: string;
 }
 
-const AddProjectModal = ({ ...props }: AddProjectModalProps) => {
+const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
+  const [selectedField, setSelectedField] = useState('분야');
+  const [selectedJob, setSelectedJob] = useState('직무');
+  const handleSelectField = (option: string) => {
+    setSelectedField(option);
+  };
+  const handleSelectJob = (option: string) => {
+    setSelectedJob(option);
+  };
   return (
     <Wrapper>
       <ModalTop>
-        <Title>새 프로젝트 추가</Title>
+        <Title>세부면접 추가</Title>
         <CloseIcon width="1.5rem" />
       </ModalTop>
       <ModalBody>
@@ -42,6 +53,14 @@ const AddProjectModal = ({ ...props }: AddProjectModalProps) => {
         </div>
 
         <ModalFooter>
+          <SelectWrapper>
+            <SubTitle>면접 유형</SubTitle>
+            <DropDownWrapper>
+              <DropDownBox />
+              <DropDownBox />
+            </DropDownWrapper>
+          </SelectWrapper>
+
           <CommonButton
             size="small"
             color="lineGray"
@@ -54,13 +73,13 @@ const AddProjectModal = ({ ...props }: AddProjectModalProps) => {
   );
 };
 
-export default AddProjectModal;
+export default AddInterviewModal;
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 47.625rem;
-  height: 21.5rem;
+  height: 29.75rem;
   justify-content: flex-start;
   align-items: center;
   border-radius: 1.25rem;
@@ -78,7 +97,6 @@ const Title = styled.div`
 `;
 const ModalTop = styled.div`
   width: 100%;
-  height: 3rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -114,5 +132,15 @@ const InviteWrapper = styled.div`
 const ModalFooter = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: flex-end;
+`;
+const SelectWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+const DropDownWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
 `;

@@ -12,16 +12,17 @@ interface CommonInputProps {
   placeholder?: string;
   size?: InputSize;
   type?: InputType;
+  width?: string;
 }
 
-const CommonInput = ({ placeholder, size, type }: CommonInputProps) => {
-  return <StyledInput placeholder={placeholder} size={size} type={type} />;
+const CommonInput = ({ ...props }: CommonInputProps) => {
+  return <StyledInput {...props} />;
 };
 
 export default CommonInput;
 
 const StyledInput = styled.input<CommonInputProps>`
-  width: 43.75rem;
+  width: ${(props) => (props.width ? props.width : '43.75rem')};
   padding: 0.5rem 1rem;
   align-items: center;
   border-radius: 0.75rem;

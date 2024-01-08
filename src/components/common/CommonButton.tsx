@@ -14,6 +14,9 @@ interface ButtonType {
   size: ButtonSize;
   children: string;
   onClick?: () => void;
+  width?: string;
+  height?: string;
+  padding?: string;
 }
 
 const CommonButton = ({ ...props }: ButtonType) => {
@@ -25,9 +28,15 @@ const StyledButton = styled.button<ButtonType>`
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid;
 
   ${({ color }) => getButtonColor(color)};
   ${({ size }) => getButtonShape(size)};
+
+  /* Additional styles based on props */
+  ${({ width }) => width && `width: ${width};`}
+  ${({ height }) => height && `height: ${height};`}
+  ${({ padding }) => padding && `padding: ${padding};`}
 `;
 
 export default CommonButton;
@@ -72,6 +81,8 @@ const getButtonShape = (buttonSize: ButtonSize) => {
   let borderRadius;
   let fontStyle;
   let height;
+  let fontSize;
+  let fontWeight;
 
   switch (buttonSize) {
     case 'large':
@@ -79,10 +90,13 @@ const getButtonShape = (buttonSize: ButtonSize) => {
       borderRadius = '2.2rem';
       fontStyle = theme.fontStyles.button.buttonLarge;
       break;
+
     case 'small':
-      height = '4.4rem';
-      borderRadius = '2rem';
+      height = '3rem';
+      borderRadius = '1.25rem';
       fontStyle = theme.fontStyles.subtitle.subtitleMedium;
+      fontSize = '1rem';
+      fontWeight = '500';
       break;
     default:
       return null;
@@ -91,6 +105,8 @@ const getButtonShape = (buttonSize: ButtonSize) => {
   return css`
     height: ${height};
     border-radius: ${borderRadius};
-    font-style: ${fontStyle};
+    ${fontStyle};
+    font-size: ${fontSize};
+    font-size: ${fontWeight};
   `;
 };
