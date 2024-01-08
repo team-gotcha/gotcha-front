@@ -8,10 +8,12 @@ import ViewBoardStack from '../components/main/ViewBoardStack';
 import AddProjectModal from '../components/common/modal/AddProjectModal';
 import AddInterviewModal from '../components/common/modal/AddInterviewModal';
 import AddCommonQuestionModal from '../components/common/modal/AddCommonQuestionModal';
+import ViewFinalSuccessfulApplier from '../components/main/ViewFinalSucessfulApplier';
 
 const Main = () => {
   return (
     <>
+      <ViewFinalSuccessfulApplier />
       <AddCommonQuestionModal />
       This is MainPage
       <AddInterviewModal />

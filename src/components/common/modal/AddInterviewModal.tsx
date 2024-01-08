@@ -132,8 +132,8 @@ const InviteWrapper = styled.div`
 const ModalFooter = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-end;
 `;
 const SelectWrapper = styled.div`
   display: flex;
