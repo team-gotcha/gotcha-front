@@ -70,8 +70,8 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: space-evenly;
 
-  width: 90%;
-  height: 3.5625rem;
+  width: 100%;
+  height: 5.6rem;
 
   background-color: ${(props) => props.theme.colors.gray.gray100};
   border-bottom: 0.1rem solid ${(props) => props.theme.colors.purple.purple200};
@@ -84,12 +84,12 @@ const WrapperEmpty = styled.div`
   align-items: center;
   justify-content: flex-start;
 
-  width: 90%;
-  height: 3.5625rem;
+  width: 100%;
+  height: 5.6rem;
 
   background-color: ${(props) => props.theme.colors.gray.gray100};
   border-bottom: 0.1rem solid ${(props) => props.theme.colors.purple.purple200};
-  border-left: 0.5rem solid ${(props) => props.theme.colors.purple.purple600};
+  border-left: 0.5rem solid ${(props) => props.theme.colors.purple.purple200};
 `;
 
 const ApplierName = styled.div`

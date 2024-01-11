@@ -32,7 +32,7 @@ const Banner = ({ todayInterviewNum }: BannerProps) => {
 export default Banner;
 
 const Wrapper = styled.div`
-  width: 90%;
+  width: 100%;
   height: 8rem;
   border-radius: 1.2rem;
   background: linear-gradient(

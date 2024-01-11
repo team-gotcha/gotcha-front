@@ -15,7 +15,7 @@ const Main = () => {
   const [todayInterviewNum, setTodayInterviewNum] = useState(0);
 
   return (
-    <>
+    <MainWrapper>
       <Banner todayInterviewNum={todayInterviewNum} />
       <ViewListWrapper>
         {isProjectEmpty && (
@@ -23,15 +23,23 @@ const Main = () => {
         )}
         <ViewListStack isEmpty={isProjectEmpty} />
       </ViewListWrapper>
-    </>
+    </MainWrapper>
   );
 };
 
 export default Main;
 
+const MainWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 4.4rem;
+  gap: 3.6rem;
+`;
+
 const ViewListWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 1.6rem;
 `;
 const ProjectEmptyComment = styled.div`
   color: ${(props) => props.theme.colors.purple.purple700};
