@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-
-import DropDownBox from '../components/common/DropDownBox';
 import Banner from '../components/main/Banner';
 import ViewListStack from '../components/main/ViewListStack';
-import ViewBoardStack from '../components/main/ViewBoardStack';
-import AddProjectModal from '../components/common/modal/AddProjectModal';
-import AddInterviewModal from '../components/common/modal/AddInterviewModal';
-import AddCommonQuestionModal from '../components/common/modal/AddCommonQuestionModal';
-import ViewFinalSuccessfulApplier from '../components/main/ViewFinalSucessfulApplier';
-import { useParams } from 'react-router-dom';
 
 const MainProject = () => {
   const [isProjectEmpty, setIsProjectEmpty] = useState(false);
@@ -26,42 +18,44 @@ const MainProject = () => {
     <MainWrapper>
       <Banner todayInterviewNum={todayInterviewNum} />
 
-      <ViewListWrapper>
-        {isProjectEmpty && (
-          <ProjectEmptyComment>+ 첫 면접을 만들어주세요!</ProjectEmptyComment>
-        )}
-        <InterviewTitle>세부 면접 이름</InterviewTitle>
-        <StackWrapper>
-          <ViewListStack
-            isEmpty={isProjectEmpty}
-            groupMemberList={groupMemberList}
-          />
-          <ViewListStack
-            isEmpty={isProjectEmpty}
-            groupMemberList={groupMemberList}
-          />
-          <ViewListStack
-            isEmpty={isProjectEmpty}
-            groupMemberList={groupMemberList}
-          />
-        </StackWrapper>
-      </ViewListWrapper>
-      <ViewListWrapper>
-        {isProjectEmpty && (
-          <ProjectEmptyComment>+ 첫 면접을 만들어주세요!</ProjectEmptyComment>
-        )}
-        <InterviewTitle>세부 면접 이름</InterviewTitle>
-        <StackWrapper>
-          <ViewListStack
-            isEmpty={isProjectEmpty}
-            groupMemberList={groupMemberList}
-          />
-          <ViewListStack
-            isEmpty={isProjectEmpty}
-            groupMemberList={groupMemberList}
-          />
-        </StackWrapper>
-      </ViewListWrapper>
+      <InterviewListWrapper>
+        <ViewListWrapper>
+          {isProjectEmpty && (
+            <ProjectEmptyComment>+ 첫 면접을 만들어주세요!</ProjectEmptyComment>
+          )}
+          <InterviewTitle>세부 면접 이름</InterviewTitle>
+          <StackWrapper>
+            <ViewListStack
+              isEmpty={isProjectEmpty}
+              groupMemberList={groupMemberList}
+            />
+            <ViewListStack
+              isEmpty={isProjectEmpty}
+              groupMemberList={groupMemberList}
+            />
+            <ViewListStack
+              isEmpty={isProjectEmpty}
+              groupMemberList={groupMemberList}
+            />
+          </StackWrapper>
+        </ViewListWrapper>
+        <ViewListWrapper>
+          {isProjectEmpty && (
+            <ProjectEmptyComment>+ 첫 면접을 만들어주세요!</ProjectEmptyComment>
+          )}
+          <InterviewTitle>세부 면접 이름</InterviewTitle>
+          <StackWrapper>
+            <ViewListStack
+              isEmpty={isProjectEmpty}
+              groupMemberList={groupMemberList}
+            />
+            <ViewListStack
+              isEmpty={isProjectEmpty}
+              groupMemberList={groupMemberList}
+            />
+          </StackWrapper>
+        </ViewListWrapper>
+      </InterviewListWrapper>
     </MainWrapper>
   );
 };
@@ -76,11 +70,17 @@ const InterviewTitle = styled.div`
   font-style: normal;
   font-weight: 400;
 `;
+const InterviewListWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 3.6rem;
+`;
 
 const ViewListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
+
   margin-bottom: 1.6rem;
 `;
 const StackWrapper = styled.div`

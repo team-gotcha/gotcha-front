@@ -16,14 +16,21 @@ interface ViewBoardStackProps {
   isStar?: boolean; //즐찾표시 여부
 }
 
-const ViewBoardStack = ({ ...props }: ViewBoardStackProps) => {
+interface GroupMemberImgProps {
+  index: number;
+}
+
+const ViewBoardStack = ({
+  groupMemberList = [],
+  ...props
+}: ViewBoardStackProps) => {
   return (
     <Wrapper>
       <BoardTop>
         <ApplierName>가차린</ApplierName>
         <InterviewDate>12/15</InterviewDate>
         <FavoriteState>
-          <StarOffIcon />
+          <StarOffIcon width="1.92rem" />
         </FavoriteState>
       </BoardTop>
 
@@ -35,10 +42,11 @@ const ViewBoardStack = ({ ...props }: ViewBoardStackProps) => {
           <CommonTag children="태그" />
         </TagList>
         <GroupMemberList>
-          <GroupMemberImg>K</GroupMemberImg>
-          <GroupMemberImg>P</GroupMemberImg>
-          <GroupMemberImg>A</GroupMemberImg>
-          <GroupMemberImg>A</GroupMemberImg>
+          {groupMemberList?.map((member, index) => (
+            <GroupMemberImg key={index} index={groupMemberList.length - index}>
+              {member.charAt(0)}
+            </GroupMemberImg>
+          ))}
         </GroupMemberList>
       </BoardBottom>
     </Wrapper>
@@ -52,18 +60,20 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
 
-  width: 30rem;
-  height: 6.3125rem;
+  width: 100%;
+  height: 10rem;
   flex-shrink: 0;
 
   border-radius: 0.75rem 0.75rem 0rem 0rem;
   border: 1px solid ${(props) => props.theme.colors.purple.purple200};
   background-color: ${(props) => props.theme.colors.gray.gray100};
+
+  margin-bottom: 0.8rem;
 `;
 
 const BoardTop = styled.div`
   width: 100%;
-  height: 2.94rem;
+  height: 4.7rem;
   border-bottom: 1px solid ${(props) => props.theme.colors.purple.purple200};
 
   padding-right: 2.77rem;
@@ -76,14 +86,14 @@ const BoardTop = styled.div`
 
 const BoardBottom = styled.div`
   width: 100%;
-  height: 3.38rem;
+  height: 5.4rem;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding-left: 3.38rem;
-  padding-right: 2.44rem;
+  padding-left: 10%;
+  padding-right: 5%;
 `;
 
 const ApplierName = styled.div`
@@ -91,7 +101,7 @@ const ApplierName = styled.div`
   width: 19rem;
 
   ${(props) => props.theme.fontStyles.body.bodySemibold};
-  font-size: 1.125rem;
+  font-size: 1.8rem;
   font-weight: 600;
 
   color: ${(props) => props.theme.colors.gray.gray1100};
@@ -99,7 +109,7 @@ const ApplierName = styled.div`
 
 const InterviewDate = styled.div`
   ${(props) => props.theme.fontStyles.subtitle.subtitleRegular};
-  font-size: 1rem;
+  font-size: 1.6rem;
   font-style: normal;
   font-weight: 400;
   color: ${(props) => props.theme.colors.gray.gray900};
@@ -147,24 +157,23 @@ const GroupMemberList = styled.div`
   display: flex;
   overflow: hidden; /* 넘치는 부분 감추기 */
 `;
-const GroupMemberImg = styled.div`
-  width: 1.75rem;
-  height: 1.75rem;
+const GroupMemberImg = styled.div<GroupMemberImgProps>`
+  width: 2.8rem;
+  height: 2.8rem;
   flex-shrink: 0;
-  background-color: ${(props) =>
-    props.theme.colors.gray.gray300}; /* 랜덤 컬러 전환 */
+  background-color: ${(props) => props.theme.colors.gray.gray300};
   border: 0.1rem solid #fff;
   border-radius: 50%;
-  margin-right: -5%; /* 겹치는 부분 설정 */
-
+  margin-right: -5%;
   display: flex;
   align-items: center;
   justify-content: center;
-
   ${(props) => props.theme.fontStyles.caption.captionRegular};
-  font-size: 0.75rem;
+  font-size: 1.2rem;
   font-weight: 400;
   color: ${(props) => props.theme.colors.gray.gray900};
+
+  z-index: ${(props) => props.index};
 `;
 const InterviewState = styled.div`
   ${(props) => props.theme.fontStyles.body.bodyRegular};

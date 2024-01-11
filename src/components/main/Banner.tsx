@@ -50,7 +50,6 @@ const Wrapper = styled.div`
   flex-shrink: 0;
 
   padding-left: 2.6rem;
-  margin-bottom: 3.6rem;
 `;
 
 const BannerDate = styled.div`
