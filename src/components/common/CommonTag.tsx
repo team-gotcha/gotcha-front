@@ -24,12 +24,13 @@ const StyledTag = styled.div<CommonTagProps>`
 
   height: 2rem;
   border-radius: 1.25rem;
-  padding: 0.125rem 0.75rem;
+  padding: 0.2rem 1.2rem;
 
   background-color: ${(props) => props.theme.colors.blue.blue100};
   color: ${(props) => props.theme.colors.purple.purple500};
   ${(props) => props.theme.fontStyles.caption.captionRegular};
-  font-size: 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 400;
 
   ${(props) =>
     props.width &&
