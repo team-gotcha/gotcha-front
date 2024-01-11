@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { styled } from "styled-components";
+import React, { useState } from 'react';
+import { styled } from 'styled-components';
 
-import ShareIcon from "../../assets/icons/ShareIcon";
-import ListIcon from "../../assets/icons/ListIcon";
-import BoardIcon from "../../assets/icons/BoardIcon";
+import ShareIcon from '../../assets/icons/ShareIcon';
+import ListIcon from '../../assets/icons/ListIcon';
+import BoardIcon from '../../assets/icons/BoardIcon';
 
 const NavigationBar = () => {
   return (

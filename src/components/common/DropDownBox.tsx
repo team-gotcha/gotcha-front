@@ -1,13 +1,13 @@
-import React, { useState, useRef } from "react";
-import { styled } from "styled-components";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef } from 'react';
+import { styled } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
-import useClickOutside from "../../hooks/useClickOutside";
+import useClickOutside from '../../hooks/useClickOutside';
 
-import ExpandMoreIcon from "../../assets/icons/ExpandMoreIcon";
+import ExpandMoreIcon from '../../assets/icons/ExpandMoreIcon';
 
 //components
-import DropDown from "./DropDown";
+import DropDown from './DropDown';
 
 interface DropDownBoxProps {
   options: string[];
@@ -17,7 +17,7 @@ interface DropDownBoxProps {
 
 const DropDownBox = () => {
   const [isDropdownView, setDropdownView] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(" --- ");
+  const [selectedOption, setSelectedOption] = useState(' --- ');
   const dropdownRef = useRef<HTMLLabelElement>(null);
 
   useClickOutside(dropdownRef, () => {
@@ -56,17 +56,19 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.label`
-  width: 120px;
-  padding: 1.4rem 1.6rem;
+  width: 10rem;
+  height: 3rem;
+  padding: 0.5rem 0.625rem 0.5rem 1rem;
 
-  border-radius: 1.6rem;
+  border-radius: 1.25rem;
   border: 1px solid var(--purple-600, #3733ff);
   background: var(--Gray-100, #fff);
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  font-size: 1.4rem;
+  ${(props) => props.theme.fontStyles.body.bodyRegular};
+  font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
 
