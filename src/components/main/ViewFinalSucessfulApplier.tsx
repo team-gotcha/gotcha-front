@@ -11,20 +11,24 @@ interface ViewFinalSuccessfulApplierProps {
 }
 
 const ViewFinalSuccessfulApplier = ({
-  ...props
+  isComplete = true,
 }: ViewFinalSuccessfulApplierProps) => {
   return (
-    <Wrapper>
+    <Wrapper isComplete={isComplete}>
       <ViewStack>
-        <Title>최종 합격자</Title>
+        <Title isComplete={isComplete}>최종 합격자</Title>
         <GroupMemberList>
           <GroupMemberImg />
           <GroupMemberImg />
           <GroupMemberImg />
         </GroupMemberList>
       </ViewStack>
-      <MailButton>
-        <MailIcon width="1.45831rem" />
+      <MailButton isComplete={isComplete}>
+        {isComplete ? (
+          <MailIcon width="1.45831rem" />
+        ) : (
+          <MailIcon width="1.45831rem" color="#B3B3B3" />
+        )}
       </MailButton>
     </Wrapper>
   );
@@ -32,13 +36,13 @@ const ViewFinalSuccessfulApplier = ({
 
 export default ViewFinalSuccessfulApplier;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isComplete?: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
 `;
-const ViewStack = styled.div`
+const ViewStack = styled.div<{ isComplete?: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -50,13 +54,19 @@ const ViewStack = styled.div`
   height: 3rem;
 
   border-radius: 0.5rem;
-  border: 1px solid ${(props) => props.theme.colors.purple.purple600};
   background: var(--Gray-100, #fff);
 
   /* 회색 */
   box-shadow: 0px 0px 6px 2px rgba(215, 215, 215, 0.15);
+
+  /* isComplete가 false일 때 border 색 변경*/
+  border: 1px solid
+    ${(props) =>
+      props.isComplete
+        ? props.theme.colors.purple.purple600
+        : props.theme.colors.gray.gray300};
 `;
-const Title = styled.div`
+const Title = styled.div<{ isComplete?: boolean }>`
   width: 4.875rem;
   ${(props) => props.theme.fontStyles.subtitle.subtitleRegular};
   font-size: 1rem;
@@ -73,8 +83,12 @@ const Title = styled.div`
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
+  /* isComplete가 false일 때 색 변경*/
+  color: ${(props) =>
+    props.isComplete ? 'inherit' : props.theme.colors.gray.gray500};
 `;
-const MailButton = styled.div`
+const MailButton = styled.div<{ isComplete?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -84,6 +98,13 @@ const MailButton = styled.div`
   border-radius: 2.5rem;
   border: 1px solid ${(props) => props.theme.colors.purple.purple600};
   background: ${(props) => props.theme.colors.gray.gray100};
+
+  /* isComplete가 false일 때 border 색 변경*/
+  border: 1px solid
+    ${(props) =>
+      props.isComplete
+        ? props.theme.colors.purple.purple600
+        : props.theme.colors.gray.gray300};
 `;
 const GroupMemberList = styled.div`
   display: flex;

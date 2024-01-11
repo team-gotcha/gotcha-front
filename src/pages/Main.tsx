@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import DropDownBox from '../components/common/DropDownBox';
@@ -11,17 +11,13 @@ import AddCommonQuestionModal from '../components/common/modal/AddCommonQuestion
 import ViewFinalSuccessfulApplier from '../components/main/ViewFinalSucessfulApplier';
 
 const Main = () => {
+  const [isProjectEmpty, setIsProjectEmpty] = useState(true);
+  const [todayInterviewNum, setTodayInterviewNum] = useState(0);
+
   return (
     <>
-      <ViewFinalSuccessfulApplier />
-      <AddCommonQuestionModal />
-      This is MainPage
-      <AddInterviewModal />
-      This is MainPage
-      <AddProjectModal />
-      <Banner />
+      <Banner todayInterviewNum={todayInterviewNum} />
       <ViewListStack />
-      <ViewBoardStack />
     </>
   );
 };

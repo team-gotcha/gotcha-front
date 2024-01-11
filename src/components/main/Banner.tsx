@@ -1,11 +1,30 @@
 import React, { useState } from 'react';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 
-const Banner = () => {
+interface BannerProps {
+  todayInterviewNum: number;
+}
+
+const Banner = ({ todayInterviewNum }: BannerProps) => {
+  const getFormattedDate = () => {
+    const today = new Date();
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long',
+    };
+    return today.toLocaleDateString('ko-KR', options);
+  };
+
   return (
     <Wrapper>
-      <BannerDate>2023년 12월 12일 화요일</BannerDate>
-      <BannerComment>아직 예정된 면접이 없어요.</BannerComment>
+      <BannerDate>{getFormattedDate()}</BannerDate>
+      <BannerComment>
+        {todayInterviewNum === 0
+          ? '아직 예정된 면접이 없어요.'
+          : `${todayInterviewNum}건의 면접이 예정되어 있습니다.`}
+      </BannerComment>
     </Wrapper>
   );
 };
@@ -14,8 +33,8 @@ export default Banner;
 
 const Wrapper = styled.div`
   width: 90%;
-  height: 5rem;
-  border-radius: 0.75rem;
+  height: 8rem;
+  border-radius: 1.2rem;
   background: linear-gradient(
     92deg,
     #001c46 0.29%,
@@ -27,22 +46,24 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
   flex-shrink: 0;
 
-  padding-left: 1.63rem;
+  padding-left: 2.6rem;
 `;
 
 const BannerDate = styled.div`
   color: ${(props) => props.theme.colors.gray.gray100};
-  font-style: ${(props) => props.theme.fontStyles.title.titleRegular};
-  font-size: 1.25rem;
+  ${(props) => props.theme.fontStyles.title.titleRegular};
+  font-size: 2rem;
   font-weight: 400;
+  letter-spacing: -0.06px;
 `;
 
 const BannerComment = styled.div`
   color: ${(props) => props.theme.colors.gray.gray100};
-  font-style: ${(props) => props.theme.fontStyles.subtitle.subtitleBold};
-  font-size: 1rem;
+  ${(props) => props.theme.fontStyles.subtitle.subtitleBold};
+  font-size: 1.6rem;
   font-weight: 700;
+  letter-spacing: -0.048px;
 `;
