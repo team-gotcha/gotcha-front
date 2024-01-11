@@ -8,20 +8,21 @@ import { theme } from '../../style/theme';
 
 interface CommonTagProps {
   children: string;
+  width?: string;
 }
 
 const CommonTag = ({ ...props }: CommonTagProps) => {
-  return <StyledTag>{props.children}</StyledTag>;
+  return <StyledTag {...props}>{props.children}</StyledTag>;
 };
 
 export default CommonTag;
 
-const StyledTag = styled.div`
+const StyledTag = styled.div<CommonTagProps>`
   display: inline-flex;
   justify-content: center;
   align-items: center;
 
-  height: 1.25rem;
+  height: 2rem;
   border-radius: 1.25rem;
   padding: 0.125rem 0.75rem;
 
@@ -29,4 +30,10 @@ const StyledTag = styled.div`
   color: ${(props) => props.theme.colors.purple.purple500};
   ${(props) => props.theme.fontStyles.caption.captionRegular};
   font-size: 0.75rem;
+
+  ${(props) =>
+    props.width &&
+    css`
+      width: ${props.width};
+    `};
 `;

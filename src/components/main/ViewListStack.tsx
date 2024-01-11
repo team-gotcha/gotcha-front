@@ -15,34 +15,50 @@ interface ViewListStackProps {
   interviewDate?: string; //면접진행날짜
 
   isStar?: boolean; //즐찾표시 여부
+  isEmpty?: boolean; //빈 스택 여부
 }
 
 const ViewListStack = ({ ...props }: ViewListStackProps) => {
   return (
-    <Wrapper>
-      <ApplierName>가차린</ApplierName>
-      <TagList>
-        <CommonTag children="태그" />
-        <CommonTag children="태그" />
-        <CommonTag children="태그" />
-      </TagList>
-      <MemoBox>
-        <MessageIcon width={'1.625rem'} height={'1.625rem'} />
-        <MessageAlert>0</MessageAlert>
-      </MemoBox>
-      <GroupMemberList>
-        <GroupMemberImg>K</GroupMemberImg>
-        <GroupMemberImg>P</GroupMemberImg>
-        <GroupMemberImg>A</GroupMemberImg>
-        <GroupMemberImg>A</GroupMemberImg>
-        <GroupMemberImg>C</GroupMemberImg>
-      </GroupMemberList>
-      <InterviewState>면접 진행 단계</InterviewState>
-      <InterviewDate>2023.12.11 월</InterviewDate>
-      <FavoriteState>
-        <StarOffIcon />
-      </FavoriteState>
-    </Wrapper>
+    <>
+      {!props.isEmpty && (
+        <Wrapper>
+          <ApplierName>가차린</ApplierName>
+          <TagList>
+            <CommonTag children="태그" />
+            <CommonTag children="태그" />
+            <CommonTag children="태그" />
+          </TagList>
+          <MemoBox>
+            <MessageIcon width={'1.625rem'} height={'1.625rem'} />
+            <MessageAlert>0</MessageAlert>
+          </MemoBox>
+          <GroupMemberList>
+            <GroupMemberImg>K</GroupMemberImg>
+            <GroupMemberImg>P</GroupMemberImg>
+            <GroupMemberImg>A</GroupMemberImg>
+            <GroupMemberImg>A</GroupMemberImg>
+            <GroupMemberImg>C</GroupMemberImg>
+          </GroupMemberList>
+          <InterviewState>면접 진행 단계</InterviewState>
+          <InterviewDate>2023.12.11 월</InterviewDate>
+          <FavoriteState>
+            <StarOffIcon />
+          </FavoriteState>
+        </Wrapper>
+      )}
+
+      {props.isEmpty && (
+        <WrapperEmpty>
+          <ProjectEmptyComment>+ 첫 면접을 만들어주세요!</ProjectEmptyComment>
+          <TagList>
+            <CommonTag children="" width="4.7rem" />
+            <CommonTag children="" width="4.7rem" />
+            <CommonTag children="" width="4.7rem" />
+          </TagList>
+        </WrapperEmpty>
+      )}
+    </>
   );
 };
 
@@ -62,6 +78,20 @@ const Wrapper = styled.div`
   border-left: 0.5rem solid ${(props) => props.theme.colors.purple.purple600};
 `;
 
+const WrapperEmpty = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+
+  width: 90%;
+  height: 3.5625rem;
+
+  background-color: ${(props) => props.theme.colors.gray.gray100};
+  border-bottom: 0.1rem solid ${(props) => props.theme.colors.purple.purple200};
+  border-left: 0.5rem solid ${(props) => props.theme.colors.purple.purple600};
+`;
+
 const ApplierName = styled.div`
   display: flex;
   width: 16.25rem;
@@ -72,6 +102,19 @@ const ApplierName = styled.div`
 
   color: ${(props) => props.theme.colors.gray.gray1100};
 `;
+
+const ProjectEmptyComment = styled.div`
+  color: ${(props) => props.theme.colors.purple.purple700};
+  ${(props) => props.theme.fontStyles.title.titleRegular};
+  font-size: 2rem;
+  font-weight: 400;
+
+  width: 30rem;
+  padding-left: 1.6rem;
+  display: flex;
+  justify-content: flex-start;
+`;
+
 const TagList = styled.div`
   width: 18.75rem;
   gap: 1.25rem;
