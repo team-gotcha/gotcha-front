@@ -1,11 +1,12 @@
-import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import GlobalStyle from "./style/GlobalStyle";
-import Layout from "./components/layout/Layout";
-import Landing from "./pages/Landing";
-import Onboard from "./pages/Onboard";
-import Main from "./pages/Main";
-import { QueryClient, QueryClientProvider } from "react-query";
+import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import GlobalStyle from './style/GlobalStyle';
+import Layout from './components/layout/Layout';
+import Landing from './pages/Landing';
+import Onboard from './pages/Onboard';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import MainProject from './pages/MainProject';
+import MainInterview from './pages/MainInterview';
 
 function App() {
   const queryClient = new QueryClient();
@@ -15,10 +16,18 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Routes>
           <Route
-            path="/main"
+            path="/main/project"
             element={
               <Layout>
-                <Main />
+                <MainProject />
+              </Layout>
+            }
+          />
+          <Route
+            path="/main/interview"
+            element={
+              <Layout>
+                <MainInterview />
               </Layout>
             }
           />

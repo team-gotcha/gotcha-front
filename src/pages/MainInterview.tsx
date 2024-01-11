@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import DropDownBox from '../components/common/DropDownBox';
 import Banner from '../components/main/Banner';
 import ViewListStack from '../components/main/ViewListStack';
-import ViewBoardStack from '../components/main/ViewBoardStack';
-import AddProjectModal from '../components/common/modal/AddProjectModal';
-import AddInterviewModal from '../components/common/modal/AddInterviewModal';
-import AddCommonQuestionModal from '../components/common/modal/AddCommonQuestionModal';
-import ViewFinalSuccessfulApplier from '../components/main/ViewFinalSucessfulApplier';
 
-const Main = () => {
+const MainInterview = () => {
   const [isProjectEmpty, setIsProjectEmpty] = useState(false);
   const [todayInterviewNum, setTodayInterviewNum] = useState(3);
   const [groupMemberList, setGroupMemberList] = useState([
@@ -65,7 +59,7 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default MainInterview;
 
 const InterviewTitle = styled.div`
   color: ${(props) => props.theme.colors.gray.gray1100};
