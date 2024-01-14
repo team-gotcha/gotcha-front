@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { styled, css } from "styled-components";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { styled, css } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 interface DropDownProps {
   selectedOption: string;
@@ -8,7 +8,7 @@ interface DropDownProps {
   handleSelect: (option: string) => void;
 }
 
-const options = ["활동 유형", "어쩌구", "저쩌구"];
+const options = ['활동 유형', '어쩌구', '저쩌구'];
 
 const DropDown = ({ selectedOption, handleSelect }: DropDownProps) => {
   return (
