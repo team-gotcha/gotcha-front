@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 
 import CardTitleBoard from "./CardTitleBoard";
 import ResultViewerInfo from "./ResultviewerInfo";
+import ResultReviewBox from "./ResultReviewBox";
 
 const ResultInfoItem = () => {
   return (
@@ -10,6 +11,7 @@ const ResultInfoItem = () => {
       <CardTitleBoard />
       <Contents>
         <ResultViewerInfo />
+        <ResultReviewBox />
       </Contents>
     </Container>
   );
