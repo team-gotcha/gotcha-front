@@ -1,5 +1,5 @@
-import { createGlobalStyle } from 'styled-components';
-import reset from 'styled-reset';
+import { createGlobalStyle } from "styled-components";
+import reset from "styled-reset";
 
 const GlobalStyle = createGlobalStyle`
 ${reset}
@@ -43,6 +43,10 @@ ${reset}
 
 body {
   font-family: "Pretendard";
+
+
+   /* overflow: hidden; // 이 속성을 랜딩이랑 온보딩만 안 주는 방법 없나? */
+ 
 }
 `;
 

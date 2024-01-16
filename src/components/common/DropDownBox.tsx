@@ -1,23 +1,23 @@
-import React, { useState, useRef } from 'react';
-import { styled } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef } from "react";
+import { styled } from "styled-components";
+import { useNavigate } from "react-router-dom";
 
-import useClickOutside from '../../hooks/useClickOutside';
+import useClickOutside from "../../hooks/useClickOutside";
 
-import ExpandMoreIcon from '../../assets/icons/ExpandMoreIcon';
+import ExpandMoreIcon from "../../assets/icons/ExpandMoreIcon";
 
 //components
-import DropDown from './DropDown';
+import DropDown from "./DropDown";
 
 interface DropDownBoxProps {
-  options: string[];
-  value: string;
-  onChangeValue: (selectedOption: string) => void;
+  options?: string[];
+  // value: string;
+  // onChangeValue: (selectedOption: string) => void;
 }
 
-const DropDownBox = () => {
+const DropDownBox = ({ options = ["test", "test"] }: DropDownBoxProps) => {
   const [isDropdownView, setDropdownView] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(' --- ');
+  const [selectedOption, setSelectedOption] = useState(" --- ");
   const dropdownRef = useRef<HTMLLabelElement>(null);
 
   useClickOutside(dropdownRef, () => {
@@ -42,7 +42,11 @@ const DropDownBox = () => {
         <ExpandMoreIcon fill="#3733ff" />
       </Container>
       {isDropdownView && (
-        <DropDown selectedOption={selectedOption} handleSelect={handleSelect} />
+        <DropDown
+          selectedOption={selectedOption}
+          handleSelect={handleSelect}
+          options={options}
+        />
       )}
     </Wrapper>
   );
@@ -53,6 +57,7 @@ export default DropDownBox;
 const Wrapper = styled.div`
   position: relative;
   display: flex;
+  cursor: pointer;
 `;
 
 const Container = styled.label`
