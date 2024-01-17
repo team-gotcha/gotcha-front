@@ -12,7 +12,7 @@ const QuestionItem = ({ isCommon = false }) => {
     <Wrapper>
       <Container isCommon={isCommon}>
         <ImpScoreDiv isCommon={isCommon}>
-          <Title isCommon={isCommon}>중요도</Title>
+          <Title isCommon={isCommon}>점수</Title>
           <ScoreBox>
             {[1, 2, 3, 4, 5].map((score) => (
               <Score
@@ -89,7 +89,7 @@ const ScoreBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.3rem;
+  gap: 0.8rem;
   padding: 1.6rem;
 `;
 
