@@ -119,7 +119,7 @@ const BoardStackTitle = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding-left: 4rem;
+  padding-left: 2.7rem;
   padding-right: 3rem;
   align-items: center;
 
