@@ -8,6 +8,7 @@ const KeywordBox = ({ modify = true }) => {
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [keywords, setKeywords] = useState<string[]>([]);
+  const [inputWidth, setInputWidth] = useState<number>(20);
 
   const showInput = () => {
     setIsInputVisible(true);
@@ -20,13 +21,13 @@ const KeywordBox = ({ modify = true }) => {
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
+    setInputWidth(event.target.value.length * 10 + 20);
   };
 
   const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       if (inputValue.trim() !== "") {
         setKeywords((prevKeywords) => [...prevKeywords, inputValue.trim()]);
-        // hideInput();
         setInputValue("");
       }
     }
@@ -49,7 +50,7 @@ const KeywordBox = ({ modify = true }) => {
       <KeywordDiv>
         {keywords.map((keyword, index) => (
           <Keyword key={index}>
-            {keyword}{" "}
+            {keyword}
             <CloseIcon
               width={16}
               height={16}
@@ -68,6 +69,7 @@ const KeywordBox = ({ modify = true }) => {
                 onKeyDown={handleInputKeyDown}
                 onBlur={hideInput}
                 autoFocus
+                style={{ width: `${inputWidth}px` }}
               />
             </>
           ) : (
@@ -133,7 +135,6 @@ const Keyword = styled.div`
 `;
 
 const Input = styled.input`
-  width: 13rem;
   display: flex;
   padding: 0.5rem 1rem;
   justify-content: center;

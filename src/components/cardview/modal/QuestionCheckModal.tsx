@@ -3,7 +3,8 @@ import { styled } from "styled-components";
 
 import QuestionItem from "../QuestionItem";
 import InfoIcon from "../../../assets/icons/InfoIcon";
-import QuestionOpenModal from "./QuestionOpenModal";
+
+import info from "../../../assets/images/InfoIcon-blue.svg";
 
 interface BaseModalProps {
   isOpen: boolean;
@@ -27,7 +28,7 @@ const QuestionCheckModal = ({
         <Topbar>
           <InfoBox>
             <Title>갓차린 면접자 질문 확인</Title>
-            <InfoIcon width={16} height={16} />
+            <Info src={info} />
           </InfoBox>
           <StartBtn onClick={handleBtn}>면접 전형 시작</StartBtn>
         </Topbar>
@@ -88,6 +89,11 @@ const Title = styled.div`
   font-weight: 600;
   line-height: 140%; /* 28px */
   letter-spacing: -0.06px;
+`;
+
+const Info = styled.img`
+  width: 16px;
+  height: 16px;
 `;
 
 const StartBtn = styled.button`

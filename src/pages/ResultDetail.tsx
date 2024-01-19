@@ -38,6 +38,9 @@ const ResultDetail = () => {
                 <QuestionItem />
                 <QuestionItem />
                 <QuestionItem />
+                <QuestionItem />
+                <QuestionItem />
+                <QuestionItem />
               </QuestionBox>
             </QuestionInfoBox>
           </RightBox>
@@ -100,6 +103,8 @@ const RightBox = styled.div`
   border-left: 0.1rem solid #e6e6e6;
   overflow-y: auto;
 
+  padding-bottom: 4rem;
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -114,6 +119,13 @@ const QuestionBox = styled.div`
   flex-direction: column;
   gap: 0.8rem;
   width: 100%;
+
+  height: 35.6rem;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const InfoBox = styled.div`

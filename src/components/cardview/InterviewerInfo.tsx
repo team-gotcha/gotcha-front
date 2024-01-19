@@ -7,24 +7,39 @@ import CloseIcon from "../../assets/icons/CloseIcon";
 
 const InterviewerInfo = ({ modify = true, wide = true }) => {
   const [files, setFiles] = useState<File[]>([]);
+  const [portfolios, setPortfolios] = useState<File[]>([]);
 
-  const handleFiles = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFiles = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    fileType: string
+  ) => {
     const selectedFiles: FileList | null = event.target.files;
+    console.log(fileType);
 
-    setFiles((prevFiles: File[]) => {
-      if (selectedFiles) {
-        const filesArray = Array.from(selectedFiles) as File[];
-        return [...prevFiles, ...filesArray];
+    if (selectedFiles) {
+      const filesArray = Array.from(selectedFiles) as File[];
+
+      if (fileType === "portfolio") {
+        setPortfolios((prevPortfolios: File[]) => [
+          ...prevPortfolios,
+          ...filesArray,
+        ]);
       } else {
-        return [...prevFiles];
+        setFiles((prevFiles: File[]) => [...prevFiles, ...filesArray]);
       }
-    });
+    }
   };
 
-  const handleRemoveFile = (index: number) => {
-    const newFiles = [...files];
-    newFiles.splice(index, 1);
-    setFiles(newFiles);
+  const handleRemoveFile = (index: number, fileType: string) => {
+    if (fileType === "portfolio") {
+      const newPortfolios = [...portfolios];
+      newPortfolios.splice(index, 1);
+      setPortfolios(newPortfolios);
+    } else {
+      const newFiles = [...files];
+      newFiles.splice(index, 1);
+      setFiles(newFiles);
+    }
   };
 
   return (
@@ -91,12 +106,12 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
             {files.map((file, index) => (
               // <Docs key={index}>{`${file.name}`}</Docs>
               <Docs key={index}>
-                지원서{" "}
+                지원서
                 <CloseIcon
                   width={16}
                   height={16}
                   fill="#999999"
-                  onClick={() => handleRemoveFile(index)}
+                  onClick={() => handleRemoveFile(index, "resume")}
                 />
               </Docs>
             ))}
@@ -105,14 +120,41 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
               <>
                 <Portfolio htmlFor="file">
                   <LinkIcon width="20" height="20" fill="#999999" />
-                  <div>포트폴리오</div>
+                  <div>지원서</div>
                 </Portfolio>
                 <FileInput
                   type="file"
                   name="file"
                   id="file"
                   multiple
-                  onChange={handleFiles}
+                  onChange={(e) => handleFiles(e, "resume")}
+                ></FileInput>
+              </>
+            )}
+            {portfolios.map((portfolio, index) => (
+              <Docs key={index}>
+                포트폴리오
+                <CloseIcon
+                  width={16}
+                  height={16}
+                  fill="#999999"
+                  onClick={() => handleRemoveFile(index, "portfolio")}
+                />
+              </Docs>
+            ))}
+
+            {modify && (
+              <>
+                <Portfolio htmlFor="portfolio">
+                  <LinkIcon width="20" height="20" fill="#999999" />
+                  <div>포트폴리오</div>
+                </Portfolio>
+                <FileInput
+                  type="file"
+                  name="portfolio"
+                  id="portfolio"
+                  multiple
+                  onChange={(e) => handleFiles(e, "portfolio")}
                 ></FileInput>
               </>
             )}
@@ -182,20 +224,19 @@ const ChoiceDate = styled.input`
 const BasicInfoDiv = styled.div<{ wide: boolean }>`
   display: grid;
   grid-template-columns: ${({ wide }) => (wide ? "repeat(2, 1fr)" : "1fr")};
-  gap: 1.2rem;
+  gap: 1.2rem 3.8rem;
 `;
 
 const InfoBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* width: 27rem; */
-  gap: 3rem;
+  gap: 3.2rem;
 `;
 
 const Info = styled(FontStyle)`
   color: var(--Gray-1100, #1a1a1a);
-  width: 6rem;
+  width: 5.2rem;
   font-size: 14px;
 `;
 
@@ -231,6 +272,8 @@ const Document = styled.div``;
 const DocsDiv = styled.div`
   display: flex;
   align-items: center;
+  width: 30rem;
+  flex-wrap: wrap;
   gap: 0.8rem;
 `;
 

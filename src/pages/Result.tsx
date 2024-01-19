@@ -12,6 +12,7 @@ const Result = () => {
         <ResultInfoItem />
         <ResultInfoItem />
         <ResultInfoItem />
+        <ResultBtn>합격자 선정 완료</ResultBtn>
       </Container>
     </Wrapper>
   );
@@ -26,6 +27,8 @@ const Wrapper = styled.div`
 
   height: 100%;
   overflow: hidden;
+
+  padding-bottom: 6rem;
 `;
 
 const Background = styled.div`
@@ -63,4 +66,23 @@ const Container = styled.div`
   &::-webkit-scrollbar-track {
     background: transparent;
   }
+`;
+
+const ResultBtn = styled.button`
+  display: flex;
+  width: 60rem;
+  height: 5.6rem;
+  padding: 0.8rem 4.2rem;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 22px;
+  background: var(--purple-600, #3733ff);
+
+  color: var(--Gray-100, #fff);
+
+  font-size: 1.8rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 160%; /* 28.8px */
 `;
