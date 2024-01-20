@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 import QuestionItem from "../QuestionItem";
 import InfoIcon from "../../../assets/icons/InfoIcon";
@@ -12,12 +14,33 @@ interface BaseModalProps {
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const ItemTypes = {
+  QUESTION_ITEM: "questionItem",
+};
+
 const QuestionCheckModal = ({
   isOpen,
   setIsOpen,
   setIsOpenModal,
 }: BaseModalProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [items, setItems] = useState([
+    { id: 1, isCommon: true },
+    { id: 2, isCommon: false },
+    { id: 3, isCommon: true },
+    { id: 4, isCommon: false },
+    { id: 5, isCommon: true },
+  ]);
+
+  const moveItem = (dragIndex: number, hoverIndex: number) => {
+    const draggedItem = items[dragIndex];
+    setItems((prevItems) => {
+      const newItems = [...prevItems];
+      newItems.splice(dragIndex, 1);
+      newItems.splice(hoverIndex, 0, draggedItem);
+      return newItems;
+    });
+  };
 
   const handleBtn = () => {
     setIsOpenModal(true);
@@ -47,14 +70,16 @@ const QuestionCheckModal = ({
         </Topbar>
         <Box>
           <QuestionContainer>
-            <QuestionItem />
-            <QuestionItem />
-            <QuestionItem />
-            <QuestionItem />
-            <QuestionItem />
-            <QuestionItem />
-            <QuestionItem />
-            <QuestionItem />
+            <DndProvider backend={HTML5Backend}>
+              {items.map((item, index) => (
+                <QuestionItem
+                  key={item?.id}
+                  isCommon={item?.isCommon}
+                  index={index}
+                  moveItem={moveItem}
+                />
+              ))}
+            </DndProvider>
           </QuestionContainer>
         </Box>
       </Container>
