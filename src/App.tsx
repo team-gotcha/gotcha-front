@@ -1,17 +1,18 @@
-import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import GlobalStyle from "./style/GlobalStyle";
-import Layout from "./components/layout/Layout";
-import Landing from "./pages/Landing";
-import Onboard from "./pages/Onboard";
-import { QueryClient, QueryClientProvider } from "react-query";
-import MainProject from "./pages/MainProject";
-import MainInterview from "./pages/MainInterview";
+import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import GlobalStyle from './style/GlobalStyle';
+import Layout from './components/layout/Layout';
+import Landing from './pages/Landing';
+import Onboard from './pages/Onboard';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import MainProject from './pages/MainProject';
+import MainInterview from './pages/MainInterview';
 
-import Ready from "./pages/Ready";
-import InProgress from "./pages/InProgress";
-import Result from "./pages/Result";
-import ResultDetail from "./pages/ResultDetail";
+import Ready from './pages/Ready';
+import InProgress from './pages/InProgress';
+import Result from './pages/Result';
+import ResultDetail from './pages/ResultDetail';
+import MainFinalResult from './pages/MainFinalResult';
 
 function App() {
   const queryClient = new QueryClient();
@@ -33,6 +34,14 @@ function App() {
             element={
               <Layout>
                 <MainInterview />
+              </Layout>
+            }
+          />
+          <Route
+            path="/main/result"
+            element={
+              <Layout>
+                <MainFinalResult />
               </Layout>
             }
           />

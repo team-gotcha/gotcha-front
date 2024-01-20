@@ -58,14 +58,33 @@ const ViewListStack = ({
       )}
 
       {props.isEmpty && (
-        <WrapperEmpty>
-          <ProjectEmptyComment>+ 첫 면접을 만들어주세요!</ProjectEmptyComment>
+        <Wrapper>
+          <ProjectEmptyComment>새로운 지원자를 추가하세요!</ProjectEmptyComment>
           <TagList>
-            <CommonTag children="" width="4.7rem" />
-            <CommonTag children="" width="4.7rem" />
-            <CommonTag children="" width="4.7rem" />
+            <CommonTag children="태그" />
+            <CommonTag children="태그" />
+            <CommonTag children="태그" />
           </TagList>
-        </WrapperEmpty>
+          <MemoBox>
+            <MessageIcon width={'2.6rem'} height={'2.8rem'} />
+            <MessageAlert>0</MessageAlert>
+          </MemoBox>
+          <GroupMemberList>
+            {groupMemberList?.map((member, index) => (
+              <GroupMemberImg
+                key={index}
+                index={groupMemberList.length - index}
+              >
+                {member.charAt(0)}
+              </GroupMemberImg>
+            ))}
+          </GroupMemberList>
+          <InterviewState>{InterviewStateList[1]}</InterviewState>
+          <InterviewDate>2023.12.11 월</InterviewDate>
+          <FavoriteState>
+            <StarOffIcon />
+          </FavoriteState>
+        </Wrapper>
       )}
     </>
   );
@@ -113,10 +132,10 @@ const ApplierName = styled.div`
 `;
 
 const ProjectEmptyComment = styled.div`
-  color: ${(props) => props.theme.colors.purple.purple700};
-  ${(props) => props.theme.fontStyles.title.titleRegular};
-  font-size: 2rem;
-  font-weight: 400;
+  color: ${(props) => props.theme.colors.purple.purple600};
+  ${(props) => props.theme.fontStyles.body.bodySemibold};
+  font-size: 1.8rem;
+  font-weight: 600;
 
   width: 30rem;
   padding-left: 1.6rem;

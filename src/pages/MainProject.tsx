@@ -19,42 +19,66 @@ const MainProject = () => {
       <Banner todayInterviewNum={todayInterviewNum} />
 
       <InterviewListWrapper>
-        <ViewListWrapper>
-          {isProjectEmpty && (
-            <ProjectEmptyComment>+ 첫 면접을 만들어주세요!</ProjectEmptyComment>
-          )}
-          <InterviewTitle>세부 면접 이름</InterviewTitle>
-          <StackWrapper>
-            <ViewListStack
-              isEmpty={isProjectEmpty}
-              groupMemberList={groupMemberList}
-            />
-            <ViewListStack
-              isEmpty={isProjectEmpty}
-              groupMemberList={groupMemberList}
-            />
-            <ViewListStack
-              isEmpty={isProjectEmpty}
-              groupMemberList={groupMemberList}
-            />
-          </StackWrapper>
-        </ViewListWrapper>
-        <ViewListWrapper>
-          {isProjectEmpty && (
-            <ProjectEmptyComment>+ 첫 면접을 만들어주세요!</ProjectEmptyComment>
-          )}
-          <InterviewTitle>세부 면접 이름</InterviewTitle>
-          <StackWrapper>
-            <ViewListStack
-              isEmpty={isProjectEmpty}
-              groupMemberList={groupMemberList}
-            />
-            <ViewListStack
-              isEmpty={isProjectEmpty}
-              groupMemberList={groupMemberList}
-            />
-          </StackWrapper>
-        </ViewListWrapper>
+        {/* QA용 토글 버튼 */}
+        <div>
+          <button
+            onClick={() => {
+              setIsProjectEmpty(!isProjectEmpty);
+            }}
+          >
+            QA용 임시 토글 - 빈 프로젝트 (클릭 시 전환)
+          </button>
+        </div>
+
+        {isProjectEmpty && (
+          <>
+            <ViewListWrapper>
+              <ProjectEmptyComment>
+                + 첫 면접을 만들어주세요!
+              </ProjectEmptyComment>
+              <StackWrapper>
+                <ViewListStack
+                  isEmpty={isProjectEmpty}
+                  groupMemberList={groupMemberList}
+                />
+              </StackWrapper>
+            </ViewListWrapper>
+          </>
+        )}
+        {!isProjectEmpty && (
+          <>
+            <ViewListWrapper>
+              <InterviewTitle>세부 면접 이름</InterviewTitle>
+              <StackWrapper>
+                <ViewListStack
+                  isEmpty={isProjectEmpty}
+                  groupMemberList={groupMemberList}
+                />
+                <ViewListStack
+                  isEmpty={isProjectEmpty}
+                  groupMemberList={groupMemberList}
+                />
+                <ViewListStack
+                  isEmpty={isProjectEmpty}
+                  groupMemberList={groupMemberList}
+                />
+              </StackWrapper>
+            </ViewListWrapper>
+            <ViewListWrapper>
+              <InterviewTitle>세부 면접 이름</InterviewTitle>
+              <StackWrapper>
+                <ViewListStack
+                  isEmpty={isProjectEmpty}
+                  groupMemberList={groupMemberList}
+                />
+                <ViewListStack
+                  isEmpty={isProjectEmpty}
+                  groupMemberList={groupMemberList}
+                />
+              </StackWrapper>
+            </ViewListWrapper>
+          </>
+        )}
       </InterviewListWrapper>
     </MainWrapper>
   );

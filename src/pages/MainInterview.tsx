@@ -19,6 +19,17 @@ const MainInterview = () => {
   return (
     <MainWrapper>
       <Banner todayInterviewNum={todayInterviewNum} />
+      {/* QA용 토글 버튼 */}
+      <div>
+        <button
+          onClick={() => {
+            setIsListView(!isListView);
+          }}
+        >
+          QA용 임시 토글 - 리스트뷰/보드뷰 (클릭 시 전환)
+        </button>
+      </div>
+
       <NotiBar>
         <ViewFinalSuccessfulApplier />
         <AddCommonQuestionButton>
@@ -67,6 +78,11 @@ const MainInterview = () => {
               <FinalStackSubtitle>
                 갓챠가 분석한 면접 결과를 확인해주세요!
               </FinalStackSubtitle>
+              {Array.from({ length: lastStageApplierNum + 1 }).map(
+                (_, index) => (
+                  <ViewFinalStackFooter key={index} />
+                )
+              )}
             </ViewFinalStack>
           </BoardBox>
         </BoardWrapper>
@@ -78,6 +94,13 @@ const MainInterview = () => {
 export default MainInterview;
 
 // Board
+
+const ViewFinalStackFooter = styled.div`
+  width: 100%;
+  height: 1rem;
+  border-bottom: 1px solid var(--purple-100, #f3f2ff);
+  background: var(--Gray-100, #fff);
+`;
 
 const BoardWrapper = styled.div`
   display: flex;
@@ -96,7 +119,7 @@ const BoardStackTitle = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding-left: 4rem;
+  padding-left: 2.7rem;
   padding-right: 3rem;
   align-items: center;
 
@@ -127,12 +150,12 @@ const ViewFinalStack = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
+  padding-top: 2rem;
 
   width: 100%;
-  height: 10rem;
   flex-shrink: 0;
-  gap: 1.5rem;
+  gap: 0.5rem;
 
   border-radius: 0.75rem 0.75rem 0rem 0rem;
   border: 1px solid ${(props) => props.theme.colors.purple.purple200};
