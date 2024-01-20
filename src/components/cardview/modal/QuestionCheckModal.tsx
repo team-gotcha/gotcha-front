@@ -17,6 +17,8 @@ const QuestionCheckModal = ({
   setIsOpen,
   setIsOpenModal,
 }: BaseModalProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   const handleBtn = () => {
     setIsOpenModal(true);
     setIsOpen(!isOpen);
@@ -28,7 +30,18 @@ const QuestionCheckModal = ({
         <Topbar>
           <InfoBox>
             <Title>갓차린 면접자 질문 확인</Title>
-            <Info src={info} />
+            <Info
+              src={info}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            />
+            {isHovered && (
+              <InfoPopup>
+                면접 질문을 드래그해서 순서를 변경할 수 있어요.
+                <br />
+                여기서 정한 질문 순서대로 면접 중 질문이 나타나요.
+              </InfoPopup>
+            )}
           </InfoBox>
           <StartBtn onClick={handleBtn}>면접 전형 시작</StartBtn>
         </Topbar>
@@ -76,6 +89,7 @@ const Topbar = styled.div`
 `;
 
 const InfoBox = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -145,4 +159,31 @@ const QuestionContainer = styled.div`
   &::-webkit-scrollbar-track {
     background: transparent;
   }
+`;
+
+const InfoPopup = styled.div`
+  position: absolute;
+  width: 24rem;
+  top: 2.6rem;
+  left: 19rem;
+  z-index: 80;
+  display: inline-flex;
+  padding: 1rem 1.4rem;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 12px;
+  border: 1px solid var(--Gray-300, #e6e6e6);
+  background: var(--Gray-100, #fff);
+
+  /* 회색 */
+  box-shadow: 0px 0px 6px 2px rgba(215, 215, 215, 0.15);
+
+  color: var(--Gray-600, #999);
+
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 155%; /* 15.5px */
+  letter-spacing: -0.03px;
 `;

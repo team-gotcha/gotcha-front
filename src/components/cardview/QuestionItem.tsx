@@ -1,15 +1,32 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
 
+import MoreDotIcon from "../../assets/icons/MoreDotIcon";
+
 const QuestionItem = ({ isCommon = false }) => {
   const [selectedScore, setSelectedScore] = useState<number | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const handleScoreClick = (score: number) => {
     setSelectedScore(score);
   };
 
+  const handleMoreDotClick = () => {
+    setIsDropdownVisible((prev) => !prev);
+  };
+
+  const handleOptionClick = (option: string) => {
+    setSelectedOption(option);
+    setIsDropdownVisible(false);
+  };
+
   return (
-    <Wrapper>
+    <Wrapper
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <Container isCommon={isCommon}>
         <ImpScoreDiv isCommon={isCommon}>
           <Title isCommon={isCommon}>점수</Title>
@@ -32,6 +49,29 @@ const QuestionItem = ({ isCommon = false }) => {
               {isCommon ? "공통질문" : "개별질문"}
             </ClassTag>
             <Question>이전 직장에서 한 @ 프로젝트에서 ~</Question>
+            {isHovered && (
+              <MoreDotIcon
+                width={24}
+                height={24}
+                onClick={handleMoreDotClick}
+              />
+            )}
+            {isDropdownVisible && (
+              <DropdownDiv>
+                <Option
+                  selected={selectedOption === "삭제하기"}
+                  onClick={() => handleOptionClick("삭제하기")}
+                >
+                  삭제하기
+                </Option>
+                <Option
+                  selected={selectedOption === "수정하기"}
+                  onClick={() => handleOptionClick("수정하기")}
+                >
+                  수정하기
+                </Option>
+              </DropdownDiv>
+            )}
           </QuestionBox>
           <InputBox>
             <Answer placeholder="답변을 입력해주세요." />
@@ -112,6 +152,7 @@ const QuestionDiv = styled.div`
 `;
 
 const QuestionBox = styled.div<{ isCommon: boolean }>`
+  position: relative;
   display: flex;
   align-items: center;
   gap: 1.6rem;
@@ -143,6 +184,7 @@ const ClassTag = styled.div<{ isCommon: boolean }>`
 
 const Question = styled.div`
   color: var(--Gray-1100, #1a1a1a);
+  width: 100%;
 
   font-size: 14px;
   font-style: normal;
@@ -169,4 +211,42 @@ const Answer = styled.input`
   & ::placeholder {
     color: var(--Gray-500, #b3b3b3);
   }
+`;
+
+const DropdownDiv = styled.div`
+  position: absolute;
+  display: flex;
+  width: 10rem;
+  top: 2rem;
+  right: 4rem;
+  flex-direction: column;
+  align-items: center;
+
+  border-radius: 0.7rem;
+  border: 1px solid var(--Gray-300, #e6e6e6);
+  background: var(--Gray-100, #fff);
+
+  /* 회색 */
+  box-shadow: 0px 0px 6px 2px rgba(215, 215, 215, 0.15);
+
+  overflow: hidden;
+`;
+
+const Option = styled.div<{ selected: boolean }>`
+  display: flex;
+  padding: 0.6rem 1.6rem;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+  background: ${({ selected }) =>
+    selected ? "var(--purple-100, #F3F2FF)" : "var(--Gray-100, #fff)"};
+  color: ${({ selected }) =>
+    selected ? "var(--Gray-1100, #1A1A1A)" : "var(--Gray-500, #b3b3b3)"};
+  text-align: center;
+  border-bottom: 1px solid var(--Gray-300, #e6e6e6);
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 155%;
+  letter-spacing: -0.03px;
 `;
