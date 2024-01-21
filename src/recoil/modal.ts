@@ -7,7 +7,6 @@ export const modalState = atom<boolean>({
   default: false,
 });
 
-//Recoil Atom 선언
 export const modalContent = atom<ReactNode>({
   key: 'modalContent',
   default: null,

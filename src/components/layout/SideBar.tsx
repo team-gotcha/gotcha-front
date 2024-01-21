@@ -17,9 +17,7 @@ const SideBar = () => {
   const [modalItem, setModalItem] = useRecoilState(modalContent);
 
   const handleMakeNewProject = () => {
-    console.log('새 프로젝트 모달');
     setModalItem(<AddProjectModal />);
-    console.log(modalItem);
     openModal();
   };
 
