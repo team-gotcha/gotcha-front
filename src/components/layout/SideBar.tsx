@@ -1,11 +1,26 @@
-import React, { useState } from "react";
-import { styled } from "styled-components";
+import React, { useState } from 'react';
+import { styled } from 'styled-components';
 
-import AddIcon from "../../assets/icons/AddIcon";
-import { ReactComponent as FavIcon } from "../../assets/images/FavIcon.svg";
-import { ReactComponent as NotiIcon } from "../../assets/images/NotiIcon.svg";
+import AddIcon from '../../assets/icons/AddIcon';
+import { ReactComponent as FavIcon } from '../../assets/images/FavIcon.svg';
+import { ReactComponent as NotiIcon } from '../../assets/images/NotiIcon.svg';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { modalContent, modalState } from '../../recoil/modal';
+import { useToggleModal } from '../../hooks/useToggleModal';
+import AddProjectModal from '../common/modal/AddProjectModal';
 
 const SideBar = () => {
+  //modal관리
+  const isModalOpen = useRecoilValue(modalState);
+  const { openModal } = useToggleModal();
+
+  const [modalItem, setModalItem] = useRecoilState(modalContent);
+
+  const handleMakeNewProject = () => {
+    setModalItem(<AddProjectModal />);
+    openModal();
+  };
+
   return (
     <Wrapper>
       <UserDiv>
@@ -34,7 +49,9 @@ const SideBar = () => {
           <InterviewItem>
             <span>카카오 개발자 면접</span>
           </InterviewItem>
-          <AddProj>+ 새 프로젝트 (면접) 추가</AddProj>
+          <AddProj onClick={handleMakeNewProject}>
+            + 새 프로젝트 (면접) 추가
+          </AddProj>
         </InterviewDiv>
       </ContentBox>
       <CurBox>
@@ -153,9 +170,7 @@ const InterviewItem = styled.div`
   line-height: 160%;
 `;
 
-const AddProj = styled.div`
-  padding: 0 1.8rem;
-
+const AddProj = styled.button`
   color: var(--Gray-1100, #1a1a1a);
 
   font-size: 1.4rem;
@@ -163,6 +178,9 @@ const AddProj = styled.div`
   font-weight: 500;
   line-height: 155%;
   letter-spacing: -0.042px;
+
+  display: flex;
+  justify-content: start;
 `;
 
 const CurBox = styled.div`

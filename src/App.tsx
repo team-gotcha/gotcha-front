@@ -13,6 +13,7 @@ import InProgress from './pages/InProgress';
 import Result from './pages/Result';
 import ResultDetail from './pages/ResultDetail';
 import MainFinalResult from './pages/MainFinalResult';
+import GoogleCallback from './pages/GoogleCallback';
 
 function App() {
   const queryClient = new QueryClient();
@@ -79,6 +80,7 @@ function App() {
           />
           <Route path="/" element={<Landing />} />
           <Route path="/onboarding" element={<Onboard />} />
+          <Route path="/google/callback" element={<GoogleCallback />} />
         </Routes>
       </QueryClientProvider>
     </BrowserRouter>

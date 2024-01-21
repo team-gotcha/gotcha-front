@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Banner from '../components/main/Banner';
 import ViewListStack from '../components/main/ViewListStack';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { modalState } from '../recoil/modal';
+import { useToggleModal } from '../hooks/useToggleModal';
 
 const MainProject = () => {
   const [isProjectEmpty, setIsProjectEmpty] = useState(false);
@@ -14,73 +17,80 @@ const MainProject = () => {
     'E',
   ]);
 
+  //modal관리
+  const isModalOpen = useRecoilValue(modalState);
+  const { openModal } = useToggleModal();
+
   return (
-    <MainWrapper>
-      <Banner todayInterviewNum={todayInterviewNum} />
+    <>
+      <MainWrapper>
+        <Banner todayInterviewNum={todayInterviewNum} />
 
-      <InterviewListWrapper>
-        {/* QA용 토글 버튼 */}
-        <div>
-          <button
-            onClick={() => {
-              setIsProjectEmpty(!isProjectEmpty);
-            }}
-          >
-            QA용 임시 토글 - 빈 프로젝트 (클릭 시 전환)
-          </button>
-        </div>
+        <InterviewListWrapper>
+          {/* QA용 토글 버튼 */}
+          <div>
+            <button
+              onClick={() => {
+                setIsProjectEmpty(!isProjectEmpty);
+              }}
+            >
+              QA용 임시 토글 - 빈 프로젝트 (클릭 시 전환)
+            </button>
+          </div>
 
-        {isProjectEmpty && (
-          <>
-            <ViewListWrapper>
-              <ProjectEmptyComment>
-                + 첫 면접을 만들어주세요!
-              </ProjectEmptyComment>
-              <StackWrapper>
-                <ViewListStack
-                  isEmpty={isProjectEmpty}
-                  groupMemberList={groupMemberList}
-                />
-              </StackWrapper>
-            </ViewListWrapper>
-          </>
-        )}
-        {!isProjectEmpty && (
-          <>
-            <ViewListWrapper>
-              <InterviewTitle>세부 면접 이름</InterviewTitle>
-              <StackWrapper>
-                <ViewListStack
-                  isEmpty={isProjectEmpty}
-                  groupMemberList={groupMemberList}
-                />
-                <ViewListStack
-                  isEmpty={isProjectEmpty}
-                  groupMemberList={groupMemberList}
-                />
-                <ViewListStack
-                  isEmpty={isProjectEmpty}
-                  groupMemberList={groupMemberList}
-                />
-              </StackWrapper>
-            </ViewListWrapper>
-            <ViewListWrapper>
-              <InterviewTitle>세부 면접 이름</InterviewTitle>
-              <StackWrapper>
-                <ViewListStack
-                  isEmpty={isProjectEmpty}
-                  groupMemberList={groupMemberList}
-                />
-                <ViewListStack
-                  isEmpty={isProjectEmpty}
-                  groupMemberList={groupMemberList}
-                />
-              </StackWrapper>
-            </ViewListWrapper>
-          </>
-        )}
-      </InterviewListWrapper>
-    </MainWrapper>
+          {isProjectEmpty && (
+            <>
+              <ViewListWrapper>
+                <ProjectEmptyComment>
+                  + 첫 면접을 만들어주세요!
+                </ProjectEmptyComment>
+                <StackWrapper>
+                  <ViewListStack
+                    isEmpty={isProjectEmpty}
+                    groupMemberList={groupMemberList}
+                  />
+                </StackWrapper>
+              </ViewListWrapper>
+            </>
+          )}
+          {!isProjectEmpty && (
+            <>
+              <ViewListWrapper>
+                <InterviewTitle>세부 면접 이름</InterviewTitle>
+                <StackWrapper>
+                  <ViewListStack
+                    isEmpty={isProjectEmpty}
+                    groupMemberList={groupMemberList}
+                  />
+                  <ViewListStack
+                    isEmpty={isProjectEmpty}
+                    groupMemberList={groupMemberList}
+                  />
+                  <ViewListStack
+                    isEmpty={isProjectEmpty}
+                    groupMemberList={groupMemberList}
+                  />
+                </StackWrapper>
+              </ViewListWrapper>
+              <ViewListWrapper>
+                <InterviewTitle>세부 면접 이름</InterviewTitle>
+                <StackWrapper>
+                  <ViewListStack
+                    isEmpty={isProjectEmpty}
+                    groupMemberList={groupMemberList}
+                  />
+                  <ViewListStack
+                    isEmpty={isProjectEmpty}
+                    groupMemberList={groupMemberList}
+                  />
+                </StackWrapper>
+              </ViewListWrapper>
+              {isModalOpen && <h1>모달</h1>}
+            </>
+          )}
+        </InterviewListWrapper>
+      </MainWrapper>
+    </>
   );
 };
 
