@@ -4,7 +4,7 @@ import GlobalStyle from './style/GlobalStyle';
 import Layout from './components/layout/Layout';
 import Landing from './pages/Landing';
 import Onboard from './pages/Onboard';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MainProject from './pages/MainProject';
 import MainInterview from './pages/MainInterview';
 
@@ -19,7 +19,6 @@ function App() {
   const queryClient = new QueryClient();
   return (
     <BrowserRouter>
-      <GlobalStyle />
       <QueryClientProvider client={queryClient}>
         <Routes>
           <Route

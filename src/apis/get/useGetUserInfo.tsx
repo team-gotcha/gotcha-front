@@ -4,21 +4,21 @@ import axiosInstance from '..';
 import { useNavigate } from 'react-router-dom';
 
 /**
- * 구글로그인
- * @param code
- * @returns {userId, accessToken, refreshToken}
+ * 유저 정보 받기
+ * @param
+ * @returns {profileImage, name, email}
  */
-export const useGetLogin = (code: string) => {
+export const useGetUserInfo = () => {
   const { isLoading, data, error } = useQuery({
-    queryKey: ['googleLogin'],
+    queryKey: ['userInfo'],
     queryFn: async () => {
-      const res = await axiosInstance.get(`/api/google/token?code=${code}`);
+      const res = await axiosInstance.get(`/api/user`);
       return res.data;
     },
   });
 
   return {
-    googleLogin: data || null,
+    userInfo: data || null,
     isLoading,
     error,
   };
