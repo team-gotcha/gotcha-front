@@ -39,7 +39,7 @@ const NavigationBar = () => {
 export default NavigationBar;
 
 const Wrapper = styled.section`
-  position: absolute;
+  position: fixed;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
