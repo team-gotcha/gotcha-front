@@ -59,14 +59,14 @@ const SideBar = () => {
   const project_id = params.get('project_id');
   const interview_id = params.get('interview_id');
 
-  useEffect(() => {
-    if (project_id !== null) {
-      console.log(project_id);
-    }
-    if (interview_id !== null) {
-      console.log(interview_id);
-    }
-  }, [params]);
+  // useEffect(() => {
+  //   if (project_id !== null) {
+  //     console.log(project_id);
+  //   }
+  //   if (interview_id !== null) {
+  //     console.log(interview_id);
+  //   }
+  // }, [params]);
 
   return (
     <Wrapper>

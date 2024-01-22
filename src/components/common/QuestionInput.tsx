@@ -14,6 +14,14 @@ interface QuestionInputProps {
   type?: InputType;
   width?: string;
   questionNum?: string;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  ref?: React.Ref<HTMLInputElement>;
+  value?: string;
+  onChange?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+}
+
+interface InputStyleProps {
+  isActive?: boolean;
 }
 
 const QuestionInput = ({ ...props }: QuestionInputProps) => {
@@ -62,6 +70,12 @@ const QuestionHeader = styled.div<QuestionInputProps>`
 const StyledInput = styled.input<QuestionInputProps>`
   align-items: center;
   border: none;
+
+  color: var(--Gray-1000, #333);
+  ${(props) => props.theme.fontStyles.body.bodyRegular};
+  font-size: 1.4rem;
+  font-style: normal;
+  font-weight: 400;
 
   /* size가 large인 경우 */
   ${(props) =>

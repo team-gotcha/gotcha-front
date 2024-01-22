@@ -21,8 +21,8 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
   const [memberEmail, setMemberEmail] = useState('');
   const [memberEmailList, setMemberEmailList] = useState([]);
 
-  const [selectedField, setSelectedField] = useState('SERVICE');
-  const [selectedJob, setSelectedJob] = useState('MARKETING');
+  const [selectedField, setSelectedField] = useState('분야');
+  const [selectedJob, setSelectedJob] = useState('직무');
   const handleSelectField = (option: string) => {
     setSelectedField(option);
   };

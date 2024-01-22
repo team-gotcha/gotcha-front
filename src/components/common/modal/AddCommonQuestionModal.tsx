@@ -6,17 +6,31 @@ import DropDown from '../DropDown';
 import { useState } from 'react';
 import DropDownBox from '../DropDownBox';
 import QuestionInput from '../QuestionInput';
-
-/**
- * 사용예시
- * <CommonButton color={'lineGray'} size={'large'} children="텍스트" />
- */
+import { usePostCommonQuestions } from '../../../apis/post/usePostCommonQuestions';
 
 interface AddCommonQuestionModalProps {
   children?: string;
+  interviewId?: string;
 }
 
 const AddCommonQuestionModal = ({ ...props }: AddCommonQuestionModalProps) => {
+  const [questionList, setQuestionList] = useState(['', '', '', '', '']);
+
+  const handleQuestionChange = (index: number, value: string) => {
+    const newQuestionList = [...questionList];
+    newQuestionList[index] = value;
+    setQuestionList(newQuestionList);
+  };
+  //custom-hook
+  const fetchQuestion = usePostCommonQuestions();
+
+  const handleSubmit = () => {
+    fetchQuestion.addCommonQuestions({
+      interviewId: Number(props.interviewId),
+      questions: questionList,
+    });
+  };
+
   return (
     <Wrapper>
       <ModalTop>
@@ -25,11 +39,18 @@ const AddCommonQuestionModal = ({ ...props }: AddCommonQuestionModalProps) => {
       </ModalTop>
       <ModalBody>
         <QuestionInputWrapper>
-          <QuestionInput questionNum="1" size="small" type="off" />
-          <QuestionInput questionNum="2" size="small" type="off" />
-          <QuestionInput questionNum="3" size="small" type="off" />
-          <QuestionInput questionNum="4" size="small" type="off" />
-          <QuestionInput questionNum="5" size="small" type="off" />
+          {questionList.map((question, index) => (
+            <QuestionInput
+              key={index}
+              questionNum={`${index + 1}`}
+              size="small"
+              type="off"
+              value={question}
+              onChange={(e) =>
+                handleQuestionChange(index, e.currentTarget.value)
+              }
+            />
+          ))}
         </QuestionInputWrapper>
         <ModalFooter>
           <CommonButton
@@ -37,6 +58,7 @@ const AddCommonQuestionModal = ({ ...props }: AddCommonQuestionModalProps) => {
             color="lineGray"
             children="공통 질문 추가하기"
             padding="0.125rem 1.875rem"
+            onClick={handleSubmit}
           />
         </ModalFooter>
       </ModalBody>

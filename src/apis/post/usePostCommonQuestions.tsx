@@ -5,18 +5,18 @@ import { useNavigate } from 'react-router-dom';
 
 /**
  * 공통질문 전송
- * @param {questions, projectId}
+ * @param {questions, interviewId}
  * @returns
  */
 
 interface CommonQuestionsProps {
   questions: Array<String>;
-  projectId: number;
+  interviewId: number;
 }
 
 export const usePostCommonQuestions = () => {
   const { mutate, isPending, error, isSuccess } = useMutation({
-    mutationKey: ['commonQuestions'],
+    mutationKey: ['addCommonQuestions'],
     mutationFn: async (data: CommonQuestionsProps) => {
       const res = await axiosInstance.post(`/api/questions/common`, data);
       return res.data;
@@ -24,7 +24,7 @@ export const usePostCommonQuestions = () => {
   });
 
   return {
-    commonQuestions: mutate,
+    addCommonQuestions: mutate,
     isPending,
     isSuccess,
     error,
