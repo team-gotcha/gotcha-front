@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
  * @returns {userId, accessToken, refreshToken}
  */
 export const useGetLogin = (code: string) => {
-  const { isLoading, data, error } = useQuery({
+  const { isLoading, data, error, isSuccess } = useQuery({
     queryKey: ['googleLogin'],
     queryFn: async () => {
       const res = await axiosInstance.get(`/api/google/token?code=${code}`);
@@ -21,5 +21,6 @@ export const useGetLogin = (code: string) => {
     googleLogin: data || null,
     isLoading,
     error,
+    isSuccess,
   };
 };

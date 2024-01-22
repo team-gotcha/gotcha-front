@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 
 import AddIcon from '../../assets/icons/AddIcon';
@@ -8,26 +8,39 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { modalContent, modalState } from '../../recoil/modal';
 import { useToggleModal } from '../../hooks/useToggleModal';
 import AddProjectModal from '../common/modal/AddProjectModal';
+import { loginState, userInfoState } from '../../recoil/userInfo';
+import { useGetUserInfo } from '../../apis/get/useGetUserInfo';
 
 const SideBar = () => {
   //modal관리
   const isModalOpen = useRecoilValue(modalState);
   const { openModal } = useToggleModal();
-
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const [modalItem, setModalItem] = useRecoilState(modalContent);
+  const [isLogin, setIsLogin] = useRecoilState(loginState);
+
+  //custom hook
+  const fetchedUserData = useGetUserInfo(isLogin);
 
   const handleMakeNewProject = () => {
     setModalItem(<AddProjectModal />);
     openModal();
   };
 
+  useEffect(() => {
+    if (isLogin && !fetchedUserData.isLoading) {
+      console.log('유저데이터 세팅');
+      setUserInfo(fetchedUserData.userInfo);
+    }
+  }, [!fetchedUserData.isLoading, isLogin]);
+
   return (
     <Wrapper>
       <UserDiv>
-        <UserProfile />
+        <UserProfile src={userInfo.profileImage} />
         <div className="info">
-          <UserID>USER</UserID>
-          <EMail>구글이메일@google.com</EMail>
+          <UserID>{userInfo.name}</UserID>
+          <EMail>{userInfo.email}</EMail>
         </div>
       </UserDiv>
       <IconDiv>
@@ -90,7 +103,7 @@ const UserDiv = styled.div`
   }
 `;
 
-const UserProfile = styled.div`
+const UserProfile = styled.img`
   width: 5.2rem;
   height: 5.2rem;
   border-radius: 50%;

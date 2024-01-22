@@ -4,21 +4,21 @@ import axiosInstance from '..';
 import { useNavigate } from 'react-router-dom';
 
 /**
- * 유저 정보 받기
- * @param isLogin
- * @returns {profileImage, name, email}
+ * userId로 accessToken재발급
+ * @param userId
+ * @returns {access_token, expires_in}
  */
-export const useGetUserInfo = (isLogin: boolean) => {
+export const useGetRefresh = (userId: string) => {
   const { isLoading, data, error } = useQuery({
-    queryKey: ['userInfo', isLogin],
+    queryKey: ['refreshedAccessToken'],
     queryFn: async () => {
-      const res = await axiosInstance.get(`/api/user`);
+      const res = await axiosInstance.get(`/api/refresh?userId=${userId}`);
       return res.data;
     },
   });
 
   return {
-    userInfo: data || null,
+    refreshedAccessToken: data || null,
     isLoading,
     error,
   };

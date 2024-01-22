@@ -14,9 +14,15 @@ import Result from './pages/Result';
 import ResultDetail from './pages/ResultDetail';
 import MainFinalResult from './pages/MainFinalResult';
 import GoogleCallback from './pages/GoogleCallback';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { loginState } from './recoil/userInfo';
 
 function App() {
   const queryClient = new QueryClient();
+
+  //login여부
+  const [isLogin, setIsLogin] = useRecoilState(loginState);
+
   return (
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
