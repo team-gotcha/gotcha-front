@@ -5,9 +5,10 @@ import { atom, selector } from 'recoil';
 export const userInfoState = atom({
   key: 'userInfoState',
   default: {
-    profileImage: '',
-    name: '',
-    email: '',
+    profileUrl: '',
+    userEmail: '',
+    userName: '',
+    projects: '',
   },
 });
 

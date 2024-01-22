@@ -17,7 +17,6 @@ const GoogleCallback = () => {
 
   //custom-hook
   const fetchedData = useGetLogin(code);
-  // const fetchedUserData = useGetUserInfo(isLogin);
 
   useEffect(() => {
     if (localStorage.getItem('accessToken') !== null) {
@@ -39,14 +38,6 @@ const GoogleCallback = () => {
       navigate('/main/project');
     }
   }, [fetchedData.isLoading]);
-
-  // useEffect(() => {
-  //   if (isLogin && !fetchedUserData.isLoading) {
-  //     console.log('유저데이터 세팅');
-  //     setUserInfo(fetchedUserData.userInfo);
-  //     navigate('/main/project');
-  //   }
-  // }, [fetchedUserData.isLoading, isLogin]);
 
   return (
     <div>

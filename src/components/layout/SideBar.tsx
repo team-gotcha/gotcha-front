@@ -10,6 +10,7 @@ import { useToggleModal } from '../../hooks/useToggleModal';
 import AddProjectModal from '../common/modal/AddProjectModal';
 import { loginState, userInfoState } from '../../recoil/userInfo';
 import { useGetUserInfo } from '../../apis/get/useGetUserInfo';
+import { useGetProjectList } from '../../apis/get/useGetProjectList';
 
 const SideBar = () => {
   //modal관리
@@ -20,27 +21,36 @@ const SideBar = () => {
   const [isLogin, setIsLogin] = useRecoilState(loginState);
 
   //custom hook
-  const fetchedUserData = useGetUserInfo(isLogin);
+  // const fetchedUserData = useGetUserInfo(isLogin);
+  const fetchedProjectData = useGetProjectList();
 
   const handleMakeNewProject = () => {
     setModalItem(<AddProjectModal />);
     openModal();
   };
 
+  // useEffect(() => {
+  //   if (isLogin && !fetchedUserData.isLoading) {
+  //     console.log('유저데이터 세팅');
+  //     setUserInfo(fetchedUserData.userInfo);
+  //   }
+  // }, [!fetchedUserData.isLoading, isLogin]);
+
   useEffect(() => {
-    if (isLogin && !fetchedUserData.isLoading) {
+    if (isLogin && !fetchedProjectData.isLoading) {
       console.log('유저데이터 세팅');
-      setUserInfo(fetchedUserData.userInfo);
+      console.log(fetchedProjectData.projectList);
+      setUserInfo(fetchedProjectData.projectList);
     }
-  }, [!fetchedUserData.isLoading, isLogin]);
+  }, [!fetchedProjectData.isLoading, isLogin]);
 
   return (
     <Wrapper>
       <UserDiv>
-        <UserProfile src={userInfo.profileImage} />
+        <UserProfile src={userInfo.profileUrl} />
         <div className="info">
-          <UserID>{userInfo.name}</UserID>
-          <EMail>{userInfo.email}</EMail>
+          <UserID>{userInfo.userName}</UserID>
+          <EMail>{userInfo.userEmail}</EMail>
         </div>
       </UserDiv>
       <IconDiv>
