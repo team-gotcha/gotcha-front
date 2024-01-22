@@ -1,18 +1,54 @@
-import React, { useState } from "react";
-import { styled } from "styled-components";
+import React, { useEffect, useState } from 'react';
+import { styled } from 'styled-components';
 
-import AddIcon from "../../assets/icons/AddIcon";
-import { ReactComponent as FavIcon } from "../../assets/images/FavIcon.svg";
-import { ReactComponent as NotiIcon } from "../../assets/images/NotiIcon.svg";
+import AddIcon from '../../assets/icons/AddIcon';
+import { ReactComponent as FavIcon } from '../../assets/images/FavIcon.svg';
+import { ReactComponent as NotiIcon } from '../../assets/images/NotiIcon.svg';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { modalContent, modalState } from '../../recoil/modal';
+import { useToggleModal } from '../../hooks/useToggleModal';
+import AddProjectModal from '../common/modal/AddProjectModal';
+import { loginState, userInfoState } from '../../recoil/userInfo';
+import { useGetUserInfo } from '../../apis/get/useGetUserInfo';
+import { useGetProjectList } from '../../apis/get/useGetProjectList';
+import AddInterviewModal from '../common/modal/AddInterviewModal';
 
 const SideBar = () => {
+  //modal관리
+  const isModalOpen = useRecoilValue(modalState);
+  const { openModal } = useToggleModal();
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const [modalItem, setModalItem] = useRecoilState(modalContent);
+  const [isLogin, setIsLogin] = useRecoilState(loginState);
+
+  //custom hook
+  const fetchedProjectData = useGetProjectList();
+
+  //modal관리
+  const handleMakeNewProject = () => {
+    setModalItem(<AddProjectModal />);
+    openModal();
+  };
+  const handleMakeNewInterview = (projectId: number) => {
+    setModalItem(<AddInterviewModal projectId={projectId} />);
+    openModal();
+  };
+
+  useEffect(() => {
+    if (isLogin && !fetchedProjectData.isLoading) {
+      console.log('유저데이터 세팅');
+      console.log(fetchedProjectData.projectList);
+      setUserInfo(fetchedProjectData.projectList);
+    }
+  }, [!fetchedProjectData.isLoading, isLogin]);
+
   return (
     <Wrapper>
       <UserDiv>
-        <UserProfile />
+        <UserProfile src={userInfo.profileUrl} />
         <div className="info">
-          <UserID>USER</UserID>
-          <EMail>구글이메일@google.com</EMail>
+          <UserID>{userInfo.userName}</UserID>
+          <Email>{userInfo.userEmail}</Email>
         </div>
       </UserDiv>
       <IconDiv>
@@ -27,14 +63,33 @@ const SideBar = () => {
       </IconDiv>
       <ContentBox>
         <InterviewDiv>
-          <InterviewItem>
-            <span>카카오 디자이너 면접</span>
-            <AddIcon />
-          </InterviewItem>
-          <InterviewItem>
-            <span>카카오 개발자 면접</span>
-          </InterviewItem>
-          <AddProj>+ 새 프로젝트 (면접) 추가</AddProj>
+          {userInfo.projects &&
+            userInfo.projects.map((project, index) => (
+              <div key={index}>
+                <InterviewItem>
+                  <ItemTop>
+                    <span>{project.projectName}</span>
+                    <StyledAddIcon
+                      className="AddIcon"
+                      onClick={() => handleMakeNewInterview(project.projectId)}
+                    />
+                  </ItemTop>
+
+                  <InterviewDetail>
+                    {project.interviews &&
+                      project.interviews.map((interview, index) => (
+                        <SubTitle key={index}>
+                          {interview.interviewName}
+                        </SubTitle>
+                      ))}
+                  </InterviewDetail>
+                </InterviewItem>
+              </div>
+            ))}
+
+          <AddProj onClick={handleMakeNewProject}>
+            + 새 프로젝트 (면접) 추가
+          </AddProj>
         </InterviewDiv>
       </ContentBox>
       <CurBox>
@@ -46,6 +101,28 @@ const SideBar = () => {
 
 export default SideBar;
 
+const ItemTop = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-right: 1rem;
+
+  width: 100%;
+  padding-right: 1rem;
+`;
+
+const InterviewDetail = styled.div`
+  display: none;
+`;
+const SubTitle = styled.div`
+  color: ${(props) => props.theme.colors.gray.gray500};
+  ${(props) => props.theme.fontStyles.body.bodyRegular};
+
+  font-size: 1.4rem;
+  font-style: normal;
+  font-weight: 400;
+`;
+
 const Wrapper = styled.div`
   position: absolute;
   top: 5.8rem;
@@ -54,7 +131,12 @@ const Wrapper = styled.div`
   border-right: 0.05rem solid #e6e6e6;
   background-color: #fff;
 `;
-
+const StyledAddIcon = styled(AddIcon)`
+  display: none;
+  position: absolute;
+  right: 0;
+  transform: translateY(-50%);
+`;
 const UserDiv = styled.div`
   display: flex;
   align-items: center;
@@ -73,7 +155,7 @@ const UserDiv = styled.div`
   }
 `;
 
-const UserProfile = styled.div`
+const UserProfile = styled.img`
   width: 5.2rem;
   height: 5.2rem;
   border-radius: 50%;
@@ -90,7 +172,7 @@ const UserID = styled.div`
   letter-spacing: -0.06px;
 `;
 
-const EMail = styled.div`
+const Email = styled.div`
   color: var(--Gray-1100, #1a1a1a);
 
   font-size: 1.2rem;
@@ -138,24 +220,44 @@ const InterviewDiv = styled.div`
 const InterviewItem = styled.div`
   //추후 컴포넌트 분리 가능성 O
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--Gray-1100, #1a1a1a);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  color: ${(props) => props.theme.colors.gray.gray1110};
   border-radius: 0.6rem;
-  background: var(--purple-200, #e6e5ff);
+  //background: var(--purple-200, #e6e5ff);
 
-  height: 3rem;
   padding: 0 1.4rem;
 
-  font-size: 14px;
+  ${(props) => props.theme.fontStyles.body.bodySemibold};
+  font-size: 1.4rem;
   font-style: normal;
   font-weight: 600;
   line-height: 160%;
+
+  &:hover {
+    ${StyledAddIcon} {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 1rem;
+      margin-right: 1rem;
+
+      cursor: pointer;
+    }
+
+    ${InterviewDetail} {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      padding-left: 2rem;
+      padding-top: 1rem;
+    }
+  }
 `;
 
-const AddProj = styled.div`
-  padding: 0 1.8rem;
-
+const AddProj = styled.button`
   color: var(--Gray-1100, #1a1a1a);
 
   font-size: 1.4rem;
@@ -163,6 +265,9 @@ const AddProj = styled.div`
   font-weight: 500;
   line-height: 155%;
   letter-spacing: -0.042px;
+
+  display: flex;
+  justify-content: start;
 `;
 
 const CurBox = styled.div`

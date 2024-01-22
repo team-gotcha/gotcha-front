@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled, { css } from 'styled-components';
 
 /**
@@ -13,8 +14,11 @@ interface CommonInputProps {
   size?: InputSize;
   type?: InputType;
   width?: string;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  ref?: React.Ref<HTMLInputElement>;
+  value?: string;
+  onChange?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
-
 const CommonInput = ({ ...props }: CommonInputProps) => {
   return <StyledInput {...props} />;
 };
@@ -27,6 +31,9 @@ const StyledInput = styled.input<CommonInputProps>`
   align-items: center;
   border-radius: 0.75rem;
 
+  &:focus {
+    border: 1px solid ${(props) => props.theme.colors.purple.purple600};
+  }
   /* size가 large인 경우 */
   ${(props) =>
     props.size === 'large' &&
@@ -70,6 +77,10 @@ const StyledInput = styled.input<CommonInputProps>`
         color: ${(props) => props.theme.colors.red.red200};
       }
     `}
+
+  &:hover {
+    border: 1px solid ${(props) => props.theme.colors.purple.purple600};
+  }
 
   background: ${(props) => props.theme.colors.gray.gray100};
 `;
