@@ -1,13 +1,29 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
+import { useDrag, useDrop } from "react-dnd";
 
 import MoreDotIcon from "../../assets/icons/MoreDotIcon";
 
-interface QuestionItemProps {
-  isCommon?: boolean;
+const ItemTypes = {
+  QUESTION_ITEM: "questionItem",
+};
+
+interface DragItem {
+  type: string;
+  index: number;
 }
 
-const QuestionItem = ({ isCommon = false }: QuestionItemProps) => {
+interface QuestionItemProps {
+  isCommon?: boolean;
+  index?: number;
+  moveItem?: (dragIndex: number, hoverIndex: number) => void;
+}
+
+const QuestionItemDrag = ({
+  isCommon = false,
+  index = 1,
+  moveItem = () => {},
+}: QuestionItemProps) => {
   const [selectedScore, setSelectedScore] = useState<number | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -26,10 +42,41 @@ const QuestionItem = ({ isCommon = false }: QuestionItemProps) => {
     setIsDropdownVisible(false);
   };
 
+  const [{ isDragging }, drag] = useDrag({
+    type: ItemTypes.QUESTION_ITEM,
+    item: { type: ItemTypes.QUESTION_ITEM, index },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  });
+
+  const [, drop] = useDrop({
+    accept: ItemTypes.QUESTION_ITEM,
+    hover: (draggedItem: DragItem, monitor) => {
+      if (!draggedItem || !drag) {
+        return;
+      }
+
+      const dragIndex = draggedItem.index;
+      const hoverIndex = index;
+
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+
+      moveItem(dragIndex, hoverIndex);
+
+      draggedItem.index = hoverIndex;
+    },
+  });
+
+  const opacity = isDragging ? 0.5 : 1;
   return (
     <Wrapper
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      ref={(node) => drag(drop(node))}
+      style={{ opacity }}
     >
       <Container isCommon={isCommon}>
         <ImpScoreDiv isCommon={isCommon}>
@@ -86,7 +133,7 @@ const QuestionItem = ({ isCommon = false }: QuestionItemProps) => {
   );
 };
 
-export default QuestionItem;
+export default QuestionItemDrag;
 
 const Wrapper = styled.div`
   position: relative;

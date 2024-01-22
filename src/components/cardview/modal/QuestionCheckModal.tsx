@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import QuestionItem from "../QuestionItem";
+import QuestionItemDrag from "../QuestionItemDrag";
 import InfoIcon from "../../../assets/icons/InfoIcon";
 
 import info from "../../../assets/images/InfoIcon-blue.svg";
@@ -49,40 +49,42 @@ const QuestionCheckModal = ({
 
   return (
     <>
-      <Container>
-        <Topbar>
-          <InfoBox>
-            <Title>갓차린 면접자 질문 확인</Title>
-            <Info
-              src={info}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            />
-            {isHovered && (
-              <InfoPopup>
-                면접 질문을 드래그해서 순서를 변경할 수 있어요.
-                <br />
-                여기서 정한 질문 순서대로 면접 중 질문이 나타나요.
-              </InfoPopup>
-            )}
-          </InfoBox>
-          <StartBtn onClick={handleBtn}>면접 전형 시작</StartBtn>
-        </Topbar>
-        <Box>
-          <QuestionContainer>
-            <DndProvider backend={HTML5Backend}>
-              {items.map((item, index) => (
-                <QuestionItem
-                  key={item?.id}
-                  isCommon={item?.isCommon}
-                  index={index}
-                  moveItem={moveItem}
-                />
-              ))}
-            </DndProvider>
-          </QuestionContainer>
-        </Box>
-      </Container>
+      {isOpen && (
+        <Container>
+          <Topbar>
+            <InfoBox>
+              <Title>갓차린 면접자 질문 확인</Title>
+              <Info
+                src={info}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              />
+              {isHovered && (
+                <InfoPopup>
+                  면접 질문을 드래그해서 순서를 변경할 수 있어요.
+                  <br />
+                  여기서 정한 질문 순서대로 면접 중 질문이 나타나요.
+                </InfoPopup>
+              )}
+            </InfoBox>
+            <StartBtn onClick={handleBtn}>면접 전형 시작</StartBtn>
+          </Topbar>
+          <Box>
+            <QuestionContainer>
+              <DndProvider backend={HTML5Backend}>
+                {items.map((item, index) => (
+                  <QuestionItemDrag
+                    key={item?.id}
+                    isCommon={item?.isCommon}
+                    index={index}
+                    moveItem={moveItem}
+                  />
+                ))}
+              </DndProvider>
+            </QuestionContainer>
+          </Box>
+        </Container>
+      )}
     </>
   );
 };
