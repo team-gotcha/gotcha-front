@@ -8,7 +8,7 @@ export const userInfoState = atom({
     profileUrl: '',
     userEmail: '',
     userName: '',
-    projects: '',
+    projects: [],
   },
 });
 

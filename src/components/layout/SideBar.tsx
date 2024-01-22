@@ -11,6 +11,7 @@ import AddProjectModal from '../common/modal/AddProjectModal';
 import { loginState, userInfoState } from '../../recoil/userInfo';
 import { useGetUserInfo } from '../../apis/get/useGetUserInfo';
 import { useGetProjectList } from '../../apis/get/useGetProjectList';
+import AddInterviewModal from '../common/modal/AddInterviewModal';
 
 const SideBar = () => {
   //modal관리
@@ -21,20 +22,17 @@ const SideBar = () => {
   const [isLogin, setIsLogin] = useRecoilState(loginState);
 
   //custom hook
-  // const fetchedUserData = useGetUserInfo(isLogin);
   const fetchedProjectData = useGetProjectList();
 
+  //modal관리
   const handleMakeNewProject = () => {
     setModalItem(<AddProjectModal />);
     openModal();
   };
-
-  // useEffect(() => {
-  //   if (isLogin && !fetchedUserData.isLoading) {
-  //     console.log('유저데이터 세팅');
-  //     setUserInfo(fetchedUserData.userInfo);
-  //   }
-  // }, [!fetchedUserData.isLoading, isLogin]);
+  const handleMakeNewInterview = (projectId: number) => {
+    setModalItem(<AddInterviewModal projectId={projectId} />);
+    openModal();
+  };
 
   useEffect(() => {
     if (isLogin && !fetchedProjectData.isLoading) {
@@ -50,7 +48,7 @@ const SideBar = () => {
         <UserProfile src={userInfo.profileUrl} />
         <div className="info">
           <UserID>{userInfo.userName}</UserID>
-          <EMail>{userInfo.userEmail}</EMail>
+          <Email>{userInfo.userEmail}</Email>
         </div>
       </UserDiv>
       <IconDiv>
@@ -65,13 +63,17 @@ const SideBar = () => {
       </IconDiv>
       <ContentBox>
         <InterviewDiv>
-          <InterviewItem>
-            <span>카카오 디자이너 면접</span>
-            <AddIcon />
-          </InterviewItem>
-          <InterviewItem>
-            <span>카카오 개발자 면접</span>
-          </InterviewItem>
+          {userInfo.projects &&
+            userInfo.projects.map((project, index) => (
+              <InterviewItem key={index}>
+                <span>{project.projectName}</span>
+                <StyledAddIcon
+                  className="AddIcon"
+                  onClick={() => handleMakeNewInterview(project.projectId)}
+                />
+              </InterviewItem>
+            ))}
+
           <AddProj onClick={handleMakeNewProject}>
             + 새 프로젝트 (면접) 추가
           </AddProj>
@@ -94,7 +96,12 @@ const Wrapper = styled.div`
   border-right: 0.05rem solid #e6e6e6;
   background-color: #fff;
 `;
-
+const StyledAddIcon = styled(AddIcon)`
+  display: none;
+  position: absolute;
+  right: 0;
+  transform: translateY(-50%);
+`;
 const UserDiv = styled.div`
   display: flex;
   align-items: center;
@@ -130,7 +137,7 @@ const UserID = styled.div`
   letter-spacing: -0.06px;
 `;
 
-const EMail = styled.div`
+const Email = styled.div`
   color: var(--Gray-1100, #1a1a1a);
 
   font-size: 1.2rem;
@@ -180,17 +187,30 @@ const InterviewItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: var(--Gray-1100, #1a1a1a);
+  color: ${(props) => props.theme.colors.gray.gray1110};
   border-radius: 0.6rem;
-  background: var(--purple-200, #e6e5ff);
+  //background: var(--purple-200, #e6e5ff);
 
   height: 3rem;
   padding: 0 1.4rem;
 
-  font-size: 14px;
+  ${(props) => props.theme.fontStyles.body.bodySemibold};
+  font-size: 1.4rem;
   font-style: normal;
   font-weight: 600;
   line-height: 160%;
+
+  &:hover {
+    ${StyledAddIcon} {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2rem;
+      margin-right: 1rem;
+
+      cursor: pointer;
+    }
+  }
 `;
 
 const AddProj = styled.button`

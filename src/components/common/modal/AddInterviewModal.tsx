@@ -3,26 +3,88 @@ import CloseIcon from '../../../assets/icons/CloseIcon';
 import CommonInput from '../CommomInput';
 import CommonButton from '../CommonButton';
 import DropDown from '../DropDown';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import DropDownBox from '../DropDownBox';
-
-/**
- * 사용예시
- * <CommonButton color={'lineGray'} size={'large'} children="텍스트" />
- */
+import CloseIconSmall from '../../../assets/icons/CloseIconSmall';
+import { usePostAddInterview } from '../../../apis/post/usePostAddInterview';
 
 interface AddInterviewModalProps {
   children?: string;
+  projectId?: number;
 }
 
 const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
-  const [selectedField, setSelectedField] = useState('분야');
-  const [selectedJob, setSelectedJob] = useState('직무');
+  const titleInputRef = useRef<HTMLInputElement>(null);
+  const memberInputRef = useRef<HTMLInputElement>(null);
+  const [isDone, setIsDone] = useState(false);
+  const [projectTitle, setProjectTitle] = useState('');
+  const [memberEmail, setMemberEmail] = useState('');
+  const [memberEmailList, setMemberEmailList] = useState([]);
+
+  const [selectedField, setSelectedField] = useState('SERVICE');
+  const [selectedJob, setSelectedJob] = useState('MARKETING');
   const handleSelectField = (option: string) => {
     setSelectedField(option);
   };
   const handleSelectJob = (option: string) => {
     setSelectedJob(option);
+  };
+
+  //custom-hook
+  const fetchData = usePostAddInterview();
+
+  /**
+   * project 데이터 전송해 생성하는 기능
+   */
+  const handleSubmit = () => {
+    console.log({
+      name: projectTitle,
+      emails: memberEmailList,
+      projectId: props.projectId,
+      area: selectedField,
+      position: selectedJob,
+    });
+    fetchData.addInterview({
+      name: projectTitle,
+      emails: memberEmailList,
+      projectId: props.projectId,
+      area: selectedField,
+      position: selectedJob,
+    });
+  };
+
+  /**
+   * enter시 다음 input창으로 focus되는 기능(수정필요)
+   */
+  const handleMoveInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      memberInputRef.current && memberInputRef.current.focus();
+      setIsDone(true);
+    }
+  };
+  useEffect(() => {
+    titleInputRef.current && titleInputRef.current.focus();
+  }, []);
+
+  /**
+   * 초대멤버 이메일을 저장하는 함수
+   */
+  const handleInvite = () => {
+    console.log(memberEmail);
+    if (memberEmail !== '') {
+      memberEmailList.push(memberEmail);
+    }
+    setMemberEmail('');
+  };
+
+  /**
+   * 이메일을 리스트에서 삭제
+   * @param index
+   */
+  const removeMemberEmail = (index: number) => {
+    const updatedList = [...memberEmailList];
+    updatedList.splice(index, 1);
+    setMemberEmailList(updatedList);
   };
   return (
     <Wrapper>
@@ -31,7 +93,18 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
         <CloseIcon width="1.5rem" />
       </ModalTop>
       <ModalBody>
-        <CommonInput placeholder="면접 이름" size="small" type="off" />
+        <CommonInput
+          placeholder="면접 이름"
+          size="small"
+          type="off"
+          width="100%"
+          ref={titleInputRef}
+          onKeyDown={handleMoveInput}
+          value={projectTitle}
+          onChange={(e) => {
+            setProjectTitle(e.currentTarget.value);
+          }}
+        />
         <div>
           <SubTitle>초대하기</SubTitle>
           <InviteWrapper>
@@ -39,8 +112,14 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
               placeholder="gotcha@gmail.com"
               size="small"
               type="off"
-              width="38.125rem"
+              width="85%"
+              ref={memberInputRef}
+              value={memberEmail}
+              onChange={(e) => {
+                setMemberEmail(e.currentTarget.value);
+              }}
             />
+
             <CommonButton
               color={'lineGray'}
               size={'small'}
@@ -48,9 +127,22 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
               width="5.125rem"
               height="3rem"
               padding="0.625rem 0.75rem"
+              onClick={handleInvite}
             />
           </InviteWrapper>
         </div>
+        {memberEmailList.length !== 0 && (
+          <RowBox>
+            {memberEmailList.map((email, index) => (
+              <EmailTag key={index}>
+                {email}
+                <CloseWrapper onClick={() => removeMemberEmail(index)}>
+                  <CloseIconSmall />
+                </CloseWrapper>
+              </EmailTag>
+            ))}
+          </RowBox>
+        )}
 
         <ModalFooter>
           <SelectWrapper>
@@ -66,6 +158,7 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
             color="lineGray"
             children="면접 진행하기"
             padding="0.125rem 1.875rem"
+            onClick={handleSubmit}
           />
         </ModalFooter>
       </ModalBody>
@@ -75,11 +168,36 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
 
 export default AddInterviewModal;
 
+const RowBox = styled.div`
+  display: inline-flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+`;
+const CloseWrapper = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0rem;
+`;
+const EmailTag = styled.div`
+  display: flex;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1.2rem;
+  ${(props) => props.theme.fontStyles.body.bodyRegular};
+  border: 1px solid ${(props) => props.theme.colors.purple.purple400};
+  color: ${(props) => props.theme.colors.gray.gray110};
+`;
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 47.625rem;
-  height: 29.75rem;
   justify-content: flex-start;
   align-items: center;
   border-radius: 1.25rem;
@@ -97,6 +215,7 @@ const Title = styled.div`
 `;
 const ModalTop = styled.div`
   width: 100%;
+  height: 3rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -114,6 +233,7 @@ const ModalBody = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 90%;
   gap: 1rem;
 `;
 
@@ -128,6 +248,8 @@ const InviteWrapper = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
+  width: 100%;
 `;
 const ModalFooter = styled.div`
   display: flex;
@@ -135,6 +257,7 @@ const ModalFooter = styled.div`
   justify-content: space-between;
   align-items: flex-end;
 `;
+
 const SelectWrapper = styled.div`
   display: flex;
   flex-direction: column;
