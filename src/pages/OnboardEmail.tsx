@@ -5,7 +5,7 @@ import Header from "../components/layout/Header";
 
 import onboarding1 from "../assets/videos/onboarding1.mp4";
 
-const Onboard = () => {
+const OnboardEmail = () => {
   return (
     <>
       <Header />
@@ -34,7 +34,7 @@ const Onboard = () => {
   );
 };
 
-export default Onboard;
+export default OnboardEmail;
 
 const Wrapper = styled.div`
   width: 100%;
