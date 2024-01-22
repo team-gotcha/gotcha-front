@@ -24,7 +24,7 @@ axiosInstance.interceptors.response.use(
     console.log(error.response.status);
     if (error.response.status === 401) {
       console.log('accessToken만료');
-      console.log(localStorage.getItem('userId'));
+      console.log(localStorage.getItem('refreshToken'));
       console.log('엥');
       //accessToken재발급
 

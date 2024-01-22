@@ -8,6 +8,10 @@ import AddCommonQuestionModal from '../components/common/modal/AddCommonQuestion
 import WriteBoardIcon from '../assets/icons/WriteBoardIcon';
 import ViewBoardStack from '../components/main/ViewBoardStack';
 import CheckIcon from '../assets/icons/CheckIcon';
+import { usePostCommonQuestions } from '../apis/post/usePostCommonQuestions';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { useToggleModal } from '../hooks/useToggleModal';
+import { modalContent, modalState } from '../recoil/modal';
 
 const MainInterview = () => {
   const [isInterviewEmpty, setIsInterviewEmpty] = useState(false);
@@ -15,6 +19,21 @@ const MainInterview = () => {
   const [groupMemberList, setGroupMemberList] = useState(['A', 'B', 'C', 'D']);
   const [isListView, setIsListView] = useState(false); //true:목록뷰 false:보드뷰
   const [lastStageApplierNum, setLastStageApplierNum] = useState(3); //면접완료된 면접자 수 (보드뷰)
+
+  //url에서 project_id || interview_id 추출
+  const params = new URLSearchParams(window.location.search);
+  const project_id = params.get('project_id');
+  const interview_id = params.get('interview_id');
+
+  //modal관리
+  const { openModal } = useToggleModal();
+  const [modalItem, setModalItem] = useRecoilState(modalContent);
+
+  const handleAddCommonQuestions = () => {
+    console.log('모달');
+    setModalItem(<AddCommonQuestionModal interviewId={interview_id} />);
+    openModal();
+  };
 
   return (
     <MainWrapper>
@@ -32,7 +51,7 @@ const MainInterview = () => {
 
       <NotiBar>
         <ViewFinalSuccessfulApplier />
-        <AddCommonQuestionButton>
+        <AddCommonQuestionButton onClick={handleAddCommonQuestions}>
           공통 질문 작성하기
           <WriteBoardIcon width="2.4rem" />
         </AddCommonQuestionButton>
@@ -188,7 +207,7 @@ const NotiBar = styled.div`
   margin-top: 1.4rem;
   margin-bottom: 2.8rem;
 `;
-const AddCommonQuestionButton = styled.div`
+const AddCommonQuestionButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;

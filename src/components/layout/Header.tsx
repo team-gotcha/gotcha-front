@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { styled } from "styled-components";
+import React, { useState } from 'react';
+import { styled } from 'styled-components';
 
 const Header = () => {
   return (
@@ -12,7 +12,7 @@ const Header = () => {
 export default Header;
 
 const Wrapper = styled.header`
-  position: absolute;
+  position: fixed;
   display: flex;
   align-items: center;
   top: 0;
