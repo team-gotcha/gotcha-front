@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 /**
  * userId로 accessToken재발급
  * @param userId
- * @returns {access_token, expires_in}
+ * @returns access_token, expires_in
  */
 export const useGetRefresh = (userId: string) => {
   const { isLoading, data, error } = useQuery({

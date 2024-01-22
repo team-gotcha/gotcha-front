@@ -24,10 +24,11 @@ axiosInstance.interceptors.response.use(
     console.log(error.response.status);
     if (error.response.status === 401) {
       console.log('accessToken만료');
-      const userId = localStorage.getItem('userId');
-      const accessToken =
-        useGetRefresh(userId).refreshedAccessToken.access_token;
-      localStorage.setItem('accessToken', accessToken);
+      console.log(localStorage.getItem('userId'));
+      console.log('엥');
+      //accessToken재발급
+
+      //재로그인
     }
     return error.response;
   }
