@@ -65,13 +65,26 @@ const SideBar = () => {
         <InterviewDiv>
           {userInfo.projects &&
             userInfo.projects.map((project, index) => (
-              <InterviewItem key={index}>
-                <span>{project.projectName}</span>
-                <StyledAddIcon
-                  className="AddIcon"
-                  onClick={() => handleMakeNewInterview(project.projectId)}
-                />
-              </InterviewItem>
+              <div key={index}>
+                <InterviewItem>
+                  <ItemTop>
+                    <span>{project.projectName}</span>
+                    <StyledAddIcon
+                      className="AddIcon"
+                      onClick={() => handleMakeNewInterview(project.projectId)}
+                    />
+                  </ItemTop>
+
+                  <InterviewDetail>
+                    {project.interviews &&
+                      project.interviews.map((interview, index) => (
+                        <SubTitle key={index}>
+                          {interview.interviewName}
+                        </SubTitle>
+                      ))}
+                  </InterviewDetail>
+                </InterviewItem>
+              </div>
             ))}
 
           <AddProj onClick={handleMakeNewProject}>
@@ -87,6 +100,28 @@ const SideBar = () => {
 };
 
 export default SideBar;
+
+const ItemTop = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-right: 1rem;
+
+  width: 100%;
+  padding-right: 1rem;
+`;
+
+const InterviewDetail = styled.div`
+  display: none;
+`;
+const SubTitle = styled.div`
+  color: ${(props) => props.theme.colors.gray.gray500};
+  ${(props) => props.theme.fontStyles.body.bodyRegular};
+
+  font-size: 1.4rem;
+  font-style: normal;
+  font-weight: 400;
+`;
 
 const Wrapper = styled.div`
   position: absolute;
@@ -185,13 +220,13 @@ const InterviewDiv = styled.div`
 const InterviewItem = styled.div`
   //추후 컴포넌트 분리 가능성 O
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
   color: ${(props) => props.theme.colors.gray.gray1110};
   border-radius: 0.6rem;
   //background: var(--purple-200, #e6e5ff);
 
-  height: 3rem;
   padding: 0 1.4rem;
 
   ${(props) => props.theme.fontStyles.body.bodySemibold};
@@ -205,10 +240,19 @@ const InterviewItem = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 2rem;
+      margin-top: 1rem;
       margin-right: 1rem;
 
       cursor: pointer;
+    }
+
+    ${InterviewDetail} {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      padding-left: 2rem;
+      padding-top: 1rem;
     }
   }
 `;
