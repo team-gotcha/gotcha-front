@@ -28,7 +28,7 @@ const MainProject = () => {
 
         <InterviewListWrapper>
           {/* QA용 토글 버튼 */}
-          <div>
+          {/* <div>
             <button
               onClick={() => {
                 setIsProjectEmpty(!isProjectEmpty);
@@ -36,7 +36,7 @@ const MainProject = () => {
             >
               QA용 임시 토글 - 빈 프로젝트 (클릭 시 전환)
             </button>
-          </div>
+          </div> */}
 
           {isProjectEmpty && (
             <>

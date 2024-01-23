@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import DropDownBox from '../DropDownBox';
 import CloseIconSmall from '../../../assets/icons/CloseIconSmall';
 import { usePostAddInterview } from '../../../apis/post/usePostAddInterview';
+import { useToggleModal } from '../../../hooks/useToggleModal';
 
 interface AddInterviewModalProps {
   children?: string;
@@ -20,9 +21,10 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
   const [projectTitle, setProjectTitle] = useState('');
   const [memberEmail, setMemberEmail] = useState('');
   const [memberEmailList, setMemberEmailList] = useState([]);
+  const { openModal } = useToggleModal();
 
-  const [selectedField, setSelectedField] = useState('분야');
-  const [selectedJob, setSelectedJob] = useState('직무');
+  const [selectedField, setSelectedField] = useState('SERVICE');
+  const [selectedJob, setSelectedJob] = useState('MARKETING');
   const handleSelectField = (option: string) => {
     setSelectedField(option);
   };
@@ -37,13 +39,6 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
    * project 데이터 전송해 생성하는 기능
    */
   const handleSubmit = () => {
-    console.log({
-      name: projectTitle,
-      emails: memberEmailList,
-      projectId: props.projectId,
-      area: selectedField,
-      position: selectedJob,
-    });
     fetchData.addInterview({
       name: projectTitle,
       emails: memberEmailList,
@@ -51,6 +46,7 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
       area: selectedField,
       position: selectedJob,
     });
+    openModal();
   };
 
   /**

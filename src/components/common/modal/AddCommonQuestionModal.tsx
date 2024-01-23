@@ -7,6 +7,7 @@ import { useState } from 'react';
 import DropDownBox from '../DropDownBox';
 import QuestionInput from '../QuestionInput';
 import { usePostCommonQuestions } from '../../../apis/post/usePostCommonQuestions';
+import { useToggleModal } from '../../../hooks/useToggleModal';
 
 interface AddCommonQuestionModalProps {
   children?: string;
@@ -15,7 +16,7 @@ interface AddCommonQuestionModalProps {
 
 const AddCommonQuestionModal = ({ ...props }: AddCommonQuestionModalProps) => {
   const [questionList, setQuestionList] = useState(['', '', '', '', '']);
-
+  const { openModal } = useToggleModal();
   const handleQuestionChange = (index: number, value: string) => {
     const newQuestionList = [...questionList];
     newQuestionList[index] = value;
@@ -29,6 +30,7 @@ const AddCommonQuestionModal = ({ ...props }: AddCommonQuestionModalProps) => {
       interviewId: Number(props.interviewId),
       questions: questionList,
     });
+    openModal();
   };
 
   return (

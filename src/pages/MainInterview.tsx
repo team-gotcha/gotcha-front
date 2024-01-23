@@ -12,12 +12,15 @@ import { usePostCommonQuestions } from '../apis/post/usePostCommonQuestions';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useToggleModal } from '../hooks/useToggleModal';
 import { modalContent, modalState } from '../recoil/modal';
+import { interviewModeState } from '../recoil/mainview';
+import { useNavigate } from 'react-router-dom';
 
 const MainInterview = () => {
+  const navigate = useNavigate();
   const [isInterviewEmpty, setIsInterviewEmpty] = useState(false);
   const [todayInterviewNum, setTodayInterviewNum] = useState(3);
   const [groupMemberList, setGroupMemberList] = useState(['A', 'B', 'C', 'D']);
-  const [isListView, setIsListView] = useState(false); //true:목록뷰 false:보드뷰
+  const [isListView, setIsListView] = useRecoilState(interviewModeState);
   const [lastStageApplierNum, setLastStageApplierNum] = useState(3); //면접완료된 면접자 수 (보드뷰)
 
   //url에서 project_id || interview_id 추출
@@ -35,11 +38,15 @@ const MainInterview = () => {
     openModal();
   };
 
+  const handleMoveToAddApplicant = () => {
+    navigate(`/ready/1`);
+  };
+
   return (
     <MainWrapper>
       <Banner todayInterviewNum={todayInterviewNum} />
       {/* QA용 토글 버튼 */}
-      <div>
+      {/* <div>
         <button
           onClick={() => {
             setIsListView(!isListView);
@@ -47,7 +54,7 @@ const MainInterview = () => {
         >
           QA용 임시 토글 - 리스트뷰/보드뷰 (클릭 시 전환)
         </button>
-      </div>
+      </div> */}
 
       <NotiBar>
         <ViewFinalSuccessfulApplier />
@@ -78,7 +85,10 @@ const MainInterview = () => {
         <BoardWrapper>
           <BoardBox>
             <BoardStackTitle>
-              면접 전<AddApplierButton>+ 지원자 추가</AddApplierButton>
+              면접 전
+              <AddApplierButton onClick={handleMoveToAddApplicant}>
+                + 지원자 추가
+              </AddApplierButton>
             </BoardStackTitle>
             <ViewBoardStack groupMemberList={groupMemberList} />
           </BoardBox>
@@ -156,7 +166,7 @@ const BoardStackTitle = styled.div`
   border: 1px solid ${(props) => props.theme.colors.purple.purple100};
   background: ${(props) => props.theme.colors.gray.gray100};
 `;
-const AddApplierButton = styled.div`
+const AddApplierButton = styled.button`
   color: ${(props) => props.theme.colors.purple.purple600};
   ${(props) => props.theme.fontStyles.caption.captionRegular};
   font-size: 1.2rem;

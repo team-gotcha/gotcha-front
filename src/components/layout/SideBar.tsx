@@ -15,7 +15,7 @@ import AddInterviewModal from '../common/modal/AddInterviewModal';
 import { useNavigate } from 'react-router-dom';
 
 const SideBar = () => {
-  //modal관리
+  //전역상태
   const isModalOpen = useRecoilValue(modalState);
   const { openModal } = useToggleModal();
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
@@ -40,6 +40,7 @@ const SideBar = () => {
   useEffect(() => {
     if (isLogin && !fetchedProjectData.isLoading) {
       console.log('유저데이터 세팅');
+      console.log(fetchedProjectData.projectList);
       setUserInfo(fetchedProjectData.projectList);
     }
   }, [!fetchedProjectData.isLoading, isLogin]);
