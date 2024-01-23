@@ -4,11 +4,17 @@ import { styled } from "styled-components";
 import info from "../../assets/images/InfoIcon-gray.svg";
 import CloseIcon from "../../assets/icons/CloseIcon";
 
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import { userDetailInfoState } from "../../recoil/cardview";
+
 const KeywordBox = ({ modify = true }) => {
+  const userDetailInfo = useRecoilValue(userDetailInfoState);
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [keywords, setKeywords] = useState<string[]>([]);
   const [inputWidth, setInputWidth] = useState<number>(20);
+
+  console.log(userDetailInfo, userDetailInfo?.traitKeywords);
 
   const showInput = () => {
     setIsInputVisible(true);
@@ -42,23 +48,25 @@ const KeywordBox = ({ modify = true }) => {
   return (
     <Container>
       <TitleDiv>
-        <KeyTitle>
-          키워드 {!modify && "(추후 데이터 받아와 띄울 예정)"}
-        </KeyTitle>
+        <KeyTitle>키워드</KeyTitle>
         {modify && <InfoIcon src={info} />}
       </TitleDiv>
       <KeywordDiv>
-        {keywords.map((keyword, index) => (
-          <Keyword key={index}>
-            {keyword}
-            <CloseIcon
-              width={16}
-              height={16}
-              fill="#999999"
-              onClick={() => handleRemoveKeyword(index)}
-            />
-          </Keyword>
-        ))}
+        {modify
+          ? keywords.map((keyword, index) => (
+              <Keyword key={index}>
+                {keyword}
+                <CloseIcon
+                  width={16}
+                  height={16}
+                  fill="#999999"
+                  onClick={() => handleRemoveKeyword(index)}
+                />
+              </Keyword>
+            ))
+          : userDetailInfo?.traitKeywords.map((keyword, index) => (
+              <Keyword key={index}>{keyword}</Keyword>
+            ))}
         {modify &&
           (isInputVisible ? (
             <>
