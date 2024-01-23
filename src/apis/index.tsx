@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { useGetRefresh } from './get/useGetRefresh';
+import axios from "axios";
+import { useGetRefresh } from "./get/useGetRefresh";
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -7,9 +7,9 @@ const axiosInstance = axios.create({
 
 // 요청 인터셉터
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem("accessToken");
   if (token) {
-    config.headers.Authorization = `${token}`;
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
@@ -23,9 +23,8 @@ axiosInstance.interceptors.response.use(
   (error) => {
     console.log(error.response.status);
     if (error.response.status === 401) {
-      console.log('accessToken만료');
-      console.log(localStorage.getItem('refreshToken'));
-      console.log('엥');
+      console.log("accessToken만료");
+      console.log(localStorage.getItem("refreshToken"));
       //accessToken재발급
 
       //재로그인

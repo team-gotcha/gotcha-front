@@ -66,7 +66,7 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
         setFiles((prevFiles: File[]) => [...prevFiles, ...filesArray]);
         setFilesData((prevData) => ({
           ...prevData,
-          files: [...prevData.files, ...filesArray],
+          resume: [...prevData.resume, ...filesArray],
         }));
       }
     }
@@ -78,12 +78,20 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
       const newPortfolios = [...portfolios];
       newPortfolios.splice(index, 1);
       setPortfolios(newPortfolios);
-      updateFormData("portfolio", newPortfolios);
+      setFilesData({
+        ...filesData,
+        portfolios: newPortfolios,
+      });
+      // updateFormData("portfolio", newPortfolios);
     } else {
       const newFiles = [...files];
       newFiles.splice(index, 1);
       setFiles(newFiles);
-      updateFormData("resume", newFiles);
+      setFilesData({
+        ...filesData,
+        resume: newFiles,
+      });
+      // updateFormData("resume", newFiles);
     }
   };
 

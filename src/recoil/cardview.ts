@@ -51,7 +51,7 @@ export const questionsIndivDataState = atom({
 export const filesDataState = atom({
   key: "filesDataState",
   default: {
-    files: [] as File[],
+    resume: [] as File[],
     portfolios: [] as File[],
   },
 });

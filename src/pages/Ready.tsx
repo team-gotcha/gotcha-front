@@ -10,6 +10,9 @@ import MemoInput from "../components/cardview/MemoInput";
 import QuestionCheckModal from "../components/cardview/modal/QuestionCheckModal";
 import QuestionOpenModal from "../components/cardview/modal/QuestionOpenModal";
 
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import { filesDataState } from "../recoil/cardview";
+
 import { usePostUserReady } from "../apis/post/usePostUserReady";
 import { usePostUserDetail } from "../apis/post/usePostUserDetail";
 import { usePostFiles } from "../apis/post/usePostFiles";
@@ -57,6 +60,9 @@ const Ready = () => {
   const userIdNumber: number = parseInt(user_id, 10);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const filesData = useRecoilValue(filesDataState);
+
+  console.log(filesData);
 
   //custom-hook
   const postReadyData = usePostUserReady();
