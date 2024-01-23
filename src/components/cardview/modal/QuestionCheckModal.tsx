@@ -98,7 +98,7 @@ const Container = styled.div`
   align-items: center;
   border-radius: 1.2rem;
   overflow: hidden;
-  z-index: 30;
+  z-index: 200;
 `;
 
 const Topbar = styled.div`

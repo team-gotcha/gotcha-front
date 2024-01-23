@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 
+import InterviewerBox from "./interviewerBox";
 import KeywordBox from "./KeywordBox";
 import LinkIcon from "../../assets/icons/LinkIcon";
 import CloseIcon from "../../assets/icons/CloseIcon";
@@ -29,16 +30,11 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
 
   //custom hook
   const userDetailData = useGetUserDetail(isLogin, userIdNumber);
-  const interviewerData = useGetViewer(1); //interview-id 넣어줘야함
+  // const interviewerData = useGetViewer(1); //interview-id 넣어줘야함
 
   useEffect(() => {
     if (isLogin && !userDetailData.isLoading && modify) {
-      console.log(
-        "유저 상세 데이터 세팅",
-        userDetailData,
-        interviewerData.interviewerInfo,
-        [files, portfolios]
-      );
+      console.log("유저 상세 데이터 세팅", userDetailData, [files, portfolios]);
       setUserDetailInfo(userDetailData.userInfo);
     }
   }, [!userDetailData.isLoading, isLogin, userDetailInfo]);
@@ -123,8 +119,7 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
           )}
         </InterviewBox>
         <InterviewBox>
-          <InterviewTitle>면접관</InterviewTitle>
-          {/* 디자인 반영되면 수정 예정 */}
+          <InterviewerBox modify={modify} />
         </InterviewBox>
       </InterviewDiv>
       <BasicInfoDiv wide={wide}>
@@ -247,7 +242,8 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
 export default InterviewerInfo;
 
 const Wrapper = styled.div<{ wide: boolean }>`
-  padding: ${({ wide }) => (wide ? "6.8rem 3.5rem" : "2.5rem 2.1rem")};
+  /* padding: ${({ wide }) => (wide ? "6.8rem 3.5rem" : "2.5rem 2.1rem")}; */
+  padding: ${({ wide }) => (wide ? "0" : "2.5rem 2.1rem")};
 `;
 
 const UserProfileDiv = styled.div`
@@ -327,7 +323,7 @@ const BasicInfoDiv = styled.div<{ wide: boolean }>`
 const InfoBox = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 3.2rem;
 `;
 

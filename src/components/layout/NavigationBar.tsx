@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { styled } from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { styled } from "styled-components";
 
-import AddIcon from '../../assets/icons/AddIcon';
-import { ReactComponent as FavIcon } from '../../assets/images/FavIcon.svg';
-import { ReactComponent as NotiIcon } from '../../assets/images/NotiIcon.svg';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { modalContent, modalState } from '../../recoil/modal';
-import { useToggleModal } from '../../hooks/useToggleModal';
-import AddProjectModal from '../common/modal/AddProjectModal';
-import { loginState, userInfoState } from '../../recoil/userInfo';
-import { useGetUserInfo } from '../../apis/get/useGetUserInfo';
-import { useGetProjectList } from '../../apis/get/useGetProjectList';
-import AddInterviewModal from '../common/modal/AddInterviewModal';
-import { useLocation, useNavigate } from 'react-router-dom';
-import ShareIcon from '../../assets/icons/ShareIcon';
-import ListIcon from '../../assets/icons/ListIcon';
-import BoardIcon from '../../assets/icons/BoardIcon';
-import { interviewModeState } from '../../recoil/mainview';
+import AddIcon from "../../assets/icons/AddIcon";
+import { ReactComponent as FavIcon } from "../../assets/images/FavIcon.svg";
+import { ReactComponent as NotiIcon } from "../../assets/images/NotiIcon.svg";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { modalContent, modalState } from "../../recoil/modal";
+import { useToggleModal } from "../../hooks/useToggleModal";
+import AddProjectModal from "../common/modal/AddProjectModal";
+import { loginState, userInfoState } from "../../recoil/userInfo";
+import { useGetUserInfo } from "../../apis/get/useGetUserInfo";
+import { useGetProjectList } from "../../apis/get/useGetProjectList";
+import AddInterviewModal from "../common/modal/AddInterviewModal";
+import { useLocation, useNavigate } from "react-router-dom";
+import ShareIcon from "../../assets/icons/ShareIcon";
+import ListIcon from "../../assets/icons/ListIcon";
+import BoardIcon from "../../assets/icons/BoardIcon";
+import { interviewModeState } from "../../recoil/mainview";
 
 const NavigationBar = () => {
   const isModalOpen = useRecoilValue(modalState);
@@ -25,15 +25,15 @@ const NavigationBar = () => {
   const [modalItem, setModalItem] = useRecoilState(modalContent);
   const [isLogin, setIsLogin] = useRecoilState(loginState);
 
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
 
   const [isListView, setIsListView] = useRecoilState(interviewModeState);
 
   //url에서 mode확인
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const project_id = params.get('project_id');
-  const interview_id = params.get('interview_id');
+  const project_id = params.get("project_id");
+  const interview_id = params.get("interview_id");
 
   useEffect(() => {
     if (interview_id !== null) {
@@ -42,14 +42,14 @@ const NavigationBar = () => {
         .find(
           (interview) => interview.interviewId === parseInt(interview_id, 10)
         );
-      setTitle(matchingInterview ? matchingInterview.interviewName : '');
+      setTitle(matchingInterview ? matchingInterview.interviewName : "");
     } else if (project_id !== null) {
       const matchingProject = userInfo.projects.find(
         (project) => project.projectId === parseInt(project_id, 10)
       );
-      setTitle(matchingProject ? matchingProject.projectName : '');
+      setTitle(matchingProject ? matchingProject.projectName : "");
     } else {
-      setTitle('세오스');
+      setTitle("세오스");
     }
   }, [interview_id, project_id, userInfo]);
   return (
@@ -78,7 +78,7 @@ const NavigationBar = () => {
           <ListIcon
             width="16"
             height="16"
-            fill={isListView ? '#3733ff' : '#CCC'}
+            fill={isListView ? "#3733ff" : "#CCC"}
           />
           목록
         </NavItem>
@@ -91,7 +91,7 @@ const NavigationBar = () => {
           <BoardIcon
             width="16"
             height="16"
-            fill={!isListView ? '#3733ff' : '#CCC'}
+            fill={!isListView ? "#3733ff" : "#CCC"}
           />
           보드
         </NavItem>
@@ -116,7 +116,7 @@ const Wrapper = styled.section`
   padding: 2rem 6rem 0 2.7rem;
   background-color: #fff;
 
-  z-index: 100;
+  z-index: 80;
 `;
 
 const TopDiv = styled.div`
@@ -179,7 +179,7 @@ const NavItem = styled.button<{ isActive?: boolean }>`
   gap: 0.4rem;
   width: 7rem;
   border-bottom: 0.1rem solid
-    ${(props) => (props.isActive ? '#3733ff' : 'white')};
+    ${(props) => (props.isActive ? "#3733ff" : "white")};
 
   font-size: 1.2rem;
   font-style: normal;
@@ -187,5 +187,5 @@ const NavItem = styled.button<{ isActive?: boolean }>`
   line-height: 160%; /* 19.2px */
 
   //활성화된 뷰
-  color: ${(props) => (props.isActive ? '#3733ff' : '#CCC')};
+  color: ${(props) => (props.isActive ? "#3733ff" : "#CCC")};
 `;

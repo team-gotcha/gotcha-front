@@ -43,6 +43,11 @@ export const keywordDataState = atom({
   default: [{ name: "", keywordType: "" }],
 });
 
+export const interviewersDataState = atom({
+  key: "interviewersDataState",
+  default: [{ email: "", id: 0, name: "" }],
+});
+
 export const questionsIndivDataState = atom({
   key: "questionsIndivDataState",
   default: [{ content: "" }],

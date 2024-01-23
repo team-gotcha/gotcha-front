@@ -74,8 +74,12 @@ const Ready = () => {
    */
   const handleSubmit = () => {
     // postReadyData.readyToPost(userIdNumber);
-    postDetailData.detailPost(testData);
-    // userPostData.addFiles();
+    // postDetailData.detailPost(testData);
+    userPostData.addFiles({
+      applicantId: userIdNumber,
+      resume: filesData.resume,
+      portfolio: filesData.portfolios,
+    });
     setIsOpen(!isOpen);
   };
 
@@ -132,7 +136,6 @@ const Wrapper = styled.div`
 
 const Background = styled.div`
   position: absolute;
-  z-index: 5;
   width: 100%;
   height: 100%;
   background: var(--gray-background-gray-55, rgba(50, 50, 50, 0.55));
@@ -160,6 +163,8 @@ const Contents = styled.div`
 
 const InputDiv = styled.div`
   overflow-y: auto;
+  width: 100%;
+  padding: 6.8rem 3.5rem;
 
   &::-webkit-scrollbar {
     display: none;
@@ -192,7 +197,7 @@ const ModalWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 15;
+  z-index: 300;
 `;
 
 const ModalBackground = styled(Background)`
@@ -202,13 +207,13 @@ const ModalBackground = styled(Background)`
   top: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.25);
-  z-index: 15;
+  z-index: 150;
 `;
 
 const ModalWrapper2 = styled(ModalWrapper)`
-  z-index: 40;
+  z-index: 300;
 `;
 
 const ModalBackground2 = styled(ModalBackground)`
-  z-index: 40;
+  z-index: 150;
 `;

@@ -10,15 +10,20 @@ import axiosInstance from "..";
 
 interface filesProps {
   applicantId: number;
-  resume?: string;
-  portfolio?: string;
+  resume?: File[];
+  portfolio?: File[];
 }
 
 export const usePostFiles = () => {
   const { mutate, isPending, error, isSuccess } = useMutation({
     mutationKey: ["addFiles"],
     mutationFn: async (data: filesProps) => {
-      const res = await axiosInstance.post(`/api/applicants/files`, data);
+      console.log(data);
+      const res = await axiosInstance.post(`/api/applicants/files`, {
+        "applicant-id": data.applicantId,
+        resume: data.resume,
+        portfolio: data.portfolio,
+      });
       console.log(res);
       return res.data;
     },
