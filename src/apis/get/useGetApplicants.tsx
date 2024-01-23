@@ -4,23 +4,23 @@ import axiosInstance from '..';
 import { useNavigate } from 'react-router-dom';
 
 /**
- * 구글로그인
- * @param code
- * @returns {userId, accessToken, refreshToken}
+ * 세부 면접의 모든 지원자를 면접일 순으로 조회
+ * @param interview-id
+ * @returns id, name, status, date, interviewerEmails[], questionCount, keywords[name, type]
  */
-export const useGetLogin = (code: string) => {
+export const useGetApplicants = (interviewId: number) => {
   const { isLoading, data, error, isSuccess } = useQuery({
-    queryKey: ['googleLogin'],
+    queryKey: ['applicants'],
     queryFn: async () => {
       const res = await axiosInstance.get(
-        `/api/login/google?code=${code}&redirect-uri=${process.env.REACT_APP_GOOGLE_AUTH_REDIRECT_URI}`
+        `/api/applicants?interview-id=${interviewId}`
       );
       return res.data;
     },
   });
 
   return {
-    googleLogin: data || null,
+    applicants: data || null,
     isLoading,
     error,
     isSuccess,

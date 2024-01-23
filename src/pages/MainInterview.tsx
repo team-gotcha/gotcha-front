@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Banner from '../components/main/Banner';
@@ -14,10 +14,12 @@ import { useToggleModal } from '../hooks/useToggleModal';
 import { modalContent, modalState } from '../recoil/modal';
 import { interviewModeState } from '../recoil/mainview';
 import { useNavigate } from 'react-router-dom';
+import { useGetApplicants } from '../apis/get/useGetApplicants';
 
 const MainInterview = () => {
   const navigate = useNavigate();
   const [isInterviewEmpty, setIsInterviewEmpty] = useState(false);
+  const [applicantsList, setApplicantsList] = useState([]);
   const [todayInterviewNum, setTodayInterviewNum] = useState(3);
   const [groupMemberList, setGroupMemberList] = useState(['A', 'B', 'C', 'D']);
   const [isListView, setIsListView] = useRecoilState(interviewModeState);
@@ -42,19 +44,24 @@ const MainInterview = () => {
     navigate(`/ready/1`);
   };
 
+  //custom -hook
+  const fetchedData = useGetApplicants(Number(interview_id));
+
+  useEffect(() => {
+    console.log(fetchedData.applicants);
+    if (!fetchedData.isLoading) {
+      if (fetchedData.applicants.length === 0) {
+        setIsInterviewEmpty(true);
+      } else {
+        setIsInterviewEmpty(false);
+        setApplicantsList(fetchedData.applicants);
+      }
+    }
+  }, [fetchedData.isLoading]);
+
   return (
     <MainWrapper>
       <Banner todayInterviewNum={todayInterviewNum} />
-      {/* QA용 토글 버튼 */}
-      {/* <div>
-        <button
-          onClick={() => {
-            setIsListView(!isListView);
-          }}
-        >
-          QA용 임시 토글 - 리스트뷰/보드뷰 (클릭 시 전환)
-        </button>
-      </div> */}
 
       <NotiBar>
         <ViewFinalSuccessfulApplier />
@@ -67,18 +74,24 @@ const MainInterview = () => {
       {isListView ? (
         // 리스트뷰
         <StackWrapper>
-          <ViewListStack
-            isEmpty={isInterviewEmpty}
-            groupMemberList={groupMemberList}
-          />
-          <ViewListStack
-            isEmpty={isInterviewEmpty}
-            groupMemberList={groupMemberList}
-          />
-          <ViewListStack
-            isEmpty={isInterviewEmpty}
-            groupMemberList={groupMemberList}
-          />
+          {isInterviewEmpty ? (
+            //면접자 입력 전
+            <ViewListStack
+              isEmpty={isInterviewEmpty}
+              groupMemberList={groupMemberList}
+            />
+          ) : (
+            <>
+              <ViewListStack
+                isEmpty={isInterviewEmpty}
+                groupMemberList={groupMemberList}
+              />
+              <ViewListStack
+                isEmpty={isInterviewEmpty}
+                groupMemberList={groupMemberList}
+              />
+            </>
+          )}
         </StackWrapper>
       ) : (
         // 보드뷰
@@ -90,7 +103,14 @@ const MainInterview = () => {
                 + 지원자 추가
               </AddApplierButton>
             </BoardStackTitle>
-            <ViewBoardStack groupMemberList={groupMemberList} />
+            {isInterviewEmpty ? (
+              //면접자 입력 전
+              <ViewBoardStack isEmpty={isInterviewEmpty} />
+            ) : (
+              <>
+                <ViewBoardStack />
+              </>
+            )}
           </BoardBox>
           <BoardBox>
             <BoardStackTitle>면접 진행 중</BoardStackTitle>

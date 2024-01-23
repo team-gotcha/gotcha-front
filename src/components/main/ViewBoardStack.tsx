@@ -6,6 +6,7 @@ import MessageIcon from '../../assets/icons/MessageIcon';
 import ThinMessageIcon from '../../assets/icons/ThinMessageIcon';
 
 interface ViewBoardStackProps {
+  applierName?: string; //면접자이름
   tagList?: Array<string>; //키워드리스트 첫입력 3개 고정(성향,스킬,경험순)
   memoNum?: number; //새로 추가된 메모 개수 (1개 이상 시 색변경)
 
@@ -14,6 +15,7 @@ interface ViewBoardStackProps {
   interviewDate?: string; //면접진행날짜
 
   isStar?: boolean; //즐찾표시 여부
+  isEmpty?: boolean; //빈
 }
 
 interface GroupMemberImgProps {
@@ -21,14 +23,22 @@ interface GroupMemberImgProps {
 }
 
 const ViewBoardStack = ({
-  groupMemberList = [],
+  groupMemberList = ['A'],
+  tagList = ['태그', '태그', '태그'],
+  interviewDate = 'Due Date',
+  applierName = '첫 후보를 등록해보세요!',
   ...props
 }: ViewBoardStackProps) => {
+  const expectedGroupMembers = 4;
+
+  // Determine the number of empty slots to render
+  const emptySlots = Math.max(expectedGroupMembers - groupMemberList.length, 0);
+
   return (
     <Wrapper>
       <BoardTop>
-        <ApplierName>가차린</ApplierName>
-        <InterviewDate>12/15</InterviewDate>
+        <ApplierName>{applierName}</ApplierName>
+        <InterviewDate>{interviewDate}</InterviewDate>
         <FavoriteState>
           <StarOffIcon width="1.92rem" />
         </FavoriteState>
@@ -37,15 +47,20 @@ const ViewBoardStack = ({
       <BoardBottom>
         <ThinMessageIcon width="1.37rem" height="1.32rem" />
         <TagList>
-          <CommonTag children="태그" />
-          <CommonTag children="태그" />
-          <CommonTag children="태그" />
+          {tagList.map((tag, index) => (
+            <CommonTag key={index} children={tag} />
+          ))}
         </TagList>
         <GroupMemberList>
-          {groupMemberList?.map((member, index) => (
+          {/* Render the actual group members */}
+          {groupMemberList.map((member, index) => (
             <GroupMemberImg key={index} index={groupMemberList.length - index}>
               {member.charAt(0)}
             </GroupMemberImg>
+          ))}
+          {/* Render empty slots if needed */}
+          {Array.from({ length: emptySlots }).map((_, index) => (
+            <EmptyGroupMemberImg key={index} />
           ))}
         </GroupMemberList>
       </BoardBottom>
@@ -174,6 +189,23 @@ const GroupMemberImg = styled.div<GroupMemberImgProps>`
   color: ${(props) => props.theme.colors.gray.gray900};
 
   z-index: ${(props) => props.index};
+`;
+
+const EmptyGroupMemberImg = styled.div`
+  width: 2.8rem;
+  height: 2.8rem;
+  flex-shrink: 0;
+  background-color: ${(props) => props.theme.colors.gray.gray300};
+  border: 0.1rem solid #fff;
+  border-radius: 50%;
+  margin-right: -5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${(props) => props.theme.fontStyles.caption.captionRegular};
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: ${(props) => props.theme.colors.gray.gray900};
 `;
 const InterviewState = styled.div`
   ${(props) => props.theme.fontStyles.body.bodyRegular};
