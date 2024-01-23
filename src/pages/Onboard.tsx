@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +9,7 @@ import onboarding1 from "../assets/videos/onboarding1.mp4";
 
 const Onboard = () => {
   const navigate = useNavigate();
+  const [interviewName, setInterviewName] = useState("");
   return (
     <>
       <Header />
@@ -22,13 +23,18 @@ const Onboard = () => {
                 회원님과 팀이 현재 지행하는 면접은 무엇인가요?
               </Comments>
             </TextDiv>
-            <Input placeholder="면접 이름" />
+            <Input
+              placeholder="면접 이름"
+              value={interviewName}
+              onChange={(e) => setInterviewName(e.target.value)}
+            />
           </TopBox>
           <BtnDiv>
             <BeforeBtn onClick={() => navigate("/")}>이전으로</BeforeBtn>
             <NextBtn onClick={() => navigate("/onboarding2")}>다음으로</NextBtn>
           </BtnDiv>
           <ContentBox>
+            <ProjText>{interviewName}</ProjText>
             <Video muted autoPlay>
               <source src={onboarding1} type="video/mp4" />
             </Video>
@@ -165,13 +171,35 @@ const Input = styled.input`
 `;
 
 const ContentBox = styled.div`
+  position: relative;
   width: 100%;
   background-color: #fff;
-  /* padding-bottom: 2rem; */
+`;
+
+const ProjText = styled.span`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  top: 10.5%;
+  left: 35%;
+  z-index: 10;
+
+  width: 15%;
+  height: 5%;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 200;
+  color: #000;
+  letter-spacing: 0.5px;
 `;
 
 const Video = styled.video`
-  border: none;
+  border: 1px solid #e6e6e6;
   outline: none;
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   -webkit-backface-visibility: hidden;

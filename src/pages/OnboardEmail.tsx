@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +9,10 @@ import onboarding2 from "../assets/videos/onboarding2.mp4";
 
 const OnboardEmail = () => {
   const navigate = useNavigate();
+  const [email1, setEmail1] = useState("");
+  const [email2, setEmail2] = useState("");
+  const [email3, setEmail3] = useState("");
+  const [email4, setEmail4] = useState("");
 
   return (
     <>
@@ -24,17 +28,37 @@ const OnboardEmail = () => {
               </Comments>
             </TextDiv>
             <InputBox>
-              <Input type="email" placeholder="구글 이메일 입력" />
-              <Input type="email" placeholder="구글 이메일 입력" />
-              <Input type="email" placeholder="구글 이메일 입력" />
-              <Input type="email" placeholder="구글 이메일 입력" />
+              <Input
+                type="email"
+                value={email1}
+                onChange={(e) => setEmail1(e.target.value)}
+                placeholder="구글 이메일 입력"
+              />
+              <Input
+                type="email"
+                value={email2}
+                onChange={(e) => setEmail2(e.target.value)}
+                placeholder="구글 이메일 입력"
+              />
+              <Input
+                type="email"
+                value={email3}
+                onChange={(e) => setEmail3(e.target.value)}
+                placeholder="구글 이메일 입력"
+              />
+              <Input
+                type="email"
+                value={email4}
+                onChange={(e) => setEmail4(e.target.value)}
+                placeholder="구글 이메일 입력"
+              />
             </InputBox>
           </TopBox>
           <BtnDiv>
             <BeforeBtn onClick={() => navigate("/onboarding")}>
               이전으로
             </BeforeBtn>
-            <NextBtn onClick={() => navigate("/")}>
+            <NextBtn onClick={() => navigate("/main/project")}>
               바로 GOTCHA 시작하기
             </NextBtn>
           </BtnDiv>
@@ -185,7 +209,7 @@ const ContentBox = styled.div`
 `;
 
 const Video = styled.video`
-  border: none;
+  border: 1px solid #e6e6e6;
   outline: none;
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   -webkit-backface-visibility: hidden;
