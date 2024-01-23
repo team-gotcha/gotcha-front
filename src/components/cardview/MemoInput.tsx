@@ -4,14 +4,35 @@ import { styled } from "styled-components";
 import SendOffIcon from "../../assets/icons/SendOffIcno";
 import SendOnIcon from "../../assets/icons/SendOnIcon";
 
+import { usePostIndivQuestions } from "../../apis/post/usePostIndivQuestions";
+
 interface QuestionBtnProps {
   isClicked: boolean;
   onClick: () => void;
 }
 
-const MemoInput = () => {
+interface MemoInputProps {
+  applicantId: number;
+}
+
+const MemoInput = ({ applicantId }: MemoInputProps) => {
   const [isQuestionClicked, setIsQuestionClicked] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+  const postDetailData = usePostIndivQuestions();
+
+  const handleSend = async () => {
+    try {
+      console.log("Sending:", inputValue);
+      await postDetailData.indivQuestions({
+        content: inputValue,
+        applicantId: applicantId,
+      });
+    } catch (error) {
+      console.error("Error while sending:", error);
+    }
+  };
 
   const handleQuestionClick = () => {
     setIsQuestionClicked(!isQuestionClicked);
@@ -23,6 +44,12 @@ const MemoInput = () => {
 
   const handleInputBlur = () => {
     setIsInputFocused(false);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSend();
+    }
   };
 
   return (
@@ -46,8 +73,11 @@ const MemoInput = () => {
           placeholder="팀원의 이야기에 덧글을 달아보세요."
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
-        {isInputFocused ? <SendOnIcon /> : <SendOffIcon />}
+        {isInputFocused ? <SendOnIcon onClick={handleSend} /> : <SendOffIcon />}
       </InputDiv>
     </Container>
   );

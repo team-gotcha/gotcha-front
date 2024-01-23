@@ -1,14 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
 
 import KeywordBox from "./KeywordBox";
 import LinkIcon from "../../assets/icons/LinkIcon";
 import CloseIcon from "../../assets/icons/CloseIcon";
 
+import { useRecoilState, useRecoilValue } from "recoil";
+import { loginState, userInfoState } from "../../recoil/userInfo";
+import { useGetUserDetail } from "../../apis/get/useGetUserDetail";
+
 const InterviewerInfo = ({ modify = true, wide = true }) => {
+  let { user_id } = useParams();
+  const userIdNumber: number = parseInt(user_id, 10);
   const [files, setFiles] = useState<File[]>([]);
   const [portfolios, setPortfolios] = useState<File[]>([]);
 
+  //api 연결 관련 코드
+  const [isLogin, setIsLogin] = useRecoilState(loginState);
+  const [userInfo, setUserInfo] = useState<
+    | {
+        userInfo: any;
+        isLoading: boolean;
+        error: Error;
+      }
+    | undefined
+  >(undefined);
+
+  //custom hook
+  const userDetailData = useGetUserDetail(isLogin, userIdNumber);
+
+  useEffect(() => {
+    if (isLogin && !userDetailData.isLoading) {
+      console.log("유저 상세 데이터 세팅", userDetailData);
+      setUserInfo(userDetailData);
+    }
+  }, [!userDetailData.isLoading, isLogin]);
+
+  //기본 업로드 정보
   const handleFiles = (
     event: React.ChangeEvent<HTMLInputElement>,
     fileType: string
@@ -46,7 +75,11 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
     <Wrapper wide={wide}>
       <UserProfileDiv>
         <UserProfile></UserProfile>
-        <UserName>가차린</UserName>
+        {modify ? (
+          <UserNameInput type="text" placeholder="지원자"></UserNameInput>
+        ) : (
+          <UserName>가차린</UserName>
+        )}
       </UserProfileDiv>
       <InterviewDiv wide={wide}>
         <InterviewBox>
@@ -196,6 +229,24 @@ const UserName = styled(FontStyle)`
   color: var(--purple-900, #161466);
   font-size: 36px;
   width: 16rem;
+`;
+
+const UserNameInput = styled.input`
+  color: var(--purple-900, #161466);
+  font-size: 36px;
+  width: 16rem;
+
+  border: none;
+  outline: none;
+
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 155%;
+
+  &::placeholder {
+    color: var(--Gray-300, #e6e6e6);
+  }
 `;
 
 const InterviewDiv = styled.div<{ wide: boolean }>`

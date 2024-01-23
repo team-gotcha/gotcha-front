@@ -6,3 +6,6 @@ declare module "*.svg" {
   const src: string;
   export default src;
 }
+
+//video.d.ts
+declare module "*.mp4";

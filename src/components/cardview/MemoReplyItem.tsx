@@ -6,14 +6,12 @@ import HeartIcon from "../../assets/icons/HeartIcon";
 import SendOffIcon from "../../assets/icons/SendOffIcno";
 import SendOnIcon from "../../assets/icons/SendOnIcon";
 
-import MemoReplyItem from "./MemoReplyItem";
-
 interface QuestionBtnProps {
   isClicked: boolean;
   onClick: () => void;
 }
 
-const MemoItem = () => {
+const MemoReplyItem = () => {
   const [isQuestionClicked, setIsQuestionClicked] = useState(false);
   const [isChatClicked, setIsChatClicked] = useState<boolean>(false);
   const [isHeartClicked, setIsHeartClicked] = useState<boolean>(false);
@@ -40,49 +38,51 @@ const MemoItem = () => {
   };
 
   return (
-    <Container>
-      <StaticDiv>
-        <TopDiv>
-          <UserDiv>
-            <UserProfile />
-            <UserName>작성자 이름</UserName>
-          </UserDiv>
-          <QuestionBtn
-            onClick={handleQuestionClick}
-            isClicked={isQuestionClicked}
-          >
-            면접 때 질문하기
-          </QuestionBtn>
-        </TopDiv>
-        <ContentDiv>
-          <Content>
-            서비스의 여러 타깃층을 상대로 한 경험의 이유가 있었는지 서비스의
-            여러 타깃층을 상대로 한 경험의 이유가 있었는지??? 으아아아아아아
-          </Content>
-          <BtnDiv>
-            <ReplyBtn onClick={handleChatClick} isChatClicked={isChatClicked}>
-              <ChatIcon
-                width="16"
-                height="15"
-                fill={isChatClicked ? "#fff" : "#3733ff"}
-              />
-              0
-            </ReplyBtn>
-            <HeartBtn
-              onClick={handleHeartClick}
-              isHeartClicked={isHeartClicked}
+    <>
+      {" "}
+      <Container>
+        <StaticDiv>
+          <TopDiv>
+            <UserDiv>
+              <UserProfile />
+              <UserName>작성자 이름</UserName>
+            </UserDiv>
+            <QuestionBtn
+              onClick={handleQuestionClick}
+              isClicked={isQuestionClicked}
             >
-              <HeartIcon
-                width="16"
-                height="15"
-                fill={isHeartClicked ? "#fff" : "#ff2070"}
-              />
-              0
-            </HeartBtn>
-          </BtnDiv>
-        </ContentDiv>
-      </StaticDiv>
-
+              면접 때 질문하기
+            </QuestionBtn>
+          </TopDiv>
+          <ContentDiv>
+            <Content>
+              서비스의 여러 타깃층을 상대로 한 경험의 이유가 있었는지 서비스의
+              여러 타깃층을 상대로 한 경험의 이유가 있었는지??? 으아아아아아아
+            </Content>
+            <BtnDiv>
+              <ReplyBtn onClick={handleChatClick} isChatClicked={isChatClicked}>
+                <ChatIcon
+                  width="16"
+                  height="15"
+                  fill={isChatClicked ? "#fff" : "#3733ff"}
+                />
+                0
+              </ReplyBtn>
+              <HeartBtn
+                onClick={handleHeartClick}
+                isHeartClicked={isHeartClicked}
+              >
+                <HeartIcon
+                  width="16"
+                  height="15"
+                  fill={isHeartClicked ? "#fff" : "#ff2070"}
+                />
+                0
+              </HeartBtn>
+            </BtnDiv>
+          </ContentDiv>
+        </StaticDiv>
+      </Container>
       {isChatClicked && (
         <InputDiv isInputFocused={isInputFocused}>
           <Input
@@ -93,12 +93,11 @@ const MemoItem = () => {
           {isInputFocused ? <SendOnIcon /> : <SendOffIcon />}
         </InputDiv>
       )}
-      <MemoReplyItem />
-    </Container>
+    </>
   );
 };
 
-export default MemoItem;
+export default MemoReplyItem;
 
 const FontStyle = styled.div`
   font-style: normal;
@@ -114,9 +113,9 @@ const Container = styled.div`
 
   flex-shrink: 0;
 
-  border-radius: 1.2rem;
-  border: 1px solid var(--Gray-300, #e6e6e6);
-  background: var(--Gray-100, #fff);
+  border-top: 1px solid var(--Gray-300, #e6e6e6);
+
+  padding-left: 4rem;
 `;
 
 const StaticDiv = styled.div`
@@ -175,9 +174,7 @@ const QuestionBtn = styled.button<QuestionBtnProps>`
   white-space: nowrap;
 `;
 
-const ContentDiv = styled.div`
-  margin-left: 4rem;
-`;
+const ContentDiv = styled.div``;
 
 const Content = styled(FontStyle)`
   color: var(--Gray-1100, #1a1a1a);
@@ -235,7 +232,7 @@ const InputDiv = styled.div<{ isInputFocused: boolean }>`
   display: flex;
   gap: 0.8rem;
   width: 100%;
-  /* border-radius: 0 0 1.2rem 1.2rem; */
+  border-radius: 0 0 1.2rem 1.2rem;
   padding: 16px 20px;
 
   border-top: 1px solid #e6e6e6;

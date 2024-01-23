@@ -1,8 +1,8 @@
-import * as React from 'react';
+import * as React from "react";
 const MoreDotIcon = (props: any) => (
   <svg
-    width={20}
-    height={20}
+    width="current"
+    height="current"
     viewBox="0 0 20 20"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -11,7 +11,7 @@ const MoreDotIcon = (props: any) => (
     <mask
       id="mask0_1319_27209"
       style={{
-        maskType: 'alpha',
+        maskType: "alpha",
       }}
       maskUnits="userSpaceOnUse"
       x={0}

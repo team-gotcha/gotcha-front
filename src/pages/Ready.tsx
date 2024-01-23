@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
 
 import CardTitleBoard from "../components/cardview/CardTitleBoard";
 import InterviewerInfo from "../components/cardview/InterviewerInfo";
@@ -9,16 +10,72 @@ import MemoInput from "../components/cardview/MemoInput";
 import QuestionCheckModal from "../components/cardview/modal/QuestionCheckModal";
 import QuestionOpenModal from "../components/cardview/modal/QuestionOpenModal";
 
+import { usePostUserReady } from "../apis/post/usePostUserReady";
+import { usePostUserDetail } from "../apis/post/usePostUserDetail";
+
+//test
+interface DetailInfoProps {
+  name: string;
+  date: string;
+  interviewers: { id: string }[];
+  age: number;
+  education: string;
+  position: string;
+  phoneNumber: string;
+  path: string;
+  email: string;
+  keywords: { name: string; keywordType: string }[];
+  interviewId: string;
+  questions: { content: string }[];
+}
+
+// Mock data for testing
+const testData: DetailInfoProps = {
+  name: "홍길동",
+  date: "2022-01-01",
+  interviewers: [{ id: "1" }, { id: "2" }],
+  age: 25,
+  education: "홍익대학교 컴퓨터공학과",
+  position: "Software Engineer",
+  phoneNumber: "123-456-7890",
+  path: "/path/to/resume",
+  email: "doe@example.com",
+  keywords: [
+    { name: "착실함", keywordType: "TRAIT" },
+    { name: "교환학생", keywordType: "EXPERIENCE" },
+  ],
+  interviewId: "1",
+  questions: [
+    { content: "강점에 대해서 얘기해보세요." },
+    { content: "당신의 약점은 무엇입니까?" },
+  ],
+};
+
 const Ready = () => {
+  let { user_id } = useParams();
+  const userIdNumber: number = parseInt(user_id, 10);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
+
+  //custom-hook
+  const postReadyData = usePostUserReady();
+  const postDetailData = usePostUserDetail();
+
+  /**
+   * project 데이터 전송해 생성하는 기능
+   */
+  const handleSubmit = () => {
+    postReadyData.readyToPost(userIdNumber);
+    postDetailData.detailPost(testData);
+    setIsOpen(!isOpen);
+  };
 
   return (
     <>
       <Wrapper>
         <Background />
         <Container>
-          <CardTitleBoard btnFunc={() => setIsOpen(!isOpen)} />
+          <CardTitleBoard btnFunc={handleSubmit} />
           <Contents>
             <InputDiv>
               <InterviewerInfo />
@@ -28,7 +85,7 @@ const Ready = () => {
               <MemoItem />
               <MemoItem />
               <MemoItem />
-              <MemoInput />
+              <MemoInput applicantId={userIdNumber} />
             </MemoDiv>
           </Contents>
         </Container>
