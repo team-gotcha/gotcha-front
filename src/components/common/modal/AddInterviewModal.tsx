@@ -11,7 +11,7 @@ import { useToggleModal } from '../../../hooks/useToggleModal';
 
 interface AddInterviewModalProps {
   children?: string;
-  projectId?: number;
+  projectId?: number | undefined;
 }
 
 const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
