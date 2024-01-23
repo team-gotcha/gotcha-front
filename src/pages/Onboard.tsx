@@ -24,7 +24,7 @@ const Onboard = () => {
             <Input placeholder="면접 이름" />
           </TopBox>
           <ContentBox>
-            <Video muted autoPlay loop>
+            <Video muted autoPlay>
               <source src={onboarding1} type="video/mp4" />
             </Video>
           </ContentBox>
@@ -48,7 +48,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
 
-  padding: 20% 0 0;
+  padding: 15% 0 0;
 `;
 
 const TopBox = styled.div`
@@ -73,7 +73,7 @@ const TextDiv = styled.div`
 const Title = styled.div`
   color: var(--Gray-1100, #1a1a1a);
 
-  font-size: 4rem;
+  font-size: 3rem;
   font-style: normal;
   font-weight: 400;
   line-height: 140%; /* 56px */
@@ -83,7 +83,7 @@ const Title = styled.div`
 const Comments = styled.div`
   color: var(--Gray-1100, #1a1a1a);
 
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-style: normal;
   font-weight: 400;
   line-height: 140%; /* 28px */
@@ -92,8 +92,8 @@ const Comments = styled.div`
 
 const NextBtn = styled.button`
   display: flex;
-  height: 4.8rem;
-  padding: 2rem 3rem;
+  height: 4rem;
+  padding: 1rem 1.5rem;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;

@@ -33,7 +33,7 @@ interface DetailInfoProps {
 const testData: DetailInfoProps = {
   name: "홍길동",
   date: "2022-01-01",
-  interviewers: [{ id: "1" }, { id: "2" }],
+  interviewers: [{ id: "1" }],
   age: 25,
   education: "홍익대학교 컴퓨터공학과",
   position: "Software Engineer",
@@ -65,7 +65,7 @@ const Ready = () => {
    * project 데이터 전송해 생성하는 기능
    */
   const handleSubmit = () => {
-    postReadyData.readyToPost(userIdNumber);
+    // postReadyData.readyToPost(userIdNumber);
     postDetailData.detailPost(testData);
     setIsOpen(!isOpen);
   };

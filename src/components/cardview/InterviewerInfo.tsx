@@ -6,8 +6,9 @@ import KeywordBox from "./KeywordBox";
 import LinkIcon from "../../assets/icons/LinkIcon";
 import CloseIcon from "../../assets/icons/CloseIcon";
 
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import { loginState, userInfoState } from "../../recoil/userInfo";
+import { userDetailInfoState } from "../../recoil/cardview";
 import { useGetUserDetail } from "../../apis/get/useGetUserDetail";
 
 const InterviewerInfo = ({ modify = true, wide = true }) => {
@@ -18,11 +19,22 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
 
   //api 연결 관련 코드
   const [isLogin, setIsLogin] = useRecoilState(loginState);
+  const setUserDetailInfo = useSetRecoilState(userDetailInfoState);
+  const userDetailInfo = useRecoilValue(userDetailInfoState);
   const [userInfo, setUserInfo] = useState<
     | {
-        userInfo: any;
-        isLoading: boolean;
-        error: Error;
+        name: string;
+        date: string;
+        interviewers: { id: string }[];
+        age: number;
+        education: string;
+        position: string;
+        phoneNumber: string;
+        path: string;
+        email: string;
+        keywords: { name: string; keywordType: string }[];
+        interviewId: string;
+        questions: { content: string }[];
       }
     | undefined
   >(undefined);
@@ -31,11 +43,13 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
   const userDetailData = useGetUserDetail(isLogin, userIdNumber);
 
   useEffect(() => {
-    if (isLogin && !userDetailData.isLoading) {
+    if (isLogin && !userDetailData.isLoading && modify) {
       console.log("유저 상세 데이터 세팅", userDetailData);
-      setUserInfo(userDetailData);
+      setUserInfo(userDetailData.userInfo);
+      setUserDetailInfo(userDetailData.userInfo);
+      console.log(userDetailInfo);
     }
-  }, [!userDetailData.isLoading, isLogin]);
+  }, [!userDetailData.isLoading, isLogin, userDetailInfo]);
 
   //기본 업로드 정보
   const handleFiles = (
@@ -78,7 +92,7 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
         {modify ? (
           <UserNameInput type="text" placeholder="지원자"></UserNameInput>
         ) : (
-          <UserName>가차린</UserName>
+          <UserName>{userDetailInfo?.name}</UserName>
         )}
       </UserProfileDiv>
       <InterviewDiv wide={wide}>
@@ -87,7 +101,7 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
           {modify ? (
             <ChoiceDate type="date"></ChoiceDate>
           ) : (
-            <InfoResult>12월 7일</InfoResult>
+            <InfoResult>{userDetailInfo?.date}</InfoResult>
           )}
         </InterviewBox>
         <InterviewBox>
@@ -98,35 +112,51 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
       <BasicInfoDiv wide={wide}>
         <InfoBox>
           <Info>나이</Info>
-          {modify ? <InfoInput /> : <InfoResult>25</InfoResult>}
+          {modify ? (
+            <InfoInput />
+          ) : (
+            <InfoResult>{userDetailInfo?.age}</InfoResult>
+          )}
         </InfoBox>
         <InfoBox>
           <Info>연락처</Info>
           {modify ? (
             <InfoInput />
           ) : (
-            <InfoResult>인하대학교 시각디자인과 졸</InfoResult>
+            <InfoResult>{userDetailInfo?.phoneNumber}</InfoResult>
           )}
         </InfoBox>
         <InfoBox>
           <Info>학력</Info>
-          {modify ? <InfoInput /> : <InfoResult>GUI 모션디자이너</InfoResult>}
+          {modify ? (
+            <InfoInput />
+          ) : (
+            <InfoResult>{userDetailInfo?.education}</InfoResult>
+          )}
         </InfoBox>
         <InfoBox>
           <Info>이메일</Info>
           {modify ? (
             <InfoInput type="email" />
           ) : (
-            <InfoResult>gotcha@gmail.com</InfoResult>
+            <InfoResult>{userDetailInfo?.email}</InfoResult>
           )}
         </InfoBox>
         <InfoBox>
           <Info>지원 직무</Info>
-          {modify ? <InfoInput /> : <InfoResult>01012345678</InfoResult>}
+          {modify ? (
+            <InfoInput />
+          ) : (
+            <InfoResult>{userDetailInfo?.position}</InfoResult>
+          )}
         </InfoBox>
         <InfoBox>
           <Info>지원 경로</Info>
-          {modify ? <InfoInput /> : <InfoResult>사람인</InfoResult>}
+          {modify ? (
+            <InfoInput />
+          ) : (
+            <InfoResult>{userDetailInfo?.path}</InfoResult>
+          )}
         </InfoBox>
       </BasicInfoDiv>
       <KeywordDiv wide={wide}>
