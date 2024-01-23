@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, KeyboardEvent } from "react";
+import React, { useState, useEffect, ChangeEvent, KeyboardEvent } from "react";
 import { styled } from "styled-components";
 
 import info from "../../assets/images/InfoIcon-gray.svg";
@@ -7,14 +7,32 @@ import CloseIcon from "../../assets/icons/CloseIcon";
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import { userDetailInfoState } from "../../recoil/cardview";
 
-const KeywordBox = ({ modify = true }) => {
+const KeywordBox = ({ modify = true, title = "" }) => {
   const userDetailInfo = useRecoilValue(userDetailInfoState);
+  // const [titleValue, setTitleValue] = useState<string>("");
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [keywords, setKeywords] = useState<string[]>([]);
   const [inputWidth, setInputWidth] = useState<number>(20);
 
-  console.log(userDetailInfo, userDetailInfo?.traitKeywords);
+  const getTitleValue = () => {
+    switch (title) {
+      case "성향":
+        return userDetailInfo?.traitKeywords;
+      case "스킬":
+        return userDetailInfo?.skillKeywords;
+      case "경험":
+        return userDetailInfo?.experienceKeywords;
+      default:
+        return userDetailInfo?.traitKeywords;
+    }
+  };
+
+  const titleValue = getTitleValue();
+
+  useEffect(() => {
+    getTitleValue();
+  }, []);
 
   const showInput = () => {
     setIsInputVisible(true);
@@ -48,7 +66,7 @@ const KeywordBox = ({ modify = true }) => {
   return (
     <Container>
       <TitleDiv>
-        <KeyTitle>키워드</KeyTitle>
+        <KeyTitle>{title} 키워드</KeyTitle>
         {modify && <InfoIcon src={info} />}
       </TitleDiv>
       <KeywordDiv>
@@ -64,9 +82,11 @@ const KeywordBox = ({ modify = true }) => {
                 />
               </Keyword>
             ))
-          : userDetailInfo?.traitKeywords.map((keyword, index) => (
+          : titleValue
+          ? titleValue.map((keyword, index) => (
               <Keyword key={index}>{keyword}</Keyword>
-            ))}
+            ))
+          : null}
         {modify &&
           (isInputVisible ? (
             <>

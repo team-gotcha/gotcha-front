@@ -4,7 +4,7 @@ import axiosInstance from "..";
 import { useNavigate } from "react-router-dom";
 
 /**
- * 공통질문 전송
+ * 개별 질문 전송
  * @param {questions, projectId}
  * @returns
  */
@@ -20,6 +20,7 @@ export const usePostIndivQuestions = () => {
     mutationKey: ["indivQuestions"],
     mutationFn: async (data: IndivQuestionsProps) => {
       const res = await axiosInstance.post(`/api/questions/individual`, data);
+      console.log(res);
       return res.data;
     },
   });

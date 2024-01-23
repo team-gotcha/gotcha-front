@@ -12,6 +12,7 @@ import QuestionOpenModal from "../components/cardview/modal/QuestionOpenModal";
 
 import { usePostUserReady } from "../apis/post/usePostUserReady";
 import { usePostUserDetail } from "../apis/post/usePostUserDetail";
+import { usePostFiles } from "../apis/post/usePostFiles";
 
 //test
 interface DetailInfoProps {
@@ -60,6 +61,7 @@ const Ready = () => {
   //custom-hook
   const postReadyData = usePostUserReady();
   const postDetailData = usePostUserDetail();
+  const userPostData = usePostFiles();
 
   /**
    * project 데이터 전송해 생성하는 기능
@@ -67,6 +69,7 @@ const Ready = () => {
   const handleSubmit = () => {
     // postReadyData.readyToPost(userIdNumber);
     postDetailData.detailPost(testData);
+    // userPostData.addFiles();
     setIsOpen(!isOpen);
   };
 

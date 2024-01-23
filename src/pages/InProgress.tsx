@@ -15,7 +15,11 @@ const InProgress = () => {
       <Wrapper>
         <Background />
         <Container>
-          <CardTitleBoard color={2} btnFunc={() => setIsOpen(!isOpen)} />
+          <CardTitleBoard
+            color={2}
+            btnText="면접 전형 완료"
+            btnFunc={() => setIsOpen(!isOpen)}
+          />
           <Contents>
             <InputDiv>
               <InterviewerInfo modify={false} wide={false} />
