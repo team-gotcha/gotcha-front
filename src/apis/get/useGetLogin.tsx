@@ -13,7 +13,7 @@ export const useGetLogin = (code: string) => {
     queryKey: ['googleLogin'],
     queryFn: async () => {
       const res = await axiosInstance.get(
-        `/api/google/token?code=${code}&redirect-uri=${process.env.REACT_APP_GOOGLE_AUTH_REDIRECT_URI}`
+        `/api/login/google?code=${code}&redirect-uri=${process.env.REACT_APP_GOOGLE_AUTH_REDIRECT_URI}`
       );
       return res.data;
     },
