@@ -6,11 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import CommonTag from '../CommonTag';
 import CloseIconSmall from '../../../assets/icons/CloseIconSmall';
 import { usePostAddProject } from '../../../apis/post/usePostAddProject';
-
-/**
- * 사용예시
- * <CommonButton color={'lineGray'} size={'large'} children="텍스트" />
- */
+import { useToggleModal } from '../../../hooks/useToggleModal';
 
 interface AddProjectModalProps {
   children?: string;
@@ -23,6 +19,7 @@ const AddProjectModal = ({ ...props }: AddProjectModalProps) => {
   const [projectTitle, setProjectTitle] = useState('');
   const [memberEmail, setMemberEmail] = useState('');
   const [memberEmailList, setMemberEmailList] = useState([]);
+  const { openModal } = useToggleModal();
 
   //custom-hook
   const fetchData = usePostAddProject();
@@ -35,6 +32,7 @@ const AddProjectModal = ({ ...props }: AddProjectModalProps) => {
       name: projectTitle,
       emails: memberEmailList,
     });
+    openModal();
   };
 
   /**
@@ -54,7 +52,6 @@ const AddProjectModal = ({ ...props }: AddProjectModalProps) => {
    * 초대멤버 이메일을 저장하는 함수
    */
   const handleInvite = () => {
-    console.log(memberEmail);
     if (memberEmail !== '') {
       memberEmailList.push(memberEmail);
     }
