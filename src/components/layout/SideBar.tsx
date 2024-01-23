@@ -12,14 +12,17 @@ import { loginState, userInfoState } from '../../recoil/userInfo';
 import { useGetUserInfo } from '../../apis/get/useGetUserInfo';
 import { useGetProjectList } from '../../apis/get/useGetProjectList';
 import AddInterviewModal from '../common/modal/AddInterviewModal';
+import { useNavigate } from 'react-router-dom';
 
 const SideBar = () => {
-  //modal관리
+  //전역상태
   const isModalOpen = useRecoilValue(modalState);
   const { openModal } = useToggleModal();
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const [modalItem, setModalItem] = useRecoilState(modalContent);
   const [isLogin, setIsLogin] = useRecoilState(loginState);
+
+  const navigate = useNavigate();
 
   //custom hook
   const fetchedProjectData = useGetProjectList();
@@ -41,6 +44,30 @@ const SideBar = () => {
       setUserInfo(fetchedProjectData.projectList);
     }
   }, [!fetchedProjectData.isLoading, isLogin]);
+
+  //page이동
+  const handleMoveToProject = (project_id: number) => {
+    navigate(`/main/project?project_id=${project_id}`);
+  };
+  const handleMoveToInterview = (interview_id: number, project_id: number) => {
+    navigate(
+      `/main/interview?interview_id=${interview_id}&&project_id=${project_id}`
+    );
+  };
+
+  //url에서 project_id || interview_id 추출
+  const params = new URLSearchParams(window.location.search);
+  const project_id = params.get('project_id');
+  const interview_id = params.get('interview_id');
+
+  // useEffect(() => {
+  //   if (project_id !== null) {
+  //     console.log(project_id);
+  //   }
+  //   if (interview_id !== null) {
+  //     console.log(interview_id);
+  //   }
+  // }, [params]);
 
   return (
     <Wrapper>
@@ -67,7 +94,10 @@ const SideBar = () => {
             userInfo.projects.map((project, index) => (
               <div key={index}>
                 <InterviewItem>
-                  <ItemTop>
+                  <ItemTop
+                    onClick={() => handleMoveToProject(project.projectId)}
+                    isActive={project_id === String(project.projectId)}
+                  >
                     <span>{project.projectName}</span>
                     <StyledAddIcon
                       className="AddIcon"
@@ -78,7 +108,15 @@ const SideBar = () => {
                   <InterviewDetail>
                     {project.interviews &&
                       project.interviews.map((interview, index) => (
-                        <SubTitle key={index}>
+                        <SubTitle
+                          key={index}
+                          onClick={() =>
+                            handleMoveToInterview(
+                              interview.interviewId,
+                              project.projectId
+                            )
+                          }
+                        >
                           {interview.interviewName}
                         </SubTitle>
                       ))}
@@ -101,14 +139,26 @@ const SideBar = () => {
 
 export default SideBar;
 
-const ItemTop = styled.div`
+const ItemTop = styled.div<{ isActive?: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-right: 1rem;
+
+  border-radius: 0.6rem;
 
   width: 100%;
-  padding-right: 1rem;
+  cursor: pointer;
+
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+
+  //활성화된 대주제
+  background-color: ${(props) =>
+    props.isActive
+      ? 'var(--purple-200, #E6E5FF)'
+      : 'transparent'}; // Change background color based on project_id match
 `;
 
 const InterviewDetail = styled.div`
@@ -121,10 +171,12 @@ const SubTitle = styled.div`
   font-size: 1.4rem;
   font-style: normal;
   font-weight: 400;
+
+  cursor: pointer;
 `;
 
 const Wrapper = styled.div`
-  position: absolute;
+  position: fixed;
   top: 5.8rem;
   width: 31.2rem;
   height: 100%;
@@ -225,9 +277,6 @@ const InterviewItem = styled.div`
   justify-content: flex-start;
   color: ${(props) => props.theme.colors.gray.gray1110};
   border-radius: 0.6rem;
-  //background: var(--purple-200, #e6e5ff);
-
-  padding: 0 1.4rem;
 
   ${(props) => props.theme.fontStyles.body.bodySemibold};
   font-size: 1.4rem;
@@ -258,16 +307,16 @@ const InterviewItem = styled.div`
 `;
 
 const AddProj = styled.button`
-  color: var(--Gray-1100, #1a1a1a);
-
+  ${(props) => props.theme.fontStyles.body.bodySemibold};
   font-size: 1.4rem;
   font-style: normal;
-  font-weight: 500;
-  line-height: 155%;
-  letter-spacing: -0.042px;
+  font-weight: 600;
+  line-height: 160%;
 
   display: flex;
   justify-content: start;
+
+  padding-left: 1.5rem;
 `;
 
 const CurBox = styled.div`

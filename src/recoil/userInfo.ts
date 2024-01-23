@@ -10,7 +10,12 @@ export const userInfoState = atom({
     userName: '',
     projects: [
       {
-        interviews: [],
+        interviews: [
+          {
+            interviewId: 0,
+            interviewName: '',
+          },
+        ],
         projectId: 0,
         projectName: '',
       },

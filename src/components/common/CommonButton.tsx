@@ -60,6 +60,7 @@ const getButtonColor = (buttonColor: ButtonColor) => {
     case 'fillBlue':
       backgroundColor = theme.colors.purple.purple600;
       fontColor = theme.colors.gray.gray100;
+      borderColor = theme.colors.purple.purple600;
       break;
     case 'fillDark':
       backgroundColor = theme.colors.gray.gray300;
