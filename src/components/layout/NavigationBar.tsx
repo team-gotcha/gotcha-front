@@ -115,6 +115,8 @@ const Wrapper = styled.section`
   flex-shrink: 0;
   padding: 2rem 6rem 0 2.7rem;
   background-color: #fff;
+
+  z-index: 100;
 `;
 
 const TopDiv = styled.div`

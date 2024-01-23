@@ -6,6 +6,10 @@ import CommonButton from '../components/common/CommonButton';
 import Logo from '../assets/icons/Logo';
 import BannerImg from '../assets/images/BannerImg.svg';
 
+import landing1 from '../assets/videos/landing1.mp4';
+import landing2 from '../assets/videos/landing2.mp4';
+import landing3 from '../assets/videos/landing3.mp4';
+
 const Landing = () => {
   const [selectedNavItem, setSelectedNavItem] = useState(0);
   const navigate = useNavigate();
@@ -13,21 +17,32 @@ const Landing = () => {
   const handleLogin = () => {
     window.location.href = loginUrl;
   };
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   const NavData = [
     {
+      index: 1,
       title: '지원자 파악부터 평가까지,\n GOTCHA에서는 빠르고 효율적으로!',
       text: `지원자 별 역량과 강점 파악에 너무 많은 시간을 들이고 있지는 않으셨나요? GOTCHA에서는 지원자의 강점을 정리하는 것부터 면접 결과를 발송하기까지의 전 과정을 지원합니다.`,
+      video: landing1,
     },
     {
+      index: 2,
       title: `면접 일정 관리부터 결과 전달까지,\n 모두 GOTCHA에서!`,
       text: `복잡한 면접 전형 단계에 부담을 느끼셨다면? 면접을 진행하며 바로 답변을 기입하고, 지원자에 대한 한줄평까지 바로 작성해 객관적인 현장감을 언제든 확인할 수 있게 지원합니다.`,
+      video: landing2,
     },
     {
+      index: 3,
       title: `맞춤형 질문을 통해\n 완성도 높은 면접질문을 구축합니다.`,
       text: `면접 질문 구성에 어려움이나 답답함을 느끼시지는 않으셨나요? 갓챠가 직종별, 유형별로 큐레이팅하는 면접 질문 리스트들에서 우리 조직에 알맞는 질문들을 골라보세요!`,
+      video: landing3,
     },
   ];
+
+  useEffect(() => {
+    setIsVideoPlaying(true);
+  }, [selectedNavItem]);
   return (
     <Wrapper>
       <TopBar>
@@ -95,7 +110,31 @@ const Landing = () => {
               <NavSubTitle>{NavData[selectedNavItem].title}</NavSubTitle>
               <NavSubText>{NavData[selectedNavItem].text}</NavSubText>
             </BodyLeft>
+            <BodyRight>
+              /
+              {NavData[selectedNavItem].index === 1 && (
+                <Video muted autoPlay>
+                  <source src={landing1} type="video/mp4" />
+                </Video>
+              )}
+              {NavData[selectedNavItem].index === 2 && (
+                <Video muted autoPlay>
+                  <source src={landing2} type="video/mp4" />
+                </Video>
+              )}
+              {NavData[selectedNavItem].index === 3 && (
+                <Video muted autoPlay>
+                  <source src={landing3} type="video/mp4" />
+                </Video>
+              )}
+            </BodyRight>
           </NavBody>
+        </ColumnWrapper>
+
+        <ColumnWrapper>
+          <NavBar>
+            <NavSubTitle>GOTCHA Q&A</NavSubTitle>
+          </NavBar>
         </ColumnWrapper>
       </Body>
     </Wrapper>
@@ -108,25 +147,72 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+const Video = styled.video`
+  border: none;
+  outline: none;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+
+  width: 100%;
+  height: 100%;
+  border-radius: 2.4rem;
+`;
 //NavBar
-const NavBody = styled.div``;
-const BodyLeft = styled.div``;
-const NavSubTitle = styled.div``;
-const NavSubText = styled.div``;
+const NavBody = styled.div`
+  display: flex;
+  width: 100%;
+
+  padding-left: 7%;
+`;
+const BodyLeft = styled.div`
+  width: 30%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  padding-bottom: 5rem;
+`;
+const BodyRight = styled.div``;
+const NavSubTitle = styled.div`
+  color: ${(props) => props.theme.colors.purple.purple600};
+  ${(props) => props.theme.fontStyles.headline.headlineBold};
+  font-size: 2.4rem;
+  font-style: normal;
+  font-weight: 700;
+
+  word-break: keep-all;
+  white-space: pre-line;
+`;
+const NavSubText = styled.div`
+  color: ${(props) => props.theme.colors.gray.gray1100};
+
+  ${(props) => props.theme.fontStyles.subtitle.subtitleRegular};
+  font-size: 1.6rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 155%; /* 24.8px */
+  letter-spacing: -0.048px;
+
+  word-break: keep-all;
+  white-space: pre-line;
+`;
 
 //Body
 const Body = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 15%;
-  margin-right: 15%;
 
   padding-top: 8.4rem;
-  gap: 8.4rem;
 `;
 const ColumnWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 
   width: 100%;
   height: 80rem;
@@ -135,6 +221,8 @@ const ColumnWrapper = styled.div`
 `;
 const NavBar = styled.div`
   display: flex;
+
+  margin-right: 15%;
 `;
 const NavTitleCenter = styled.button`
   display: flex;
