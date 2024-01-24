@@ -1,29 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 import Header from "../components/layout/Header";
 
+import onboarding from "../assets/images/onboarding1.svg";
 import onboarding1 from "../assets/videos/onboarding1.mp4";
 
 const Onboard = () => {
+  const navigate = useNavigate();
+  const [interviewName, setInterviewName] = useState("");
   return (
     <>
       <Header />
       <Wrapper>
         <Container>
           <TopBox>
-            <TopDiv>
-              <TextDiv>
-                <Title>첫번째 프로젝트의 제목을 알려주세요.</Title>
-                <Comments>
-                  회원님과 팀이 현재 지행하는 면접은 무엇인가요?
-                </Comments>
-              </TextDiv>
-              <NextBtn>다음으로</NextBtn>
-            </TopDiv>
-            <Input placeholder="면접 이름" />
+            <Step src={onboarding} />
+            <TextDiv>
+              <Title>첫번째 프로젝트의 제목을 알려주세요.</Title>
+              <Comments>
+                회원님과 팀이 현재 지행하는 면접은 무엇인가요?
+              </Comments>
+            </TextDiv>
+            <Input
+              placeholder="면접 이름"
+              value={interviewName}
+              onChange={(e) => setInterviewName(e.target.value)}
+            />
           </TopBox>
+          <BtnDiv>
+            <BeforeBtn onClick={() => navigate("/")}>이전으로</BeforeBtn>
+            <NextBtn onClick={() => navigate("/onboarding2")}>다음으로</NextBtn>
+          </BtnDiv>
           <ContentBox>
+            <ProjText>{interviewName}</ProjText>
             <Video muted autoPlay>
               <source src={onboarding1} type="video/mp4" />
             </Video>
@@ -38,9 +49,10 @@ export default Onboard;
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 130%;
+  height: 100%;
   background-color: #fff;
   padding: 0 15% 4rem;
+  overflow: hidden;
 `;
 
 const Container = styled.div`
@@ -48,7 +60,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
 
-  padding: 15% 0 0;
+  padding: 11rem 0 0;
 `;
 
 const TopBox = styled.div`
@@ -58,10 +70,11 @@ const TopBox = styled.div`
   padding: 0 6% 0 13%;
 `;
 
-const TopDiv = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+const Step = styled.img`
+  width: 4rem;
+  height: 1.2rem;
+
+  margin-bottom: 2.5rem;
 `;
 
 const TextDiv = styled.div`
@@ -90,25 +103,41 @@ const Comments = styled.div`
   letter-spacing: -0.06px;
 `;
 
+const BtnDiv = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.8rem;
+  margin-bottom: 3rem;
+`;
+
 const NextBtn = styled.button`
   display: flex;
   height: 4rem;
-  padding: 1rem 1.5rem;
+  padding: 1rem 2rem;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
 
   border-radius: 20px;
-  border: 1px solid var(--Gray-500, #b3b3b3);
-  background: var(--Gray-100, #fff);
+  border: 1px solid var(--purple-600, #3733ff);
+  background: var(--purple-600, #3733ff);
 
-  color: var(--Gray-700, #808080);
+  color: var(--Gray-100, #fff);
 
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: 155%; /* 24.8px */
   letter-spacing: 0.48px;
+`;
+
+const BeforeBtn = styled(NextBtn)`
+  border: 1px solid var(--Gray-500, #b3b3b3);
+  background: var(--Gray-100, #fff);
+
+  color: var(--Gray-700, #808080);
 `;
 
 const Input = styled.input`
@@ -119,7 +148,7 @@ const Input = styled.input`
   align-items: center;
   flex-shrink: 0;
 
-  margin: 6.5% 0 13%;
+  margin: 6.5% 0 10rem;
 
   border-radius: 12px;
   border: 1px solid var(--Gray-500, #b3b3b3);
@@ -142,13 +171,35 @@ const Input = styled.input`
 `;
 
 const ContentBox = styled.div`
+  position: relative;
   width: 100%;
   background-color: #fff;
-  /* padding-bottom: 2rem; */
+`;
+
+const ProjText = styled.span`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  top: 10.5%;
+  left: 35%;
+  z-index: 10;
+
+  width: 15%;
+  height: 5%;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 200;
+  color: #000;
+  letter-spacing: 0.5px;
 `;
 
 const Video = styled.video`
-  border: none;
+  border: 1px solid #e6e6e6;
   outline: none;
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   -webkit-backface-visibility: hidden;

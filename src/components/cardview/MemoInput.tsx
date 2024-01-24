@@ -22,16 +22,11 @@ const MemoInput = ({ applicantId }: MemoInputProps) => {
 
   const postDetailData = usePostIndivQuestions();
 
-  const handleSend = async () => {
-    try {
-      console.log("Sending:", inputValue);
-      await postDetailData.indivQuestions({
-        content: inputValue,
-        applicantId: applicantId,
-      });
-    } catch (error) {
-      console.error("Error while sending:", error);
-    }
+  const handleSend = () => {
+    postDetailData.indivQuestions({
+      content: inputValue,
+      applicantId: applicantId,
+    });
   };
 
   const handleQuestionClick = () => {

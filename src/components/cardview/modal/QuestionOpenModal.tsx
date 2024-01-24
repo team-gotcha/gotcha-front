@@ -45,7 +45,7 @@ const Container = styled.div`
   border-radius: 2rem;
   border: 1px solid var(--Gray-300, #e6e6e6);
   background: var(--Gray-100, #fff);
-  z-index: 45;
+  z-index: 200;
 `;
 
 const TopContent = styled.div`

@@ -1,31 +1,70 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 import Header from "../components/layout/Header";
 
-import onboarding1 from "../assets/videos/onboarding1.mp4";
+import onboarding from "../assets/images/onboarding1.svg";
+import onboarding2 from "../assets/videos/onboarding2.mp4";
 
 const OnboardEmail = () => {
+  const navigate = useNavigate();
+  const [email1, setEmail1] = useState("");
+  const [email2, setEmail2] = useState("");
+  const [email3, setEmail3] = useState("");
+  const [email4, setEmail4] = useState("");
+
   return (
     <>
       <Header />
       <Wrapper>
         <Container>
           <TopBox>
-            <TopDiv>
-              <TextDiv>
-                <Title>첫번째 프로젝트의 제목을 알려주세요.</Title>
-                <Comments>
-                  회원님과 팀이 현재 지행하는 면접은 무엇인가요?
-                </Comments>
-              </TextDiv>
-              <NextBtn>다음으로</NextBtn>
-            </TopDiv>
-            <Input placeholder="면접 이름" />
+            <Step src={onboarding} />
+            <TextDiv>
+              <Title>프로젝트 동료를 초대해보세요.</Title>
+              <Comments>
+                나중에 얼마든지 더 많은 동료와 함께할 수 있습니다.
+              </Comments>
+            </TextDiv>
+            <InputBox>
+              <Input
+                type="email"
+                value={email1}
+                onChange={(e) => setEmail1(e.target.value)}
+                placeholder="구글 이메일 입력"
+              />
+              <Input
+                type="email"
+                value={email2}
+                onChange={(e) => setEmail2(e.target.value)}
+                placeholder="구글 이메일 입력"
+              />
+              <Input
+                type="email"
+                value={email3}
+                onChange={(e) => setEmail3(e.target.value)}
+                placeholder="구글 이메일 입력"
+              />
+              <Input
+                type="email"
+                value={email4}
+                onChange={(e) => setEmail4(e.target.value)}
+                placeholder="구글 이메일 입력"
+              />
+            </InputBox>
           </TopBox>
+          <BtnDiv>
+            <BeforeBtn onClick={() => navigate("/onboarding")}>
+              이전으로
+            </BeforeBtn>
+            <NextBtn onClick={() => navigate("/main/project")}>
+              바로 GOTCHA 시작하기
+            </NextBtn>
+          </BtnDiv>
           <ContentBox>
-            <Video muted autoPlay loop>
-              <source src={onboarding1} type="video/mp4" />
+            <Video muted autoPlay>
+              <source src={onboarding2} type="video/mp4" />
             </Video>
           </ContentBox>
         </Container>
@@ -38,9 +77,10 @@ export default OnboardEmail;
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 130%;
+  height: 100%;
   background-color: #fff;
   padding: 0 15% 4rem;
+  overflow: hidden;
 `;
 
 const Container = styled.div`
@@ -48,7 +88,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
 
-  padding: 20% 0 0;
+  padding: 11rem 0 0;
 `;
 
 const TopBox = styled.div`
@@ -58,10 +98,11 @@ const TopBox = styled.div`
   padding: 0 6% 0 13%;
 `;
 
-const TopDiv = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+const Step = styled.img`
+  width: 4rem;
+  height: 1.2rem;
+  transform: scaleX(-1);
+  margin-bottom: 2.5rem;
 `;
 
 const TextDiv = styled.div`
@@ -73,7 +114,7 @@ const TextDiv = styled.div`
 const Title = styled.div`
   color: var(--Gray-1100, #1a1a1a);
 
-  font-size: 4rem;
+  font-size: 3rem;
   font-style: normal;
   font-weight: 400;
   line-height: 140%; /* 56px */
@@ -83,26 +124,35 @@ const Title = styled.div`
 const Comments = styled.div`
   color: var(--Gray-1100, #1a1a1a);
 
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-style: normal;
   font-weight: 400;
   line-height: 140%; /* 28px */
   letter-spacing: -0.06px;
 `;
 
+const BtnDiv = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.8rem;
+  margin-bottom: 3rem;
+`;
+
 const NextBtn = styled.button`
   display: flex;
-  height: 4.8rem;
-  padding: 2rem 3rem;
+  height: 4rem;
+  padding: 1rem 2rem;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
 
   border-radius: 20px;
-  border: 1px solid var(--Gray-500, #b3b3b3);
-  background: var(--Gray-100, #fff);
+  border: 1px solid var(--purple-600, #3733ff);
+  background: var(--purple-600, #3733ff);
 
-  color: var(--Gray-700, #808080);
+  color: var(--Gray-100, #fff);
 
   font-size: 16px;
   font-style: normal;
@@ -111,15 +161,26 @@ const NextBtn = styled.button`
   letter-spacing: 0.48px;
 `;
 
+const BeforeBtn = styled(NextBtn)`
+  border: 1px solid var(--Gray-500, #b3b3b3);
+  background: var(--Gray-100, #fff);
+
+  color: var(--Gray-700, #808080);
+`;
+
+const InputBox = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+  margin: 6.5% 0 4rem;
+`;
+
 const Input = styled.input`
   display: flex;
-  width: 55%;
-  height: 5%;
+  width: 100%;
   padding: 8px 16px;
   align-items: center;
   flex-shrink: 0;
-
-  margin: 6.5% 0 13%;
 
   border-radius: 12px;
   border: 1px solid var(--Gray-500, #b3b3b3);
@@ -148,7 +209,7 @@ const ContentBox = styled.div`
 `;
 
 const Video = styled.video`
-  border: none;
+  border: 1px solid #e6e6e6;
   outline: none;
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   -webkit-backface-visibility: hidden;

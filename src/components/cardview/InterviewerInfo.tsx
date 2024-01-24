@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 
+import InterviewerBox from "./interviewerBox";
 import KeywordBox from "./KeywordBox";
 import LinkIcon from "../../assets/icons/LinkIcon";
 import CloseIcon from "../../assets/icons/CloseIcon";
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import { loginState, userInfoState } from "../../recoil/userInfo";
-import { userDetailInfoState } from "../../recoil/cardview";
+import { userDetailInfoState, filesDataState } from "../../recoil/cardview";
 import { useGetUserDetail } from "../../apis/get/useGetUserDetail";
 
 const InterviewerInfo = ({ modify = true, wide = true }) => {
@@ -16,38 +17,23 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
   const userIdNumber: number = parseInt(user_id, 10);
   const [files, setFiles] = useState<File[]>([]);
   const [portfolios, setPortfolios] = useState<File[]>([]);
+  const [formData, setFormData] = useState<FormData>(new FormData());
 
   //api 연결 관련 코드
   const [isLogin, setIsLogin] = useRecoilState(loginState);
   const setUserDetailInfo = useSetRecoilState(userDetailInfoState);
+  const setFilesData = useSetRecoilState(filesDataState);
+  const filesData = useRecoilValue(filesDataState);
+
   const userDetailInfo = useRecoilValue(userDetailInfoState);
-  const [userInfo, setUserInfo] = useState<
-    | {
-        name: string;
-        date: string;
-        interviewers: { id: string }[];
-        age: number;
-        education: string;
-        position: string;
-        phoneNumber: string;
-        path: string;
-        email: string;
-        keywords: { name: string; keywordType: string }[];
-        interviewId: string;
-        questions: { content: string }[];
-      }
-    | undefined
-  >(undefined);
 
   //custom hook
   const userDetailData = useGetUserDetail(isLogin, userIdNumber);
 
   useEffect(() => {
     if (isLogin && !userDetailData.isLoading && modify) {
-      console.log("유저 상세 데이터 세팅", userDetailData);
-      setUserInfo(userDetailData.userInfo);
+      console.log("유저 상세 데이터 세팅", userDetailData, [files, portfolios]);
       setUserDetailInfo(userDetailData.userInfo);
-      console.log(userDetailInfo);
     }
   }, [!userDetailData.isLoading, isLogin, userDetailInfo]);
 
@@ -57,7 +43,6 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
     fileType: string
   ) => {
     const selectedFiles: FileList | null = event.target.files;
-    console.log(fileType);
 
     if (selectedFiles) {
       const filesArray = Array.from(selectedFiles) as File[];
@@ -67,10 +52,19 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
           ...prevPortfolios,
           ...filesArray,
         ]);
+        setFilesData((prevData) => ({
+          ...prevData,
+          portfolios: [...prevData.portfolios, ...filesArray],
+        }));
       } else {
         setFiles((prevFiles: File[]) => [...prevFiles, ...filesArray]);
+        setFilesData((prevData) => ({
+          ...prevData,
+          resume: [...prevData.resume, ...filesArray],
+        }));
       }
     }
+    console.log(filesData);
   };
 
   const handleRemoveFile = (index: number, fileType: string) => {
@@ -78,11 +72,29 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
       const newPortfolios = [...portfolios];
       newPortfolios.splice(index, 1);
       setPortfolios(newPortfolios);
+      setFilesData({
+        ...filesData,
+        portfolios: newPortfolios,
+      });
+      // updateFormData("portfolio", newPortfolios);
     } else {
       const newFiles = [...files];
       newFiles.splice(index, 1);
       setFiles(newFiles);
+      setFilesData({
+        ...filesData,
+        resume: newFiles,
+      });
+      // updateFormData("resume", newFiles);
     }
+  };
+
+  const updateFormData = (fileType: string, filesArray: File[]) => {
+    const newFormData = new FormData();
+    filesArray.forEach((file, index) => {
+      newFormData.set(`${fileType}_${index}`, file);
+    });
+    setFormData(newFormData);
   };
 
   return (
@@ -104,10 +116,7 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
             <InfoResult>{userDetailInfo?.date}</InfoResult>
           )}
         </InterviewBox>
-        <InterviewBox>
-          <InterviewTitle>면접관</InterviewTitle>
-          {/* 디자인 반영되면 수정 예정 */}
-        </InterviewBox>
+        <InterviewerBox modify={modify} />
       </InterviewDiv>
       <BasicInfoDiv wide={wide}>
         <InfoBox>
@@ -160,9 +169,9 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
         </InfoBox>
       </BasicInfoDiv>
       <KeywordDiv wide={wide}>
-        <KeywordBox modify={modify} />
-        <KeywordBox modify={modify} />
-        <KeywordBox modify={modify} />
+        <KeywordBox modify={modify} title="성향" />
+        <KeywordBox modify={modify} title="스킬" />
+        <KeywordBox modify={modify} title="경험" />
         <Document>
           <KeyTitle>원본 서류</KeyTitle>
           <DocsDiv>
@@ -189,7 +198,6 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
                   type="file"
                   name="file"
                   id="file"
-                  multiple
                   onChange={(e) => handleFiles(e, "resume")}
                 ></FileInput>
               </>
@@ -216,7 +224,6 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
                   type="file"
                   name="portfolio"
                   id="portfolio"
-                  multiple
                   onChange={(e) => handleFiles(e, "portfolio")}
                 ></FileInput>
               </>
@@ -231,7 +238,8 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
 export default InterviewerInfo;
 
 const Wrapper = styled.div<{ wide: boolean }>`
-  padding: ${({ wide }) => (wide ? "6.8rem 3.5rem" : "2.5rem 2.1rem")};
+  /* padding: ${({ wide }) => (wide ? "6.8rem 3.5rem" : "2.5rem 2.1rem")}; */
+  padding: ${({ wide }) => (wide ? "0" : "2.5rem 2.1rem")};
 `;
 
 const UserProfileDiv = styled.div`
@@ -288,7 +296,8 @@ const InterviewDiv = styled.div<{ wide: boolean }>`
 
 const InterviewBox = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  margin-top: 0.3rem;
   gap: 4rem;
 `;
 
@@ -311,7 +320,7 @@ const BasicInfoDiv = styled.div<{ wide: boolean }>`
 const InfoBox = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 3.2rem;
 `;
 

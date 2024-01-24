@@ -4,29 +4,28 @@ import axiosInstance from "..";
 import { useNavigate } from "react-router-dom";
 
 /**
- * 개별 질문 전송
- * @param {questions, projectId}
+ * 한줄평 전송
+ * @param {applicantId, content}
  * @returns
  */
 
-interface IndivQuestionsProps {
-  content: string;
+interface OnelinerProps {
   applicantId: number;
-  commentTargetId?: number;
+  content: string;
 }
 
-export const usePostIndivQuestions = () => {
+export const usePostOneliner = () => {
   const { mutate, isPending, error, isSuccess } = useMutation({
-    mutationKey: ["indivQuestions"],
-    mutationFn: async (data: IndivQuestionsProps) => {
-      const res = await axiosInstance.post(`/api/questions/individual`, data);
+    mutationKey: ["addOneliner"],
+    mutationFn: async (data: OnelinerProps) => {
+      const res = await axiosInstance.post(`/api/evaluations/one-liner`, data);
       console.log(res);
       return res.data;
     },
   });
 
   return {
-    indivQuestions: mutate,
+    addOneliner: mutate,
     isPending,
     isSuccess,
     error,

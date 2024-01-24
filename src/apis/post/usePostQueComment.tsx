@@ -4,29 +4,29 @@ import axiosInstance from "..";
 import { useNavigate } from "react-router-dom";
 
 /**
- * 개별 질문 전송
+ * 질문에 대한 답변 전송
  * @param {questions, projectId}
  * @returns
  */
 
-interface IndivQuestionsProps {
+interface QCommentsProps {
+  questionId: number;
+  score: number;
   content: string;
-  applicantId: number;
-  commentTargetId?: number;
 }
 
-export const usePostIndivQuestions = () => {
+export const usePostQueComment = () => {
   const { mutate, isPending, error, isSuccess } = useMutation({
-    mutationKey: ["indivQuestions"],
-    mutationFn: async (data: IndivQuestionsProps) => {
-      const res = await axiosInstance.post(`/api/questions/individual`, data);
+    mutationKey: ["addQComment"],
+    mutationFn: async (data: QCommentsProps) => {
+      const res = await axiosInstance.post(`/api/evaluations`, [data]);
       console.log(res);
       return res.data;
     },
   });
 
   return {
-    indivQuestions: mutate,
+    addQComment: mutate,
     isPending,
     isSuccess,
     error,

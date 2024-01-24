@@ -4,7 +4,7 @@ import axiosInstance from "..";
 import { useNavigate } from "react-router-dom";
 
 /**
- * 공통질문 전송
+ * 유저 정보 전송
  * @param {questions, projectId}
  * @returns
  */
