@@ -13,7 +13,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { useToggleModal } from '../hooks/useToggleModal';
 import { modalContent, modalState } from '../recoil/modal';
 import { interviewModeState } from '../recoil/mainview';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useGetApplicants } from '../apis/get/useGetApplicants';
 
 const MainInterview = () => {
@@ -25,10 +25,19 @@ const MainInterview = () => {
   const [isListView, setIsListView] = useRecoilState(interviewModeState);
   const [lastStageApplierNum, setLastStageApplierNum] = useState(3); //면접완료된 면접자 수 (보드뷰)
 
-  //url에서 project_id || interview_id 추출
-  const params = new URLSearchParams(window.location.search);
-  const project_id = params.get('project_id');
-  const interview_id = params.get('interview_id');
+  const location = useLocation();
+  const { pathname } = location;
+  let interview_id = '';
+  let project_id = '';
+  // pathname에서 interview_id 또는 project_id 추출
+  const pathSegments = pathname.split('/');
+  if (pathSegments.includes('interview')) {
+    const index = pathSegments.indexOf('interview');
+    interview_id = pathSegments[index + 1];
+  } else if (pathSegments.includes('project')) {
+    const index = pathSegments.indexOf('project');
+    project_id = pathSegments[index + 1];
+  }
 
   //modal관리
   const { openModal } = useToggleModal();
@@ -57,7 +66,7 @@ const MainInterview = () => {
         setApplicantsList(fetchedData.applicants);
       }
     }
-  }, [fetchedData.isLoading]);
+  }, [fetchedData.isLoading, interview_id]);
 
   return (
     <MainWrapper>

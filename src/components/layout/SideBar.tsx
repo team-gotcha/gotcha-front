@@ -47,12 +47,10 @@ const SideBar = () => {
 
   //page이동
   const handleMoveToProject = (project_id: number) => {
-    navigate(`/main/project?project_id=${project_id}`);
+    navigate(`/main/project/${project_id}`);
   };
   const handleMoveToInterview = (interview_id: number, project_id: number) => {
-    navigate(
-      `/main/interview?interview_id=${interview_id}&&project_id=${project_id}`
-    );
+    navigate(`/main/interview/${interview_id}`);
   };
 
   //url에서 project_id || interview_id 추출

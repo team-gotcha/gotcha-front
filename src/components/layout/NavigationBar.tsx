@@ -29,21 +29,31 @@ const NavigationBar = () => {
 
   const [isListView, setIsListView] = useRecoilState(interviewModeState);
 
-  //url에서 mode확인
   const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const project_id = params.get('project_id');
-  const interview_id = params.get('interview_id');
+  const { pathname } = location;
+
+  let interview_id = '';
+  let project_id = '';
+
+  // pathname에서 interview_id 또는 project_id 추출
+  const pathSegments = pathname.split('/');
+  if (pathSegments.includes('interview')) {
+    const index = pathSegments.indexOf('interview');
+    interview_id = pathSegments[index + 1];
+  } else if (pathSegments.includes('project')) {
+    const index = pathSegments.indexOf('project');
+    project_id = pathSegments[index + 1];
+  }
 
   useEffect(() => {
-    if (interview_id !== null) {
+    if (interview_id !== '') {
       const matchingInterview = userInfo.projects
         .flatMap((project) => project.interviews)
         .find(
           (interview) => interview.interviewId === parseInt(interview_id, 10)
         );
       setTitle(matchingInterview ? matchingInterview.interviewName : '');
-    } else if (project_id !== null) {
+    } else if (project_id !== '') {
       const matchingProject = userInfo.projects.find(
         (project) => project.projectId === parseInt(project_id, 10)
       );

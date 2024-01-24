@@ -5,6 +5,7 @@ import ViewListStack from '../components/main/ViewListStack';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { modalState } from '../recoil/modal';
 import { useToggleModal } from '../hooks/useToggleModal';
+import { useLocation } from 'react-router-dom';
 
 const MainProject = () => {
   const [isProjectEmpty, setIsProjectEmpty] = useState(false);
@@ -20,6 +21,20 @@ const MainProject = () => {
   //modal관리
   const isModalOpen = useRecoilValue(modalState);
   const { openModal } = useToggleModal();
+
+  const location = useLocation();
+  const { pathname } = location;
+  let interview_id = '';
+  let project_id = '';
+  // pathname에서 interview_id 또는 project_id 추출
+  const pathSegments = pathname.split('/');
+  if (pathSegments.includes('interview')) {
+    const index = pathSegments.indexOf('interview');
+    interview_id = pathSegments[index + 1];
+  } else if (pathSegments.includes('project')) {
+    const index = pathSegments.indexOf('project');
+    project_id = pathSegments[index + 1];
+  }
 
   return (
     <>
