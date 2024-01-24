@@ -55,7 +55,7 @@ const Wrapper = styled.div`
 `;
 
 const Background = styled.div`
-  position: absolute;
+  position: fixed;
   z-index: 5;
   width: 100%;
   height: 100%;

@@ -6,19 +6,40 @@ import HeartIcon from "../../assets/icons/HeartIcon";
 import SendOffIcon from "../../assets/icons/SendOffIcno";
 import SendOnIcon from "../../assets/icons/SendOnIcon";
 
+import { usePatchQOpen } from "../../apis/patch/usePatchQOpen";
+
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import { renderState } from "../../recoil/cardview";
+
 interface QuestionBtnProps {
   isClicked: boolean;
   onClick: () => void;
 }
 
-const MemoReplyItem = () => {
+interface MemoReplyItemProps {
+  item: {
+    asking: boolean;
+    commentTargetId: number;
+    content: string;
+    id: number;
+    writerName: string;
+    writerProfile: string;
+  };
+}
+
+const MemoReplyItem = ({ item }: MemoReplyItemProps) => {
   const [isQuestionClicked, setIsQuestionClicked] = useState(false);
   const [isChatClicked, setIsChatClicked] = useState<boolean>(false);
   const [isHeartClicked, setIsHeartClicked] = useState<boolean>(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
 
-  const handleQuestionClick = () => {
-    setIsQuestionClicked(!isQuestionClicked);
+  const render = useRecoilValue(renderState);
+  const setRender = useSetRecoilState(renderState);
+  const openStatus = usePatchQOpen();
+
+  const handleQuestionClick = (question_id: number) => {
+    openStatus.setQuestions({ questionId: question_id });
+    setRender(render + 1);
   };
 
   const handleChatClick = () => {
@@ -39,35 +60,31 @@ const MemoReplyItem = () => {
 
   return (
     <>
-      {" "}
       <Container>
         <StaticDiv>
           <TopDiv>
             <UserDiv>
-              <UserProfile />
-              <UserName>작성자 이름</UserName>
+              <UserProfile src={item.writerProfile} />
+              <UserName>{item.writerName}</UserName>
             </UserDiv>
             <QuestionBtn
-              onClick={handleQuestionClick}
-              isClicked={isQuestionClicked}
+              onClick={() => handleQuestionClick(item.id)}
+              isClicked={item.asking}
             >
               면접 때 질문하기
             </QuestionBtn>
           </TopDiv>
           <ContentDiv>
-            <Content>
-              서비스의 여러 타깃층을 상대로 한 경험의 이유가 있었는지 서비스의
-              여러 타깃층을 상대로 한 경험의 이유가 있었는지??? 으아아아아아아
-            </Content>
+            <Content>{item.content}</Content>
             <BtnDiv>
-              <ReplyBtn onClick={handleChatClick} isChatClicked={isChatClicked}>
+              {/* <ReplyBtn onClick={handleChatClick} isChatClicked={isChatClicked}>
                 <ChatIcon
                   width="16"
                   height="15"
                   fill={isChatClicked ? "#fff" : "#3733ff"}
                 />
                 0
-              </ReplyBtn>
+              </ReplyBtn> */}
               <HeartBtn
                 onClick={handleHeartClick}
                 isHeartClicked={isHeartClicked}
@@ -83,7 +100,7 @@ const MemoReplyItem = () => {
           </ContentDiv>
         </StaticDiv>
       </Container>
-      {isChatClicked && (
+      {/* {isChatClicked && (
         <InputDiv isInputFocused={isInputFocused}>
           <Input
             placeholder="팀원의 이야기에 덧글을 달아보세요."
@@ -92,7 +109,7 @@ const MemoReplyItem = () => {
           />
           {isInputFocused ? <SendOnIcon /> : <SendOffIcon />}
         </InputDiv>
-      )}
+      )} */}
     </>
   );
 };
@@ -134,7 +151,7 @@ const UserDiv = styled.div`
   gap: 0.4rem;
 `;
 
-const UserProfile = styled.div`
+const UserProfile = styled.img`
   width: 3.2rem;
   height: 3.2rem;
 

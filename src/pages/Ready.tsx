@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -11,7 +11,9 @@ import QuestionCheckModal from "../components/cardview/modal/QuestionCheckModal"
 import QuestionOpenModal from "../components/cardview/modal/QuestionOpenModal";
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import { filesDataState } from "../recoil/cardview";
+import { filesDataState, renderState } from "../recoil/cardview";
+
+import { useGetIndivQuestions } from "../apis/get/useGetIndivQuestions";
 
 import { usePostUserReady } from "../apis/post/usePostUserReady";
 import { usePostUserDetail } from "../apis/post/usePostUserDetail";
@@ -31,6 +33,15 @@ interface DetailInfoProps {
   keywords: { name: string; keywordType: string }[];
   interviewId: string;
   questions: { content: string }[];
+}
+
+interface QuestionProps {
+  asking: boolean;
+  commentTargetId: number;
+  content: string;
+  id: number;
+  writerName: string;
+  writerProfile: string;
 }
 
 // Mock data for testing
@@ -61,18 +72,39 @@ const Ready = () => {
   const userIdNumber: number = parseInt(user_id, 10);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const filesData = useRecoilValue(filesDataState);
+  const [comments, setComments] = useState([]);
+  const [reply, setReply] = useState([]);
 
-  console.log(filesData);
+  const filesData = useRecoilValue(filesDataState);
+  const render = useRecoilValue(renderState);
+  const setRender = useSetRecoilState(renderState);
+
+  // console.log(filesData);
 
   //custom-hook
   const postReadyData = usePostUserReady();
   const postDetailData = usePostUserDetail();
   const userPostData = usePostFiles();
 
-  /**
-   * project 데이터 전송해 생성하는 기능
-   */
+  const getIndivQuestionData = useGetIndivQuestions(2, render);
+
+  useEffect(() => {
+    if (!getIndivQuestionData.isLoading) {
+      const newData = getIndivQuestionData.indivQuestion || [];
+      setComments(
+        newData?.filter(
+          (comment: QuestionProps) => comment.commentTargetId === null
+        )
+      );
+      setReply(
+        newData?.filter(
+          (comment: QuestionProps) => comment.commentTargetId !== null
+        )
+      );
+      console.log(render);
+    }
+  }, [!getIndivQuestionData.isLoading]);
+
   const handleSubmit = () => {
     // postReadyData.readyToPost(userIdNumber);
     // postDetailData.detailPost(testData);
@@ -95,10 +127,11 @@ const Ready = () => {
               <InterviewerInfo />
             </InputDiv>
             <MemoDiv>
-              <MemoItem />
-              <MemoItem />
-              <MemoItem />
-              <MemoItem />
+              {comments &&
+                comments.map((item, index) => (
+                  <MemoItem key={index} item={item} reply={reply} />
+                ))}
+
               <MemoInput applicantId={userIdNumber} />
             </MemoDiv>
           </Contents>
@@ -117,7 +150,10 @@ const Ready = () => {
       {isOpenModal && (
         <ModalWrapper2>
           <ModalBackground2 onClick={() => setIsOpenModal(!isOpenModal)} />
-          <QuestionOpenModal setIsOpenModal={setIsOpenModal} />
+          <QuestionOpenModal
+            setIsOpenModal={setIsOpenModal}
+            applicantId={userIdNumber}
+          />
         </ModalWrapper2>
       )}
     </>
@@ -136,7 +172,8 @@ const Wrapper = styled.div`
 `;
 
 const Background = styled.div`
-  position: absolute;
+  position: fixed;
+  z-index: 5;
   width: 100%;
   height: 100%;
   background: var(--gray-background-gray-55, rgba(50, 50, 50, 0.55));
@@ -145,7 +182,7 @@ const Background = styled.div`
 
 const Container = styled.div`
   position: absolute;
-  z-index: 10;
+  z-index: 5;
   background-color: #fff;
   border-radius: 1.2rem;
 
@@ -165,7 +202,7 @@ const Contents = styled.div`
 const InputDiv = styled.div`
   overflow-y: auto;
   width: 100%;
-  padding: 6.8rem 3.5rem;
+  /* padding: 6.8rem 3.5rem; */
 
   &::-webkit-scrollbar {
     display: none;

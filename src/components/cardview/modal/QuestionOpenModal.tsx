@@ -2,15 +2,21 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
+import { usePostOpenorNot } from "../../../apis/post/usePostOpenorNot";
+
 interface BaseModalProps {
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  applicantId: number;
 }
 
-const QuestionOpenModal = ({ setIsOpenModal }: BaseModalProps) => {
+const QuestionOpenModal = ({ setIsOpenModal, applicantId }: BaseModalProps) => {
   const navigate = useNavigate();
-  const handleBtn = () => {
+  const isOpen = usePostOpenorNot();
+  const applicant_id: number = applicantId;
+
+  const handleBtn = (agree: boolean) => {
     setIsOpenModal(false);
-    //나중에 함수 인자로 오픈 여부 설정해서 보내주기
+    // isOpen.setIsOpen({ applicantId: applicant_id, agree: agree });
     navigate("/inprogress/1");
   };
 
@@ -23,8 +29,8 @@ const QuestionOpenModal = ({ setIsOpenModal }: BaseModalProps) => {
           자료로 사용됩니다.
         </Guide>
         <ButtonDiv>
-          <NoBtn onClick={handleBtn}>아니오</NoBtn>
-          <YesBtn onClick={handleBtn}>네</YesBtn>
+          <NoBtn onClick={() => handleBtn(false)}>아니오</NoBtn>
+          <YesBtn onClick={() => handleBtn(true)}>네</YesBtn>
         </ButtonDiv>
       </Content>
     </Container>

@@ -106,6 +106,7 @@ const Container = styled.div`
 const TopDiv = styled.div`
   display: flex;
   align-items: center;
+  gap: 3rem;
 `;
 
 const KeyTitle = styled.div`
@@ -186,7 +187,7 @@ const KeywordDiv = styled.div`
   align-items: center;
   width: 30rem;
   gap: 0.8rem;
-  margin-left: 5.5rem;
+  margin-left: 8.5rem;
 
   flex-wrap: wrap;
 `;

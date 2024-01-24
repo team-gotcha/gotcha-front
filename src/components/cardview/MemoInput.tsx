@@ -4,6 +4,9 @@ import { styled } from "styled-components";
 import SendOffIcon from "../../assets/icons/SendOffIcno";
 import SendOnIcon from "../../assets/icons/SendOnIcon";
 
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import { renderState } from "../../recoil/cardview";
+
 import { usePostIndivQuestions } from "../../apis/post/usePostIndivQuestions";
 
 interface QuestionBtnProps {
@@ -20,13 +23,18 @@ const MemoInput = ({ applicantId }: MemoInputProps) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
+  const render = useRecoilValue(renderState);
+  const setRender = useSetRecoilState(renderState);
+
   const postDetailData = usePostIndivQuestions();
 
   const handleSend = () => {
     postDetailData.indivQuestions({
       content: inputValue,
-      applicantId: applicantId,
+      applicantId: 2,
     });
+    setRender(render + 1);
+    setInputValue("");
   };
 
   const handleQuestionClick = () => {
@@ -72,7 +80,11 @@ const MemoInput = ({ applicantId }: MemoInputProps) => {
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-        {isInputFocused ? <SendOnIcon onClick={handleSend} /> : <SendOffIcon />}
+        {isInputFocused ? (
+          <SendOnIcon onMouseDown={handleSend} />
+        ) : (
+          <SendOffIcon />
+        )}
       </InputDiv>
     </Container>
   );

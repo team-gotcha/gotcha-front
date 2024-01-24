@@ -16,15 +16,19 @@ interface DragItem {
 interface QuestionItemProps {
   isCommon?: boolean;
   index?: number;
+  content?: string;
+  importance: number;
   moveItem?: (dragIndex: number, hoverIndex: number) => void;
 }
 
 const QuestionItemDrag = ({
   isCommon = false,
   index = 1,
+  content = "",
+  importance,
   moveItem = () => {},
 }: QuestionItemProps) => {
-  const [selectedScore, setSelectedScore] = useState<number | null>(null);
+  const [selectedScore, setSelectedScore] = useState<number | null>(importance);
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -99,7 +103,7 @@ const QuestionItemDrag = ({
             <ClassTag isCommon={isCommon}>
               {isCommon ? "공통질문" : "개별질문"}
             </ClassTag>
-            <Question>이전 직장에서 한 @ 프로젝트에서 ~</Question>
+            <Question>{content}</Question>
             {isHovered && (
               <MoreDotIcon
                 width={24}

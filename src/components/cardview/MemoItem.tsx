@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
 
 import ChatIcon from "../../assets/icons/ChatIcon";
@@ -8,19 +8,56 @@ import SendOnIcon from "../../assets/icons/SendOnIcon";
 
 import MemoReplyItem from "./MemoReplyItem";
 
+import { usePostIndivQuestions } from "../../apis/post/usePostIndivQuestions";
+import { usePatchQOpen } from "../../apis/patch/usePatchQOpen";
+
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import { renderState } from "../../recoil/cardview";
+
 interface QuestionBtnProps {
   isClicked: boolean;
   onClick: () => void;
 }
+interface QuestionProps {
+  asking: boolean;
+  commentTargetId: number;
+  content: string;
+  id: number;
+  writerName: string;
+  writerProfile: string;
+}
 
-const MemoItem = () => {
-  const [isQuestionClicked, setIsQuestionClicked] = useState(false);
+interface MemoItemProps {
+  item: QuestionProps;
+  reply: QuestionProps[];
+}
+
+const MemoItem = ({ item, reply }: MemoItemProps) => {
   const [isChatClicked, setIsChatClicked] = useState<boolean>(false);
   const [isHeartClicked, setIsHeartClicked] = useState<boolean>(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [replys, setReplys] = useState([]);
 
-  const handleQuestionClick = () => {
-    setIsQuestionClicked(!isQuestionClicked);
+  const render = useRecoilValue(renderState);
+  const setRender = useSetRecoilState(renderState);
+  const [inputValue, setInputValue] = useState("");
+
+  const postDetailData = usePostIndivQuestions();
+  const openStatus = usePatchQOpen();
+
+  useEffect(() => {
+    if (reply !== null) {
+      setReplys(
+        reply.filter(
+          (comment: QuestionProps) => comment.commentTargetId === item.id
+        )
+      );
+    }
+  }, [reply]);
+
+  const handleQuestionClick = (question_id: number) => {
+    openStatus.setQuestions({ questionId: question_id });
+    setRender(render + 1);
   };
 
   const handleChatClick = () => {
@@ -39,26 +76,39 @@ const MemoItem = () => {
     setIsInputFocused(false);
   };
 
+  const handleSend = () => {
+    postDetailData.indivQuestions({
+      content: inputValue,
+      applicantId: 2,
+      commentTargetId: item.id,
+    });
+    setRender(render + 1);
+    setInputValue("");
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSend();
+    }
+  };
+
   return (
     <Container>
       <StaticDiv>
         <TopDiv>
           <UserDiv>
-            <UserProfile />
-            <UserName>작성자 이름</UserName>
+            <UserProfile src={item.writerProfile} />
+            <UserName>{item.writerName}</UserName>
           </UserDiv>
           <QuestionBtn
-            onClick={handleQuestionClick}
-            isClicked={isQuestionClicked}
+            onClick={() => handleQuestionClick(item.id)}
+            isClicked={item.asking}
           >
             면접 때 질문하기
           </QuestionBtn>
         </TopDiv>
         <ContentDiv>
-          <Content>
-            서비스의 여러 타깃층을 상대로 한 경험의 이유가 있었는지 서비스의
-            여러 타깃층을 상대로 한 경험의 이유가 있었는지??? 으아아아아아아
-          </Content>
+          <Content>{item.content}</Content>
           <BtnDiv>
             <ReplyBtn onClick={handleChatClick} isChatClicked={isChatClicked}>
               <ChatIcon
@@ -89,11 +139,15 @@ const MemoItem = () => {
             placeholder="팀원의 이야기에 덧글을 달아보세요."
             onFocus={handleInputFocus}
             onBlur={handleInputBlur}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           {isInputFocused ? <SendOnIcon /> : <SendOffIcon />}
         </InputDiv>
       )}
-      <MemoReplyItem />
+      {replys &&
+        replys.map((item, index) => <MemoReplyItem key={index} item={item} />)}
     </Container>
   );
 };
@@ -135,7 +189,7 @@ const UserDiv = styled.div`
   gap: 0.4rem;
 `;
 
-const UserProfile = styled.div`
+const UserProfile = styled.img`
   width: 3.2rem;
   height: 3.2rem;
 
