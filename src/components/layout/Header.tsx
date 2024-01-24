@@ -21,7 +21,7 @@ const Wrapper = styled.header`
   padding: 0 4.5rem;
   border-bottom: 0.05rem solid #e6e6e6;
   background-color: #fff;
-  z-index: 100;
+  z-index: 6;
 `;
 
 const Title = styled.div`

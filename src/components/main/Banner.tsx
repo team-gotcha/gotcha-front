@@ -1,25 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useGetTodayDate } from '../../hooks/useGetTodayDate';
 
 interface BannerProps {
   todayInterviewNum: number;
 }
 
 const Banner = ({ todayInterviewNum }: BannerProps) => {
-  const getFormattedDate = () => {
-    const today = new Date();
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      weekday: 'long',
-    };
-    return today.toLocaleDateString('ko-KR', options);
-  };
+  const todayDate = useGetTodayDate();
 
   return (
     <Wrapper>
-      <BannerDate>{getFormattedDate()}</BannerDate>
+      <BannerDate>{todayDate}</BannerDate>
       <BannerComment>
         {todayInterviewNum === 0
           ? '아직 예정된 면접이 없어요.'

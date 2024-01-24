@@ -12,7 +12,7 @@ import { loginState, userInfoState } from '../../recoil/userInfo';
 import { useGetUserInfo } from '../../apis/get/useGetUserInfo';
 import { useGetProjectList } from '../../apis/get/useGetProjectList';
 import AddInterviewModal from '../common/modal/AddInterviewModal';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const SideBar = () => {
   //전역상태
@@ -47,28 +47,25 @@ const SideBar = () => {
 
   //page이동
   const handleMoveToProject = (project_id: number) => {
-    navigate(`/main/project?project_id=${project_id}`);
+    navigate(`/main/project/${project_id}`);
   };
   const handleMoveToInterview = (interview_id: number, project_id: number) => {
-    navigate(
-      `/main/interview?interview_id=${interview_id}&&project_id=${project_id}`
-    );
+    navigate(`/main/interview/${interview_id}`);
   };
 
-  //url에서 project_id || interview_id 추출
-  const params = new URLSearchParams(window.location.search);
-  const project_id = params.get('project_id');
-  const interview_id = params.get('interview_id');
-
-  // useEffect(() => {
-  //   if (project_id !== null) {
-  //     console.log(project_id);
-  //   }
-  //   if (interview_id !== null) {
-  //     console.log(interview_id);
-  //   }
-  // }, [params]);
-
+  const location = useLocation();
+  const { pathname } = location;
+  let interview_id = '';
+  let project_id = '';
+  // pathname에서 interview_id 또는 project_id 추출
+  const pathSegments = pathname.split('/');
+  if (pathSegments.includes('interview')) {
+    const index = pathSegments.indexOf('interview');
+    interview_id = pathSegments[index + 1];
+  } else if (pathSegments.includes('project')) {
+    const index = pathSegments.indexOf('project');
+    project_id = pathSegments[index + 1];
+  }
   return (
     <Wrapper>
       <UserDiv>
@@ -116,6 +113,9 @@ const SideBar = () => {
                               project.projectId
                             )
                           }
+                          isActive={
+                            interview_id === String(interview.interviewId)
+                          }
                         >
                           {interview.interviewName}
                         </SubTitle>
@@ -156,15 +156,13 @@ const ItemTop = styled.div<{ isActive?: boolean }>`
 
   //활성화된 대주제
   background-color: ${(props) =>
-    props.isActive
-      ? 'var(--purple-200, #E6E5FF)'
-      : 'transparent'}; // Change background color based on project_id match
+    props.isActive ? 'var(--purple-200, #E6E5FF)' : 'transparent'};
 `;
 
 const InterviewDetail = styled.div`
   display: none;
 `;
-const SubTitle = styled.div`
+const SubTitle = styled.div<{ isActive?: boolean }>`
   color: ${(props) => props.theme.colors.gray.gray500};
   ${(props) => props.theme.fontStyles.body.bodyRegular};
 
@@ -173,6 +171,12 @@ const SubTitle = styled.div`
   font-weight: 400;
 
   cursor: pointer;
+
+  //활성화
+  color: ${(props) =>
+    props.isActive
+      ? '#3733FF'
+      : '${(props) => props.theme.colors.gray.gray500}'};
 `;
 
 const Wrapper = styled.div`
