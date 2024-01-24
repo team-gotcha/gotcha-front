@@ -246,12 +246,14 @@ const Question = styled.div`
 
 const InputBox = styled.div`
   padding: 1.2rem 1.6rem;
+  width: 100%;
   display: flex;
   align-items: center;
 `;
 
 const Answer = styled.input`
   border: none;
+  width: 100%;
 
   font-size: 14px;
   font-style: normal;

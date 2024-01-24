@@ -2,7 +2,10 @@ import React, { useState, useEffect, ChangeEvent, KeyboardEvent } from "react";
 import { styled } from "styled-components";
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import { interviewersDataState } from "../../recoil/cardview";
+import {
+  interviewersDataState,
+  userDetailInfoState,
+} from "../../recoil/cardview";
 import { useGetViewer } from "../../apis/get/useGetViewer";
 
 interface Interviewer {
@@ -14,6 +17,7 @@ interface Interviewer {
 const InterviewerBox = ({ modify = true }) => {
   const setInterviewerData = useSetRecoilState(interviewersDataState);
   const viewerData = useRecoilValue(interviewersDataState);
+  const userDetailInfo = useRecoilValue(userDetailInfoState);
 
   const [viewers, setViewers] = useState([]);
   const [pickedViewers, setPickedViewers] = useState<Interviewer[]>([]);
@@ -21,10 +25,15 @@ const InterviewerBox = ({ modify = true }) => {
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
 
   const interviewerData = useGetViewer(1); //interview-id 넣어줘야함
-  console.log(interviewerData.interviewerInfo);
 
   useEffect(() => {
-    setViewers(interviewerData.interviewerInfo);
+    if (modify) {
+      const newData = interviewerData.interviewerInfo || [];
+      setViewers(newData);
+    } else {
+      const newData = userDetailInfo.interviewerNames || [];
+      setViewers(newData);
+    }
   }, [!interviewerData.isLoading]);
 
   const handleToggleSelection = (option: Interviewer) => {
@@ -53,25 +62,27 @@ const InterviewerBox = ({ modify = true }) => {
     <Container>
       <TopDiv>
         <KeyTitle>면접관</KeyTitle>
-        <DropdownDiv>
-          <SelectBar onClick={() => setDropdownView(!isDropdownView)}>
-            면접관 추가
-          </SelectBar>
-          {isDropdownView && (
-            <Wrapper>
-              {viewers &&
-                viewers.map((option: Interviewer) => (
-                  <ListItem
-                    key={option.id}
-                    isSelected={selectedOptions.includes(option.id)}
-                    onClick={() => handleToggleSelection(option)}
-                  >
-                    {option.name}
-                  </ListItem>
-                ))}
-            </Wrapper>
-          )}
-        </DropdownDiv>
+        {modify && (
+          <DropdownDiv>
+            <SelectBar onClick={() => setDropdownView(!isDropdownView)}>
+              면접관 추가
+            </SelectBar>
+            {isDropdownView && (
+              <Wrapper>
+                {viewers &&
+                  viewers.map((option: Interviewer) => (
+                    <ListItem
+                      key={option.id}
+                      isSelected={selectedOptions.includes(option.id)}
+                      onClick={() => handleToggleSelection(option)}
+                    >
+                      {option.name}
+                    </ListItem>
+                  ))}
+              </Wrapper>
+            )}
+          </DropdownDiv>
+        )}
       </TopDiv>
       <KeywordDiv>
         {pickedViewers.map((item: Interviewer) => (
@@ -87,7 +98,8 @@ export default InterviewerBox;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: center;
   gap: 0.5rem;
 `;
 
@@ -174,14 +186,15 @@ const KeywordDiv = styled.div`
   align-items: center;
   width: 30rem;
   gap: 0.8rem;
-  margin-left: 11.5rem;
+  margin-left: 5.5rem;
 
   flex-wrap: wrap;
 `;
 
 const Keyword = styled.div`
   display: flex;
-  padding: 0.5rem 1rem;
+  height: 26px;
+  padding: 0.2rem 1rem;
   justify-content: center;
   align-items: center;
   gap: 0.4rem;

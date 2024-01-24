@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
+import { usePostOneliner } from "../../../apis/post/usePostOneliner";
+
 interface BaseModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -9,8 +11,15 @@ interface BaseModalProps {
 
 const ReviewModal = ({ isOpen, setIsOpen }: BaseModalProps) => {
   const navigate = useNavigate();
+  const postOnlinerData = usePostOneliner();
+
+  const [oneLiner, setOneLiner] = useState("");
 
   const handleBtn = () => {
+    postOnlinerData.addOneliner({
+      applicantId: 1, //나중에 수정해야함!!
+      content: oneLiner,
+    });
     setIsOpen(false);
     navigate("/result");
   };
@@ -19,7 +28,11 @@ const ReviewModal = ({ isOpen, setIsOpen }: BaseModalProps) => {
       <TopContent>
         <span>갓차린</span>님에 대한 한줄평을 남겨주세요.
       </TopContent>
-      <InputField placeholder="지원자에 대한 생각을 간략하게 적어주세요." />
+      <InputField
+        value={oneLiner}
+        onChange={(e) => setOneLiner(e.target.value)}
+        placeholder="지원자에 대한 생각을 간략하게 적어주세요. 이후 모든 구성원의 한줄평을 한번에 확인할 수 있어요."
+      />
       <FinishBtn onClick={handleBtn}>면접 완료</FinishBtn>
     </Container>
   );

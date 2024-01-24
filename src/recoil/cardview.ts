@@ -5,7 +5,7 @@ export const userDetailInfoState = atom({
   default: {
     name: "",
     date: "",
-    interviewers: [{ id: "" }],
+    interviewerNames: [""],
     age: 0,
     education: "",
     position: "",

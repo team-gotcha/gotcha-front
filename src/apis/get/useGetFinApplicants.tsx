@@ -4,23 +4,24 @@ import axiosInstance from "..";
 import { useNavigate } from "react-router-dom";
 
 /**
- * 유저 정보 받기
- * @param isLogin
- * @returns {profileImage, name, email}
+ * 면접 완료된 지원자들 목록 조회
+ * @param interview_id
+ * @returns
  */
-export const useGetViewer = (interviewId: number) => {
+export const useGetFinApplicants = (interview_id: number) => {
   const { isLoading, data, error } = useQuery({
-    queryKey: ["interviewerInfo"],
+    queryKey: ["allFinApplicants"],
     queryFn: async () => {
       const res = await axiosInstance.get(
-        `/api/interviews/${interviewId}/names`
+        `/api/applicants/interview-completed`,
+        { params: { "interview-id": interview_id } }
       );
       return res.data;
     },
   });
 
   return {
-    interviewerInfo: data || null,
+    allFinApplicants: data || null,
     isLoading,
     error,
   };

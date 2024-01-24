@@ -3,18 +3,28 @@ import { styled } from "styled-components";
 
 import MoreDotIcon from "../../assets/icons/MoreDotIcon";
 
+import { usePostQueComment } from "../../apis/post/usePostQueComment";
+
 interface QuestionItemProps {
   isCommon?: boolean;
 }
 
 const QuestionItem = ({ isCommon = false }: QuestionItemProps) => {
+  const postQCommentData = usePostQueComment();
+
   const [selectedScore, setSelectedScore] = useState<number | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [comment, setComment] = useState<string | null>("");
 
   const handleScoreClick = (score: number) => {
     setSelectedScore(score);
+    postQCommentData.addQComment({
+      questionId: 1, //이것도 수정!!
+      score: score,
+      content: comment,
+    });
   };
 
   const handleMoreDotClick = () => {
@@ -78,7 +88,11 @@ const QuestionItem = ({ isCommon = false }: QuestionItemProps) => {
             )}
           </QuestionBox>
           <InputBox>
-            <Answer placeholder="답변을 입력해주세요." />
+            <Answer
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="답변을 입력해주세요."
+            />
           </InputBox>
         </QuestionDiv>
       </Container>
@@ -199,12 +213,14 @@ const Question = styled.div`
 
 const InputBox = styled.div`
   padding: 1.2rem 1.6rem;
+  width: 100%;
   display: flex;
   align-items: center;
 `;
 
 const Answer = styled.input`
   border: none;
+  width: 100%;
 
   font-size: 14px;
   font-style: normal;

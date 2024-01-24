@@ -11,7 +11,6 @@ import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import { loginState, userInfoState } from "../../recoil/userInfo";
 import { userDetailInfoState, filesDataState } from "../../recoil/cardview";
 import { useGetUserDetail } from "../../apis/get/useGetUserDetail";
-import { useGetViewer } from "../../apis/get/useGetViewer";
 
 const InterviewerInfo = ({ modify = true, wide = true }) => {
   let { user_id } = useParams();
@@ -30,7 +29,6 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
 
   //custom hook
   const userDetailData = useGetUserDetail(isLogin, userIdNumber);
-  // const interviewerData = useGetViewer(1); //interview-id 넣어줘야함
 
   useEffect(() => {
     if (isLogin && !userDetailData.isLoading && modify) {
@@ -118,9 +116,7 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
             <InfoResult>{userDetailInfo?.date}</InfoResult>
           )}
         </InterviewBox>
-        <InterviewBox>
-          <InterviewerBox modify={modify} />
-        </InterviewBox>
+        <InterviewerBox modify={modify} />
       </InterviewDiv>
       <BasicInfoDiv wide={wide}>
         <InfoBox>
@@ -300,7 +296,8 @@ const InterviewDiv = styled.div<{ wide: boolean }>`
 
 const InterviewBox = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  margin-top: 0.3rem;
   gap: 4rem;
 `;
 

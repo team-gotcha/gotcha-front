@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -8,21 +8,38 @@ import InfoIcon from "../../../assets/icons/InfoIcon";
 
 import info from "../../../assets/images/InfoIcon-blue.svg";
 
+import { useGetAllEvaluations } from "../../../apis/get/useGetAllEvaluations";
+import { useGetEvalQuestion } from "../../../apis/get/useGetEvalQuestion";
+import { useGetRankingPoint } from "../../../apis/get/useGetRankingPoint";
+import { useGetFinApplicants } from "../../../apis/get/useGetFinApplicants";
+import { useGetAllQuestion } from "../../../apis/get/useGetAllQuestion";
+
 interface BaseModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ItemTypes = {
-  QUESTION_ITEM: "questionItem",
-};
-
 const QuestionCheckModal = ({
   isOpen,
   setIsOpen,
   setIsOpenModal,
 }: BaseModalProps) => {
+  //custom hook
+  // const allEvaluationsData = useGetAllEvaluations(1);
+  // const evalQuestionData = useGetEvalQuestion(1);
+  // const rankingPointData = useGetRankingPoint(1);
+  const finApplicantsData = useGetFinApplicants(1);
+  // const allQuestionData = useGetAllQuestion(1);
+
+  useEffect(() => {
+    if (!finApplicantsData.isLoading) {
+      console.log("완료 지원자 데이터 세팅", finApplicantsData);
+    }
+  }, [!finApplicantsData.isLoading]);
+
+  // console.log();
+
   const [isHovered, setIsHovered] = useState(false);
   const [items, setItems] = useState([
     { id: 1, isCommon: true },

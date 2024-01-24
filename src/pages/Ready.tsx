@@ -35,20 +35,21 @@ interface DetailInfoProps {
 
 // Mock data for testing
 const testData: DetailInfoProps = {
-  name: "홍길동",
-  date: "2022-01-01",
+  name: "최갓차",
+  date: "2022-01-04",
   interviewers: [{ id: "1" }],
-  age: 25,
-  education: "홍익대학교 컴퓨터공학과",
-  position: "Software Engineer",
-  phoneNumber: "123-456-7890",
-  path: "/path/to/resume",
-  email: "doe@example.com",
+  age: 22,
+  education: "이화여자대학교 컴퓨터공학과",
+  position: "BE Engineer",
+  phoneNumber: "423-456-7890",
+  path: "사람인",
+  email: "doe4@example.com",
   keywords: [
-    { name: "착실함", keywordType: "TRAIT" },
-    { name: "교환학생", keywordType: "EXPERIENCE" },
+    { name: "열정적", keywordType: "TRAIT" },
+    { name: "Node.js", keywordType: "SKILL" },
+    { name: "단대 회장", keywordType: "EXPERIENCE" },
   ],
-  interviewId: "1",
+  interviewId: "4",
   questions: [
     { content: "강점에 대해서 얘기해보세요." },
     { content: "당신의 약점은 무엇입니까?" },
@@ -75,11 +76,11 @@ const Ready = () => {
   const handleSubmit = () => {
     // postReadyData.readyToPost(userIdNumber);
     // postDetailData.detailPost(testData);
-    userPostData.addFiles({
-      applicantId: userIdNumber,
-      resume: filesData.resume,
-      portfolio: filesData.portfolios,
-    });
+    // userPostData.addFiles({
+    //   applicantId: userIdNumber,
+    //   resume: filesData.resume,
+    //   portfolio: filesData.portfolios,
+    // });
     setIsOpen(!isOpen);
   };
 
