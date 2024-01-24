@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
  */
 export const useGetApplicants = (interviewId: number) => {
   const { isLoading, data, error, isSuccess } = useQuery({
-    queryKey: ['applicants'],
+    queryKey: ['applicants', interviewId],
     queryFn: async () => {
       const res = await axiosInstance.get(
         `/api/applicants?interview-id=${interviewId}`

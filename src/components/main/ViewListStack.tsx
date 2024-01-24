@@ -3,56 +3,85 @@ import { styled } from 'styled-components';
 import StarOffIcon from '../../assets/icons/StarOffIcon';
 import CommonTag from '../common/CommonTag';
 import MessageIcon from '../../assets/icons/MessageIcon';
+import {
+  formatDateString,
+  useGetTodayDate,
+  useGetTodayDateDotFormat,
+} from '../../hooks/useGetTodayDate';
+import StarOnIcon from '../../assets/icons/StarOnIcon';
+import CommonGroupMembers from '../common/CommonGroupMembers';
 
 interface ViewListStackProps {
-  tagList?: Array<string>; //키워드리스트 첫입력 3개 고정(성향,스킬,경험순)
-  memoNum?: number; //새로 추가된 메모 개수 (1개 이상 시 색변경)
+  isStar?: boolean; //즐찾표시 여부 api수정후 applicantData에 포함시킴
 
-  groupMemberList?: Array<string>;
-  interviewState?: string; //면접진행단계
-  interviewDate?: string; //면접진행날짜
-
-  isStar?: boolean; //즐찾표시 여부
   isEmpty?: boolean; //빈 스택 여부
+  applicantData?: {
+    id?: number;
+    questionCount?: number;
+    name?: string;
+    date?: string;
+    status?: string;
+    interviewerEmails?: Array<string>;
+    keywords?: Array<{ name?: string; type?: string }>;
+  };
 }
 
-interface GroupMemberImgProps {
-  index: number;
-}
-
-const ViewListStack = ({
-  groupMemberList = [],
-  ...props
-}: ViewListStackProps) => {
+const ViewListStack = ({ ...props }: ViewListStackProps) => {
   const InterviewStateList = ['면접 준비중', '면접 진행중', '면접 전형 완료'];
+  // Check if applicantData exists before accessing its properties
+  const applicantName = props.applicantData
+    ? props.applicantData.name
+    : '새로운 지원자를 추가하세요!';
+  const keywords = props.applicantData
+    ? props.applicantData.keywords
+    : [{ name: '태그' }, { name: '태그' }, { name: '태그' }];
+  const questionCount = props.applicantData
+    ? props.applicantData.questionCount
+    : '0';
+  const groupMemberList = props.applicantData
+    ? props.applicantData.interviewerEmails
+    : ['A'];
+
+  const todayDate = useGetTodayDateDotFormat();
+  const dueDate = props.applicantData
+    ? formatDateString(props.applicantData.date)
+    : todayDate;
+
+  let statusText;
+  switch (props.applicantData?.status) {
+    case 'PREPARATION':
+      statusText = '면접 준비중';
+      break;
+    case 'IN_PROGRESS':
+      statusText = '면접 진행중';
+      break;
+    case 'COMPLETION':
+      statusText = '면접 전형 완료';
+      break;
+    default:
+      statusText = '면접 준비중';
+      break;
+  }
+
   return (
     <>
       {!props.isEmpty && (
         <Wrapper>
-          <ApplierName>가차린</ApplierName>
+          <ApplierName>{applicantName}</ApplierName>
           <TagList>
-            <CommonTag children="태그" />
-            <CommonTag children="태그" />
-            <CommonTag children="태그" />
+            {keywords.map((keyword, index) => (
+              <CommonTag children={keyword.name} />
+            ))}
           </TagList>
           <MemoBox>
             <MessageIcon width={'2.6rem'} height={'2.8rem'} />
-            <MessageAlert>0</MessageAlert>
+            <MessageAlert>{questionCount}</MessageAlert>
           </MemoBox>
-          <GroupMemberList>
-            {groupMemberList?.map((member, index) => (
-              <GroupMemberImg
-                key={index}
-                index={groupMemberList.length - index}
-              >
-                {member.charAt(0)}
-              </GroupMemberImg>
-            ))}
-          </GroupMemberList>
-          <InterviewState>{InterviewStateList[1]}</InterviewState>
-          <InterviewDate>2023.12.11 월</InterviewDate>
+          <CommonGroupMembers groupMemberList={groupMemberList} showNum={5} />
+          <InterviewState>{statusText}</InterviewState>
+          <InterviewDate>{dueDate}</InterviewDate>
           <FavoriteState>
-            <StarOffIcon />
+            {props.isStar ? <StarOnIcon /> : <StarOffIcon />}
           </FavoriteState>
         </Wrapper>
       )}
@@ -69,20 +98,12 @@ const ViewListStack = ({
             <MessageIcon width={'2.6rem'} height={'2.8rem'} />
             <MessageAlert>0</MessageAlert>
           </MemoBox>
-          <GroupMemberList>
-            {groupMemberList?.map((member, index) => (
-              <GroupMemberImg
-                key={index}
-                index={groupMemberList.length - index}
-              >
-                {member.charAt(0)}
-              </GroupMemberImg>
-            ))}
-          </GroupMemberList>
+          <CommonGroupMembers groupMemberList={groupMemberList} showNum={5} />
           <InterviewState>{InterviewStateList[1]}</InterviewState>
           <InterviewDate>2023.12.11 월</InterviewDate>
           <FavoriteState>
             <StarOffIcon />
+            {}
           </FavoriteState>
         </Wrapper>
       )}
@@ -122,7 +143,7 @@ const WrapperEmpty = styled.div`
 
 const ApplierName = styled.div`
   display: flex;
-  width: 16.25rem;
+  width: 18rem;
 
   ${(props) => props.theme.fontStyles.body.bodyMedium};
   font-size: 1%.4;
@@ -144,11 +165,11 @@ const ProjectEmptyComment = styled.div`
 `;
 
 const TagList = styled.div`
-  width: 18.75rem;
+  width: 25rem;
   gap: 1.25rem;
 
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 `;
 const MemoBox = styled.div`
@@ -178,28 +199,6 @@ const MessageAlert = styled.div`
   font-size: 1.2rem;
   font-weight: 400;
   color: ${(props) => props.theme.colors.gray.gray1100};
-`;
-const GroupMemberList = styled.div`
-  display: flex;
-  overflow: hidden; /* 넘치는 부분 감추기 */
-`;
-const GroupMemberImg = styled.div<GroupMemberImgProps>`
-  width: 2.8rem;
-  height: 2.8rem;
-  flex-shrink: 0;
-  background-color: ${(props) => props.theme.colors.gray.gray300};
-  border: 0.1rem solid #fff;
-  border-radius: 50%;
-  margin-right: -5%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  ${(props) => props.theme.fontStyles.caption.captionRegular};
-  font-size: 1.2rem;
-  font-weight: 400;
-  color: ${(props) => props.theme.colors.gray.gray900};
-
-  z-index: ${(props) => props.index};
 `;
 
 const InterviewState = styled.div`
