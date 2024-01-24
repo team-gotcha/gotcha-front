@@ -83,24 +83,14 @@ const MainInterview = () => {
       {isListView ? (
         // 리스트뷰
         <StackWrapper>
-          {isInterviewEmpty ? (
-            //면접자 입력 전
+          <ViewListStack isEmpty={isInterviewEmpty} />
+          {applicantsList.map((applicant, index) => (
             <ViewListStack
+              key={index}
               isEmpty={isInterviewEmpty}
-              groupMemberList={groupMemberList}
+              applicantData={applicant}
             />
-          ) : (
-            <>
-              <ViewListStack
-                isEmpty={isInterviewEmpty}
-                groupMemberList={groupMemberList}
-              />
-              <ViewListStack
-                isEmpty={isInterviewEmpty}
-                groupMemberList={groupMemberList}
-              />
-            </>
-          )}
+          ))}
         </StackWrapper>
       ) : (
         // 보드뷰

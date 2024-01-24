@@ -126,7 +126,7 @@ const Wrapper = styled.section`
   padding: 2rem 6rem 0 2.7rem;
   background-color: #fff;
 
-  z-index: 100;
+  z-index: 6;
 `;
 
 const TopDiv = styled.div`
