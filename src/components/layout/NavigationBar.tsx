@@ -1,22 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { styled } from "styled-components";
+import React, { useEffect, useState } from 'react';
+import { styled } from 'styled-components';
 
-import AddIcon from "../../assets/icons/AddIcon";
-import { ReactComponent as FavIcon } from "../../assets/images/FavIcon.svg";
-import { ReactComponent as NotiIcon } from "../../assets/images/NotiIcon.svg";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { modalContent, modalState } from "../../recoil/modal";
-import { useToggleModal } from "../../hooks/useToggleModal";
-import AddProjectModal from "../common/modal/AddProjectModal";
-import { loginState, userInfoState } from "../../recoil/userInfo";
-import { useGetUserInfo } from "../../apis/get/useGetUserInfo";
-import { useGetProjectList } from "../../apis/get/useGetProjectList";
-import AddInterviewModal from "../common/modal/AddInterviewModal";
-import { useLocation, useNavigate } from "react-router-dom";
-import ShareIcon from "../../assets/icons/ShareIcon";
-import ListIcon from "../../assets/icons/ListIcon";
-import BoardIcon from "../../assets/icons/BoardIcon";
-import { interviewModeState } from "../../recoil/mainview";
+import AddIcon from '../../assets/icons/AddIcon';
+import { ReactComponent as FavIcon } from '../../assets/images/FavIcon.svg';
+import { ReactComponent as NotiIcon } from '../../assets/images/NotiIcon.svg';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { modalContent, modalState } from '../../recoil/modal';
+import { useToggleModal } from '../../hooks/useToggleModal';
+import AddProjectModal from '../common/modal/AddProjectModal';
+import { loginState, userInfoState } from '../../recoil/userInfo';
+import { useGetUserInfo } from '../../apis/get/useGetUserInfo';
+import { useGetProjectList } from '../../apis/get/useGetProjectList';
+import AddInterviewModal from '../common/modal/AddInterviewModal';
+import { useLocation, useNavigate } from 'react-router-dom';
+import ShareIcon from '../../assets/icons/ShareIcon';
+import ListIcon from '../../assets/icons/ListIcon';
+import BoardIcon from '../../assets/icons/BoardIcon';
+import { interviewModeState } from '../../recoil/mainview';
+import CommonGroupMembers from '../common/CommonGroupMembers';
+import { useGetProjectMembers } from '../../apis/get/useGetProjectMembers';
+import { useGetViewer } from '../../apis/get/useGetViewer';
 
 const NavigationBar = () => {
   const isModalOpen = useRecoilValue(modalState);
@@ -24,43 +27,62 @@ const NavigationBar = () => {
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const [modalItem, setModalItem] = useRecoilState(modalContent);
   const [isLogin, setIsLogin] = useRecoilState(loginState);
-
-  const [title, setTitle] = useState("");
-
+  const [title, setTitle] = useState('');
   const [isListView, setIsListView] = useRecoilState(interviewModeState);
+  const [memberList, setMemberList] = useState([]);
 
   const location = useLocation();
   const { pathname } = location;
 
-  let interview_id = "";
-  let project_id = "";
+  let interview_id = '';
+  let project_id = '';
 
   // pathname에서 interview_id 또는 project_id 추출
-  const pathSegments = pathname.split("/");
-  if (pathSegments.includes("interview")) {
-    const index = pathSegments.indexOf("interview");
+  const pathSegments = pathname.split('/');
+  if (pathSegments.includes('interview')) {
+    const index = pathSegments.indexOf('interview');
     interview_id = pathSegments[index + 1];
-  } else if (pathSegments.includes("project")) {
-    const index = pathSegments.indexOf("project");
+  } else if (pathSegments.includes('project')) {
+    const index = pathSegments.indexOf('project');
     project_id = pathSegments[index + 1];
   }
 
+  //custom-hook
+  const fetchedMembers = useGetProjectMembers(project_id);
+  const fetchedInterviewMembers = useGetViewer(Number(interview_id));
   useEffect(() => {
-    if (interview_id !== "") {
+    if (!fetchedMembers.isLoading && project_id !== '') {
+      setMemberList(fetchedMembers.projectMembers.emails);
+    }
+  }, [fetchedMembers.isLoading, project_id]);
+
+  useEffect(() => {
+    if (!fetchedInterviewMembers.isLoading && interview_id !== '') {
+      console.log(fetchedInterviewMembers.interviewerInfo);
+      setMemberList(
+        fetchedInterviewMembers.interviewerInfo.map(
+          (item: { name: string; id: number; email: string }) => item.email
+        )
+      );
+    }
+  }, [fetchedInterviewMembers.isLoading, interview_id]);
+
+  useEffect(() => {
+    if (interview_id !== '') {
       const matchingInterview = userInfo.projects
         .flatMap((project) => project.interviews)
         .find(
           (interview) => interview.interviewId === parseInt(interview_id, 10)
         );
 
-      setTitle(matchingInterview ? matchingInterview.interviewName : "");
-    } else if (project_id !== "") {
+      setTitle(matchingInterview ? matchingInterview.interviewName : '');
+    } else if (project_id !== '') {
       const matchingProject = userInfo.projects.find(
         (project) => project.projectId === parseInt(project_id, 10)
       );
-      setTitle(matchingProject ? matchingProject.projectName : "");
+      setTitle(matchingProject ? matchingProject.projectName : '');
     } else {
-      setTitle("세오스");
+      setTitle('세오스');
     }
   }, [interview_id, project_id, userInfo]);
   return (
@@ -71,11 +93,17 @@ const NavigationBar = () => {
           <Title>{title}</Title>
         </ProjInfo>
         <IconDiv>
-          <ImagesContainer>
-            <Image></Image>
-            <Image></Image>
-            <Image></Image>
-          </ImagesContainer>
+          {project_id ? (
+            <CommonGroupMembers
+              groupMemberList={memberList}
+              showNum={memberList.length}
+            />
+          ) : (
+            <CommonGroupMembers
+              groupMemberList={memberList}
+              showNum={memberList.length}
+            />
+          )}
           <ShareIcon />
         </IconDiv>
       </TopDiv>
@@ -89,7 +117,7 @@ const NavigationBar = () => {
           <ListIcon
             width="16"
             height="16"
-            fill={isListView ? "#3733ff" : "#CCC"}
+            fill={isListView ? '#3733ff' : '#CCC'}
           />
           목록
         </NavItem>
@@ -102,7 +130,7 @@ const NavigationBar = () => {
           <BoardIcon
             width="16"
             height="16"
-            fill={!isListView ? "#3733ff" : "#CCC"}
+            fill={!isListView ? '#3733ff' : '#CCC'}
           />
           보드
         </NavItem>
@@ -189,7 +217,7 @@ const NavItem = styled.button<{ isActive?: boolean }>`
   gap: 0.4rem;
   width: 7rem;
   border-bottom: 0.1rem solid
-    ${(props) => (props.isActive ? "#3733ff" : "white")};
+    ${(props) => (props.isActive ? '#3733ff' : 'white')};
 
   font-size: 1.2rem;
   font-style: normal;
@@ -197,5 +225,5 @@ const NavItem = styled.button<{ isActive?: boolean }>`
   line-height: 160%; /* 19.2px */
 
   //활성화된 뷰
-  color: ${(props) => (props.isActive ? "#3733ff" : "#CCC")};
+  color: ${(props) => (props.isActive ? '#3733ff' : '#CCC')};
 `;

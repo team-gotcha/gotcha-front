@@ -57,20 +57,21 @@ const MainInterview = () => {
   const fetchedData = useGetApplicants(Number(interview_id));
 
   useEffect(() => {
+    console.log(interview_id);
     console.log(fetchedData.applicants);
     if (!fetchedData.isLoading) {
       if (fetchedData.applicants.length === 0) {
         setIsInterviewEmpty(true);
       } else {
         setIsInterviewEmpty(false);
-        setApplicantsList(fetchedData.applicants);
       }
+      setApplicantsList(fetchedData.applicants);
     }
   }, [fetchedData.isLoading, interview_id]);
 
   return (
     <MainWrapper>
-      <Banner todayInterviewNum={todayInterviewNum} />
+      <Banner />
 
       <NotiBar>
         <ViewFinalSuccessfulApplier />
@@ -83,11 +84,11 @@ const MainInterview = () => {
       {isListView ? (
         // 리스트뷰
         <StackWrapper>
-          <ViewListStack isEmpty={isInterviewEmpty} />
+          <ViewListStack isEmpty={true} />
           {applicantsList.map((applicant, index) => (
             <ViewListStack
               key={index}
-              isEmpty={isInterviewEmpty}
+              isEmpty={false}
               applicantData={applicant}
             />
           ))}

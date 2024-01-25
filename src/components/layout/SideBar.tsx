@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { styled } from "styled-components";
+import React, { useEffect, useState } from 'react';
+import { styled } from 'styled-components';
 
-import AddIcon from "../../assets/icons/AddIcon";
-import { ReactComponent as FavIcon } from "../../assets/images/FavIcon.svg";
-import { ReactComponent as NotiIcon } from "../../assets/images/NotiIcon.svg";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { modalContent, modalState } from "../../recoil/modal";
-import { useToggleModal } from "../../hooks/useToggleModal";
-import AddProjectModal from "../common/modal/AddProjectModal";
-import { loginState, userInfoState } from "../../recoil/userInfo";
-import { useGetUserInfo } from "../../apis/get/useGetUserInfo";
-import { useGetProjectList } from "../../apis/get/useGetProjectList";
-import AddInterviewModal from "../common/modal/AddInterviewModal";
-import { useLocation, useNavigate } from "react-router-dom";
+import AddIcon from '../../assets/icons/AddIcon';
+import { ReactComponent as FavIcon } from '../../assets/images/FavIcon.svg';
+import { ReactComponent as NotiIcon } from '../../assets/images/NotiIcon.svg';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { modalContent, modalState } from '../../recoil/modal';
+import { useToggleModal } from '../../hooks/useToggleModal';
+import AddProjectModal from '../common/modal/AddProjectModal';
+import { loginState, userInfoState } from '../../recoil/userInfo';
+import { useGetUserInfo } from '../../apis/get/useGetUserInfo';
+import { useGetProjectList } from '../../apis/get/useGetProjectList';
+import AddInterviewModal from '../common/modal/AddInterviewModal';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const SideBar = () => {
   //전역상태
@@ -39,7 +39,7 @@ const SideBar = () => {
 
   useEffect(() => {
     if (isLogin && !fetchedProjectData.isLoading) {
-      console.log("유저데이터 세팅");
+      console.log('유저데이터 세팅');
       console.log(fetchedProjectData.projectList);
       setUserInfo(fetchedProjectData.projectList);
     }
@@ -55,15 +55,15 @@ const SideBar = () => {
 
   const location = useLocation();
   const { pathname } = location;
-  let interview_id = "";
-  let project_id = "";
+  let interview_id = '';
+  let project_id = '';
   // pathname에서 interview_id 또는 project_id 추출
-  const pathSegments = pathname.split("/");
-  if (pathSegments.includes("interview")) {
-    const index = pathSegments.indexOf("interview");
+  const pathSegments = pathname.split('/');
+  if (pathSegments.includes('interview')) {
+    const index = pathSegments.indexOf('interview');
     interview_id = pathSegments[index + 1];
-  } else if (pathSegments.includes("project")) {
-    const index = pathSegments.indexOf("project");
+  } else if (pathSegments.includes('project')) {
+    const index = pathSegments.indexOf('project');
     project_id = pathSegments[index + 1];
   }
   return (
@@ -102,25 +102,23 @@ const SideBar = () => {
                     />
                   </ItemTop>
 
-                  <InterviewDetail>
-                    {project.interviews &&
-                      project.interviews.map((interview, index) => (
-                        <SubTitle
-                          key={index}
-                          onClick={() =>
-                            handleMoveToInterview(
-                              interview.interviewId,
-                              project.projectId
-                            )
-                          }
-                          isActive={
-                            interview_id === String(interview.interviewId)
-                          }
-                        >
-                          {interview.interviewName}
-                        </SubTitle>
-                      ))}
-                  </InterviewDetail>
+                  {project.interviews &&
+                    project.interviews.map((interview, index) => (
+                      <SubTitle
+                        key={index}
+                        onClick={() =>
+                          handleMoveToInterview(
+                            interview.interviewId,
+                            project.projectId
+                          )
+                        }
+                        isActive={
+                          interview_id === String(interview.interviewId)
+                        }
+                      >
+                        {interview.interviewName}
+                      </SubTitle>
+                    ))}
                 </InterviewItem>
               </div>
             ))}
@@ -156,12 +154,9 @@ const ItemTop = styled.div<{ isActive?: boolean }>`
 
   //활성화된 대주제
   background-color: ${(props) =>
-    props.isActive ? "var(--purple-200, #E6E5FF)" : "transparent"};
+    props.isActive ? 'var(--purple-200, #E6E5FF)' : 'transparent'};
 `;
 
-const InterviewDetail = styled.div`
-  display: none;
-`;
 const SubTitle = styled.div<{ isActive?: boolean }>`
   color: ${(props) => props.theme.colors.gray.gray500};
   ${(props) => props.theme.fontStyles.body.bodyRegular};
@@ -175,8 +170,16 @@ const SubTitle = styled.div<{ isActive?: boolean }>`
   //활성화
   color: ${(props) =>
     props.isActive
-      ? "#3733FF"
-      : "${(props) => props.theme.colors.gray.gray500}"};
+      ? '#3733FF'
+      : '${(props) => props.theme.colors.gray.gray500}'};
+
+  display: ${(props) => (props.isActive ? 'flex' : 'none')};
+
+  flex-direction: column;
+  gap: 1rem;
+
+  padding-left: 3rem;
+  padding-top: 1rem;
 `;
 
 const Wrapper = styled.div`
@@ -300,13 +303,9 @@ const InterviewItem = styled.div`
       cursor: pointer;
     }
 
-    ${InterviewDetail} {
+    ${SubTitle} {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-
-      padding-left: 2rem;
-      padding-top: 1rem;
     }
   }
 `;

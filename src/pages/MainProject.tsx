@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Banner from '../components/main/Banner';
 import ViewListStack from '../components/main/ViewListStack';
@@ -6,9 +6,10 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { modalState } from '../recoil/modal';
 import { useToggleModal } from '../hooks/useToggleModal';
 import { useLocation } from 'react-router-dom';
+import { userInfoState } from '../recoil/userInfo';
 
 const MainProject = () => {
-  const [isProjectEmpty, setIsProjectEmpty] = useState(false);
+  const [isProjectEmpty, setIsProjectEmpty] = useState(true);
   const [todayInterviewNum, setTodayInterviewNum] = useState(3);
   const [groupMemberList, setGroupMemberList] = useState([
     'A',
@@ -17,10 +18,6 @@ const MainProject = () => {
     'D',
     'E',
   ]);
-
-  //modal관리
-  const isModalOpen = useRecoilValue(modalState);
-  const { openModal } = useToggleModal();
 
   const location = useLocation();
   const { pathname } = location;
@@ -36,12 +33,30 @@ const MainProject = () => {
     project_id = pathSegments[index + 1];
   }
 
-  //custom -hook
+  //전역변수
+  let interviewList = useRecoilValue(userInfoState).projects.filter(
+    (project) => String(project.projectId) === project_id
+  )[0].interviews;
+
+  useEffect(() => {
+    if (interviewList.length === 0) {
+      console.log(interviewList);
+      setIsProjectEmpty(true);
+      console.log('g');
+    } else {
+      console.log(interviewList);
+      setIsProjectEmpty(false);
+    }
+  }, [interviewList]);
+
+  //modal관리
+  const isModalOpen = useRecoilValue(modalState);
+  const { openModal } = useToggleModal();
 
   return (
     <>
       <MainWrapper>
-        <Banner todayInterviewNum={todayInterviewNum} />
+        <Banner />
 
         <InterviewListWrapper>
           {isProjectEmpty && (
@@ -51,29 +66,23 @@ const MainProject = () => {
                   + 첫 면접을 만들어주세요!
                 </ProjectEmptyComment>
                 <StackWrapper>
-                  <ViewListStack isEmpty={isProjectEmpty} />
+                  <ViewListStack isEmpty={true} />
                 </StackWrapper>
               </ViewListWrapper>
             </>
           )}
           {!isProjectEmpty && (
             <>
-              <ViewListWrapper>
-                <InterviewTitle>세부 면접 이름</InterviewTitle>
-                <StackWrapper>
-                  <ViewListStack isEmpty={isProjectEmpty} />
-                  <ViewListStack isEmpty={isProjectEmpty} />
-                  <ViewListStack isEmpty={isProjectEmpty} />
-                </StackWrapper>
-              </ViewListWrapper>
-              <ViewListWrapper>
-                <InterviewTitle>세부 면접 이름</InterviewTitle>
-                <StackWrapper>
-                  <ViewListStack isEmpty={isProjectEmpty} />
-                  <ViewListStack isEmpty={isProjectEmpty} />
-                </StackWrapper>
-              </ViewListWrapper>
-              {isModalOpen && <h1>모달</h1>}
+              {interviewList.map((interview, index) => (
+                <ViewListWrapper key={index}>
+                  <InterviewTitle>{interview.interviewName}</InterviewTitle>
+                  <StackWrapper>
+                    <ViewListStack isEmpty={isProjectEmpty} />
+                    <ViewListStack isEmpty={isProjectEmpty} />
+                    <ViewListStack isEmpty={isProjectEmpty} />
+                  </StackWrapper>
+                </ViewListWrapper>
+              ))}
             </>
           )}
         </InterviewListWrapper>
