@@ -24,9 +24,6 @@ const SideBar = () => {
 
   const navigate = useNavigate();
 
-  //custom hook
-  const fetchedProjectData = useGetProjectList();
-
   //modal관리
   const handleMakeNewProject = () => {
     setModalItem(<AddProjectModal />);
@@ -36,14 +33,6 @@ const SideBar = () => {
     setModalItem(<AddInterviewModal projectId={projectId} />);
     openModal();
   };
-
-  useEffect(() => {
-    if (isLogin && !fetchedProjectData.isLoading) {
-      console.log('유저데이터 세팅');
-      console.log(fetchedProjectData.projectList);
-      setUserInfo(fetchedProjectData.projectList);
-    }
-  }, [!fetchedProjectData.isLoading, isLogin]);
 
   //page이동
   const handleMoveToProject = (project_id: number) => {

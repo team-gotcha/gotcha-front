@@ -6,19 +6,21 @@ import { theme } from './style/theme';
 import GlobalStyle from './style/GlobalStyle';
 import { RecoilRoot } from 'recoil';
 import './assets/fonts/font.css';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { QueryClient } from 'react-query';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+const queryClient = new QueryClient();
 root.render(
   <RecoilRoot>
     <React.StrictMode>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <App />
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          <App />
+        </ThemeProvider>
+      </QueryClientProvider>
     </React.StrictMode>
   </RecoilRoot>
 );

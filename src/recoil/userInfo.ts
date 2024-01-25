@@ -23,6 +23,14 @@ export const userInfoState = atom({
   },
 });
 
+export const userInfoStateDefaultSelector = selector({
+  key: 'userInfoStateDefaultSelector',
+  get: ({ get }) => {
+    const accessToken = localStorage.getItem('accessToken');
+    return accessToken !== null && accessToken !== undefined;
+  },
+});
+
 export const loginStateDefaultSelector = selector({
   key: 'loginStateDefaultSelector',
   get: ({ get }) => {

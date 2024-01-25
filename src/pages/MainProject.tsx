@@ -7,8 +7,11 @@ import { modalState } from '../recoil/modal';
 import { useToggleModal } from '../hooks/useToggleModal';
 import { useLocation } from 'react-router-dom';
 import { userInfoState } from '../recoil/userInfo';
+import { useGetApplicants } from '../apis/get/useGetApplicants';
+import ViewListBox from '../components/main/ViewListBox';
 
 const MainProject = () => {
+  const [interviewList, setInterviewList] = useState([]);
   const [isProjectEmpty, setIsProjectEmpty] = useState(true);
   const [todayInterviewNum, setTodayInterviewNum] = useState(3);
   const [groupMemberList, setGroupMemberList] = useState([
@@ -34,17 +37,20 @@ const MainProject = () => {
   }
 
   //전역변수
-  let interviewList = useRecoilValue(userInfoState).projects.filter(
-    (project) => String(project.projectId) === project_id
-  )[0].interviews;
+  const GlobalUserInfo = useRecoilValue(userInfoState);
+
+  useEffect(() => {
+    const filteredList = GlobalUserInfo.projects
+      .filter((project) => String(project.projectId) === project_id)
+      .map((project) => project.interviews)[0];
+
+    setInterviewList(filteredList || []);
+  }, [GlobalUserInfo, project_id]);
 
   useEffect(() => {
     if (interviewList.length === 0) {
-      console.log(interviewList);
       setIsProjectEmpty(true);
-      console.log('g');
     } else {
-      console.log(interviewList);
       setIsProjectEmpty(false);
     }
   }, [interviewList]);
@@ -76,11 +82,10 @@ const MainProject = () => {
               {interviewList.map((interview, index) => (
                 <ViewListWrapper key={index}>
                   <InterviewTitle>{interview.interviewName}</InterviewTitle>
-                  <StackWrapper>
-                    <ViewListStack isEmpty={isProjectEmpty} />
-                    <ViewListStack isEmpty={isProjectEmpty} />
-                    <ViewListStack isEmpty={isProjectEmpty} />
-                  </StackWrapper>
+                  <ViewListBox
+                    isEmptyNeed={false}
+                    interview_id={interview.interviewId}
+                  />
                 </ViewListWrapper>
               ))}
             </>

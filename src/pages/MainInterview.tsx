@@ -15,6 +15,7 @@ import { modalContent, modalState } from '../recoil/modal';
 import { interviewModeState } from '../recoil/mainview';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useGetApplicants } from '../apis/get/useGetApplicants';
+import ViewListBox from '../components/main/ViewListBox';
 
 const MainInterview = () => {
   const navigate = useNavigate();
@@ -53,22 +54,6 @@ const MainInterview = () => {
     navigate(`/ready/1`);
   };
 
-  //custom -hook
-  const fetchedData = useGetApplicants(Number(interview_id));
-
-  useEffect(() => {
-    console.log(interview_id);
-    console.log(fetchedData.applicants);
-    if (!fetchedData.isLoading) {
-      if (fetchedData.applicants.length === 0) {
-        setIsInterviewEmpty(true);
-      } else {
-        setIsInterviewEmpty(false);
-      }
-      setApplicantsList(fetchedData.applicants);
-    }
-  }, [fetchedData.isLoading, interview_id]);
-
   return (
     <MainWrapper>
       <Banner />
@@ -83,16 +68,7 @@ const MainInterview = () => {
 
       {isListView ? (
         // 리스트뷰
-        <StackWrapper>
-          <ViewListStack isEmpty={true} />
-          {applicantsList.map((applicant, index) => (
-            <ViewListStack
-              key={index}
-              isEmpty={false}
-              applicantData={applicant}
-            />
-          ))}
-        </StackWrapper>
+        <ViewListBox isEmptyNeed={true} interview_id={Number(interview_id)} />
       ) : (
         // 보드뷰
         <BoardWrapper>
