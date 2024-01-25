@@ -9,21 +9,18 @@ import axiosInstance from "..";
  */
 
 interface filesProps {
-  applicantId: number;
-  resume?: File[];
-  portfolio?: File[];
+  filesData: FormData;
 }
 
-export const usePostFiles = () => {
+export const usePatchFiles = () => {
   const { mutate, isPending, error, isSuccess } = useMutation({
     mutationKey: ["addFiles"],
-    mutationFn: async (data: filesProps) => {
-      console.log(data);
-      const res = await axiosInstance.post(`/api/applicants/files`, {
-        "applicant-id": data.applicantId,
-        resume: data.resume,
-        portfolio: data.portfolio,
-      });
+    mutationFn: async (filesData: filesProps) => {
+      console.log("넣는 값 :", filesData.filesData);
+      const res = await axiosInstance.patch(
+        `/api/applicants/files`,
+        filesData.filesData
+      );
       console.log(res);
       return res.data;
     },

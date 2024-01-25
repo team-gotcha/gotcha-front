@@ -17,7 +17,7 @@ import { useGetIndivQuestions } from "../apis/get/useGetIndivQuestions";
 
 import { usePostUserReady } from "../apis/post/usePostUserReady";
 import { usePostUserDetail } from "../apis/post/usePostUserDetail";
-import { usePostFiles } from "../apis/post/usePostFiles";
+import { usePatchFiles } from "../apis/patch/usePatchFiles";
 
 //test
 interface DetailInfoProps {
@@ -32,7 +32,6 @@ interface DetailInfoProps {
   email: string;
   keywords: { name: string; keywordType: string }[];
   interviewId: string;
-  questions: { content: string }[];
 }
 
 interface QuestionProps {
@@ -61,10 +60,6 @@ const testData: DetailInfoProps = {
     { name: "단대 회장", keywordType: "EXPERIENCE" },
   ],
   interviewId: "4",
-  questions: [
-    { content: "강점에 대해서 얘기해보세요." },
-    { content: "당신의 약점은 무엇입니까?" },
-  ],
 };
 
 const Ready = () => {
@@ -84,7 +79,7 @@ const Ready = () => {
   //custom-hook
   const postReadyData = usePostUserReady();
   const postDetailData = usePostUserDetail();
-  const userPostData = usePostFiles();
+  const userPatchData = usePatchFiles();
 
   const getIndivQuestionData = useGetIndivQuestions(2, render);
 
@@ -108,11 +103,10 @@ const Ready = () => {
   const handleSubmit = () => {
     // postReadyData.readyToPost(userIdNumber);
     // postDetailData.detailPost(testData);
-    // userPostData.addFiles({
-    //   applicantId: userIdNumber,
-    //   resume: filesData.resume,
-    //   portfolio: filesData.portfolios,
-    // });
+    console.log({
+      filesData,
+    });
+    userPatchData.addFiles({ filesData: filesData });
     setIsOpen(!isOpen);
   };
 

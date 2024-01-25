@@ -5,15 +5,30 @@ import info from "../../assets/images/InfoIcon-gray.svg";
 import CloseIcon from "../../assets/icons/CloseIcon";
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import { userDetailInfoState } from "../../recoil/cardview";
+import { userDetailInfoState, userPostDataState } from "../../recoil/cardview";
 
 const KeywordBox = ({ modify = true, title = "" }) => {
   const userDetailInfo = useRecoilValue(userDetailInfoState);
+  const keywordInfo = useRecoilValue(userPostDataState);
+  const setKeywordInfo = useSetRecoilState(userPostDataState);
   // const [titleValue, setTitleValue] = useState<string>("");
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [keywords, setKeywords] = useState<string[]>([]);
-  const [inputWidth, setInputWidth] = useState<number>(20);
+  // const [inputWidth, setInputWidth] = useState<number>(20);
+
+  const getTitleType = () => {
+    switch (title) {
+      case "성향":
+        return "TRAIT";
+      case "스킬":
+        return "SKILL";
+      case "경험":
+        return "EXPERIENCE";
+      default:
+        return "";
+    }
+  };
 
   const getTitleValue = () => {
     switch (title) {
@@ -31,7 +46,7 @@ const KeywordBox = ({ modify = true, title = "" }) => {
   const titleValue = getTitleValue();
 
   useEffect(() => {
-    getTitleValue();
+    !modify && getTitleValue();
   }, []);
 
   const showInput = () => {
@@ -45,7 +60,7 @@ const KeywordBox = ({ modify = true, title = "" }) => {
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
-    setInputWidth(event.target.value.length * 10 + 20);
+    // setInputWidth(event.target.value.length * 10 + 20);
   };
 
   const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {

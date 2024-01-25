@@ -34,7 +34,6 @@ export const userPostDataState = atom({
     email: "",
     keywords: [{ name: "", keywordType: "" }],
     interviewId: "",
-    questions: [{ content: "" }],
   },
 });
 
@@ -55,10 +54,7 @@ export const questionsIndivDataState = atom({
 
 export const filesDataState = atom({
   key: "filesDataState",
-  default: {
-    resume: [] as File[],
-    portfolios: [] as File[],
-  },
+  default: new FormData(),
 });
 
 export const renderState = atom({
