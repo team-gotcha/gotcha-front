@@ -23,11 +23,11 @@ const MainInterview = () => {
   const navigate = useNavigate();
   const [isInterviewEmpty, setIsInterviewEmpty] = useState(false);
   const [applicantsList, setApplicantsList] = useState([]);
-  const [todayInterviewNum, setTodayInterviewNum] = useState(3);
   const [memberList, setMemberList] = useState([]);
   const [isListView, setIsListView] = useRecoilState(interviewModeState);
-  const [lastStageApplierNum, setLastStageApplierNum] = useState(3); //면접완료된 면접자 수 (보드뷰)
-
+  const [preparationApplierList, setPreparationApplierList] = useState([]);
+  const [inProgressApplierList, setInProgressApplierList] = useState([]);
+  const [completionApplierList, setCompletionApplierList] = useState([]);
   const location = useLocation();
   const { pathname } = location;
   let interview_id = '';
@@ -56,28 +56,44 @@ const MainInterview = () => {
     navigate(`/ready/${interview_id}`);
   };
 
-  //groupMember불러오기
-  const fetchedInterviewMembers = useGetViewer(Number(interview_id));
-  useEffect(() => {
-    if (!fetchedInterviewMembers.isLoading && interview_id !== '') {
-      console.log(fetchedInterviewMembers.interviewerInfo);
-      setMemberList(
-        fetchedInterviewMembers.interviewerInfo.map(
-          (item: { name: string; id: number; email: string }) => item.email
-        )
-      );
-    }
-  }, [fetchedInterviewMembers.isLoading, interview_id]);
-
   //이메일 보내기
   const fetchData = usePostSendPassEmail();
   const handleSendPassEmail = () => {
     fetchData.sendPassEmail(Number(interview_id));
   };
+
+  //applicant data 받아오기
+  const fetchedData = useGetApplicants(Number(interview_id));
+  useEffect(() => {
+    if (!fetchedData.isLoading) {
+      console.log(fetchedData.applicants);
+      setApplicantsList(fetchedData.applicants);
+    }
+  }, [fetchedData.isLoading, interview_id]);
+
+  useEffect(() => {
+    if (applicantsList.length !== 0) {
+      setPreparationApplierList(
+        fetchedData.applicants.filter(
+          (item: any) => item.status === 'PREPARATION'
+        )
+      );
+      setInProgressApplierList(
+        fetchedData.applicants.filter(
+          (item: any) => item.status === 'IN_PROGRESS'
+        )
+      );
+      setCompletionApplierList(
+        fetchedData.applicants.filter(
+          (item: any) => item.status === 'COMPLETION'
+        )
+      );
+    }
+  }, [applicantsList]);
+
   return (
     <MainWrapper>
       <Banner />
-
       <NotiBar>
         <ViewFinalSuccessfulApplier
           groupMembers={memberList}
@@ -102,36 +118,37 @@ const MainInterview = () => {
                 + 지원자 추가
               </AddApplierButton>
             </BoardStackTitle>
-            {isInterviewEmpty ? (
-              //면접자 입력 전
-              <ViewBoardStack isEmpty={isInterviewEmpty} />
-            ) : (
-              <>
-                <ViewBoardStack />
-              </>
-            )}
+            {preparationApplierList.map((item, index) => (
+              <ViewBoardStack isEmpty={false} applicantData={item} />
+            ))}
           </BoardBox>
+
           <BoardBox>
             <BoardStackTitle>면접 진행 중</BoardStackTitle>
-            <ViewBoardStack groupMemberList={memberList} />
-            <ViewBoardStack groupMemberList={memberList} />
+            {inProgressApplierList.map((item, index) => (
+              <ViewBoardStack isEmpty={false} applicantData={item} />
+            ))}
           </BoardBox>
+
           <BoardBox>
             <BoardStackTitle>면접 완료</BoardStackTitle>
-            <ViewFinalStack>
-              <FinalStackTitle>
-                <CheckIcon />
-                {lastStageApplierNum}명의 면접이 완료되었습니다.
-              </FinalStackTitle>
-              <FinalStackSubtitle>
-                갓챠가 분석한 면접 결과를 확인해주세요!
-              </FinalStackSubtitle>
-              {Array.from({ length: lastStageApplierNum + 1 }).map(
-                (_, index) => (
+            {completionApplierList.length && (
+              <ViewFinalStack>
+                <FinalStackTitle>
+                  <CheckIcon />
+                  {completionApplierList.length}
+                  명의 면접이 완료되었습니다.
+                </FinalStackTitle>
+                <FinalStackSubtitle>
+                  갓챠가 분석한 면접 결과를 확인해주세요!
+                </FinalStackSubtitle>
+                {Array.from({
+                  length: completionApplierList.length + 1,
+                }).map((_, index) => (
                   <ViewFinalStackFooter key={index} />
-                )
-              )}
-            </ViewFinalStack>
+                ))}
+              </ViewFinalStack>
+            )}
           </BoardBox>
         </BoardWrapper>
       )}

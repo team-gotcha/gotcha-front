@@ -4,6 +4,12 @@ import StarOffIcon from '../../assets/icons/StarOffIcon';
 import CommonTag from '../common/CommonTag';
 import MessageIcon from '../../assets/icons/MessageIcon';
 import ThinMessageIcon from '../../assets/icons/ThinMessageIcon';
+import CommonGroupMembers from '../common/CommonGroupMembers';
+import {
+  formatDateString,
+  useGetTodayDate,
+  useGetTodayDateDotFormat,
+} from '../../hooks/useGetTodayDate';
 
 interface ViewBoardStackProps {
   applierName?: string; //면접자이름
@@ -16,29 +22,48 @@ interface ViewBoardStackProps {
 
   isStar?: boolean; //즐찾표시 여부
   isEmpty?: boolean; //빈
+
+  applicantData?: {
+    id?: number;
+    questionCount?: number;
+    name?: string;
+    date?: string;
+    status?: string;
+    interviewerEmails?: Array<string>;
+    keywords?: Array<{ name?: string; type?: string }>;
+  };
 }
 
 interface GroupMemberImgProps {
   index: number;
 }
 
-const ViewBoardStack = ({
-  groupMemberList = ['A'],
-  tagList = ['태그', '태그', '태그'],
-  interviewDate = 'Due Date',
-  applierName = '첫 후보를 등록해보세요!',
-  ...props
-}: ViewBoardStackProps) => {
-  const expectedGroupMembers = 4;
+const ViewBoardStack = ({ ...props }: ViewBoardStackProps) => {
+  console.log(props.applicantData);
+  // Check if applicantData exists before accessing its properties
+  const applicantName = props.applicantData
+    ? props.applicantData.name
+    : '새로운 지원자를 추가하세요!';
+  const keywords = props.applicantData
+    ? props.applicantData.keywords
+    : [{ name: '태그' }, { name: '태그' }, { name: '태그' }];
+  const questionCount = props.applicantData
+    ? props.applicantData.questionCount
+    : '0';
+  const groupMemberList = props.applicantData
+    ? props.applicantData.interviewerEmails
+    : ['A'];
 
-  // Determine the number of empty slots to render
-  const emptySlots = Math.max(expectedGroupMembers - groupMemberList.length, 0);
+  const todayDate = useGetTodayDateDotFormat();
+  const dueDate = props.applicantData
+    ? formatDateString(props.applicantData.date)
+    : todayDate;
 
   return (
     <Wrapper>
       <BoardTop>
-        <ApplierName>{applierName}</ApplierName>
-        <InterviewDate>{interviewDate}</InterviewDate>
+        <ApplierName>{applicantName}</ApplierName>
+        <InterviewDate>{dueDate}</InterviewDate>
         <FavoriteState>
           <StarOffIcon width="1.92rem" />
         </FavoriteState>
@@ -47,22 +72,11 @@ const ViewBoardStack = ({
       <BoardBottom>
         <ThinMessageIcon width="1.37rem" height="1.32rem" />
         <TagList>
-          {tagList.map((tag, index) => (
-            <CommonTag key={index} children={tag} />
+          {keywords.map((keyword, index) => (
+            <CommonTag key={index} children={keyword.name} />
           ))}
         </TagList>
-        <GroupMemberList>
-          {/* Render the actual group members */}
-          {groupMemberList.map((member, index) => (
-            <GroupMemberImg key={index} index={groupMemberList.length - index}>
-              {member.charAt(0)}
-            </GroupMemberImg>
-          ))}
-          {/* Render empty slots if needed */}
-          {Array.from({ length: emptySlots }).map((_, index) => (
-            <EmptyGroupMemberImg key={index} />
-          ))}
-        </GroupMemberList>
+        <CommonGroupMembers groupMemberList={groupMemberList} showNum={4} />
       </BoardBottom>
     </Wrapper>
   );

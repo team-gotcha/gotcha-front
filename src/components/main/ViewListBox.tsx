@@ -12,12 +12,12 @@ const ViewListBox = ({ ...props }: ViewListBoxProps) => {
   const navigate = useNavigate();
   //custom -hook
   const fetchedData = useGetApplicants(Number(props.interview_id));
-
   useEffect(() => {
     if (!fetchedData.isLoading) {
       setApplicantsList(fetchedData.applicants);
     }
   }, [fetchedData.isLoading, props.interview_id]);
+
   return (
     <StackWrapper>
       {(props.isEmptyNeed || applicantsList.length === 0) && (
