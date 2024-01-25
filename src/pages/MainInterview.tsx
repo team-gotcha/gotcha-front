@@ -121,6 +121,9 @@ const MainInterview = () => {
             {preparationApplierList.map((item, index) => (
               <ViewBoardStack isEmpty={false} applicantData={item} />
             ))}
+            {!preparationApplierList.length && (
+              <ViewBoardStack isEmpty={true} />
+            )}
           </BoardBox>
 
           <BoardBox>

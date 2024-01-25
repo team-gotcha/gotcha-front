@@ -9,6 +9,7 @@ import { theme } from '../../style/theme';
 interface CommonTagProps {
   children: string;
   width?: string;
+  fontSize?: string;
 }
 
 const CommonTag = ({ ...props }: CommonTagProps) => {
@@ -36,5 +37,11 @@ const StyledTag = styled.div<CommonTagProps>`
     props.width &&
     css`
       width: ${props.width};
+    `};
+
+  ${(props) =>
+    props.fontSize &&
+    css`
+      font-size: ${props.fontSize};
     `};
 `;

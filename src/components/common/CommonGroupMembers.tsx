@@ -49,8 +49,8 @@ const emptyStyles = css`
 `;
 
 const GroupMemberImg = styled.div<GroupMemberImgProps & { isEmpty: boolean }>`
-  width: 2.8rem;
-  height: 2.8rem;
+  width: 2.6rem;
+  height: 2.6rem;
   flex-shrink: 0;
   border: 0.1rem solid #fff;
   border-radius: 50%;

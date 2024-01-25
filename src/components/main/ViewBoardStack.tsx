@@ -6,6 +6,7 @@ import MessageIcon from '../../assets/icons/MessageIcon';
 import ThinMessageIcon from '../../assets/icons/ThinMessageIcon';
 import CommonGroupMembers from '../common/CommonGroupMembers';
 import {
+  formatDateSmallString,
   formatDateString,
   useGetTodayDate,
   useGetTodayDateDotFormat,
@@ -43,21 +44,21 @@ const ViewBoardStack = ({ ...props }: ViewBoardStackProps) => {
   // Check if applicantData exists before accessing its properties
   const applicantName = props.applicantData
     ? props.applicantData.name
-    : '새로운 지원자를 추가하세요!';
+    : '첫 후보를 등록해보세요!';
   const keywords = props.applicantData
     ? props.applicantData.keywords
     : [{ name: '태그' }, { name: '태그' }, { name: '태그' }];
   const questionCount = props.applicantData
     ? props.applicantData.questionCount
-    : '0';
+    : '';
   const groupMemberList = props.applicantData
     ? props.applicantData.interviewerEmails
     : ['A'];
 
   const todayDate = useGetTodayDateDotFormat();
   const dueDate = props.applicantData
-    ? formatDateString(props.applicantData.date)
-    : todayDate;
+    ? formatDateSmallString(props.applicantData.date)
+    : 'dueDate';
 
   return (
     <Wrapper>
@@ -73,7 +74,7 @@ const ViewBoardStack = ({ ...props }: ViewBoardStackProps) => {
         <ThinMessageIcon width="1.37rem" height="1.32rem" />
         <TagList>
           {keywords.map((keyword, index) => (
-            <CommonTag key={index} children={keyword.name} />
+            <CommonTag key={index} children={keyword.name} fontSize="0.8rem" />
           ))}
         </TagList>
         <CommonGroupMembers groupMemberList={groupMemberList} showNum={4} />
