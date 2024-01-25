@@ -10,6 +10,7 @@ interface ViewListBoxProps {
 const ViewListBox = ({ ...props }: ViewListBoxProps) => {
   const [applicantsList, setApplicantsList] = useState([]);
   const navigate = useNavigate();
+
   //custom -hook
   const fetchedData = useGetApplicants(Number(props.interview_id));
   useEffect(() => {

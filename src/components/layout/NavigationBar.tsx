@@ -36,7 +36,6 @@ const NavigationBar = () => {
 
   let interview_id = '';
   let project_id = '';
-
   // pathname에서 interview_id 또는 project_id 추출
   const pathSegments = pathname.split('/');
   if (pathSegments.includes('interview')) {

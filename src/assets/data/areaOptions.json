@@ -1,0 +1,15 @@
+[
+  { "id": 1, "value": "SERVICE", "label": "서비스" },
+  { "id": 2, "value": "FINANCE", "label": "금융/은행" },
+  { "id": 3, "value": "IT", "label": "IT/테크" },
+  { "id": 4, "value": "MANUFACTURE", "label": "제조/생산/화학" },
+  { "id": 5, "value": "EDUCATION", "label": "교육" },
+  { "id": 6, "value": "CONSTRUCTION", "label": "건설" },
+  { "id": 7, "value": "MEDICAL", "label": "의료/제약" },
+  { "id": 8, "value": "MEDIA", "label": "미디어" },
+  { "id": 9, "value": "ACADEMIC", "label": "학술" },
+  { "id": 10, "value": "DISTRIBUTION", "label": "유통/F&B" },
+  { "id": 11, "value": "CULTURE", "label": "문화/예술/디자인" },
+  { "id": 12, "value": "VOLUNTEERING", "label": "봉사" },
+  { "id": 13, "value": "FASHION", "label": "패션/뷰티" }
+]

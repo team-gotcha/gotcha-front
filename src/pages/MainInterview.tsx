@@ -18,6 +18,7 @@ import { useGetApplicants } from '../apis/get/useGetApplicants';
 import ViewListBox from '../components/main/ViewListBox';
 import { useGetViewer } from '../apis/get/useGetViewer';
 import { usePostSendPassEmail } from '../apis/post/usePostSendPassEmail';
+import { useGetPassApplicants } from '../apis/get/useGetPassApplicants';
 
 const MainInterview = () => {
   const navigate = useNavigate();
@@ -66,10 +67,17 @@ const MainInterview = () => {
   const fetchedData = useGetApplicants(Number(interview_id));
   useEffect(() => {
     if (!fetchedData.isLoading) {
-      console.log(fetchedData.applicants);
       setApplicantsList(fetchedData.applicants);
     }
   }, [fetchedData.isLoading, interview_id]);
+
+  //합격자 명단 받아오기
+  const fetchedPassData = useGetPassApplicants(Number(interview_id));
+  useEffect(() => {
+    if (!fetchedPassData.isLoading) {
+      console.log(fetchedPassData.passApplicants);
+    }
+  }, [fetchedPassData.isLoading, interview_id]);
 
   useEffect(() => {
     if (applicantsList.length !== 0) {
