@@ -13,7 +13,7 @@ import CommonGroupMembers from '../common/CommonGroupMembers';
 
 interface ViewListStackProps {
   isStar?: boolean; //즐찾표시 여부 api수정후 applicantData에 포함시킴
-
+  onClick?: () => void;
   isEmpty?: boolean; //빈 스택 여부
   applicantData?: {
     id?: number;
@@ -65,7 +65,7 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
 
   return (
     <>
-      <Wrapper>
+      <Wrapper onClick={props.onClick}>
         {!props.isEmpty ? (
           <ApplierName>{applicantName}</ApplierName>
         ) : (
@@ -94,7 +94,7 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
 
 export default ViewListStack;
 
-const Wrapper = styled.div`
+const Wrapper = styled.button`
   display: flex;
   flex-direction: row;
   align-items: center;

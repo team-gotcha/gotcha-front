@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useGetApplicants } from '../../apis/get/useGetApplicants';
 import ViewListStack from './ViewListStack';
+import { useNavigate } from 'react-router-dom';
 interface ViewListBoxProps {
   interview_id?: number;
   isEmptyNeed?: boolean;
 }
 const ViewListBox = ({ ...props }: ViewListBoxProps) => {
   const [applicantsList, setApplicantsList] = useState([]);
+  const navigate = useNavigate();
   //custom -hook
   const fetchedData = useGetApplicants(Number(props.interview_id));
 
@@ -19,7 +21,10 @@ const ViewListBox = ({ ...props }: ViewListBoxProps) => {
   return (
     <StackWrapper>
       {(props.isEmptyNeed || applicantsList.length === 0) && (
-        <ViewListStack isEmpty={true} />
+        <ViewListStack
+          isEmpty={true}
+          onClick={() => navigate(`/ready/${props.interview_id}`)}
+        />
       )}
 
       {applicantsList.map((applicant, index) => (

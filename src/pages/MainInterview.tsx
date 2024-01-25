@@ -16,13 +16,15 @@ import { interviewModeState } from '../recoil/mainview';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useGetApplicants } from '../apis/get/useGetApplicants';
 import ViewListBox from '../components/main/ViewListBox';
+import { useGetViewer } from '../apis/get/useGetViewer';
+import { usePostSendPassEmail } from '../apis/post/usePostSendPassEmail';
 
 const MainInterview = () => {
   const navigate = useNavigate();
   const [isInterviewEmpty, setIsInterviewEmpty] = useState(false);
   const [applicantsList, setApplicantsList] = useState([]);
   const [todayInterviewNum, setTodayInterviewNum] = useState(3);
-  const [groupMemberList, setGroupMemberList] = useState(['A', 'B', 'C', 'D']);
+  const [memberList, setMemberList] = useState([]);
   const [isListView, setIsListView] = useRecoilState(interviewModeState);
   const [lastStageApplierNum, setLastStageApplierNum] = useState(3); //면접완료된 면접자 수 (보드뷰)
 
@@ -51,15 +53,36 @@ const MainInterview = () => {
   };
 
   const handleMoveToAddApplicant = () => {
-    navigate(`/ready/1`);
+    navigate(`/ready/${interview_id}`);
   };
 
+  //groupMember불러오기
+  const fetchedInterviewMembers = useGetViewer(Number(interview_id));
+  useEffect(() => {
+    if (!fetchedInterviewMembers.isLoading && interview_id !== '') {
+      console.log(fetchedInterviewMembers.interviewerInfo);
+      setMemberList(
+        fetchedInterviewMembers.interviewerInfo.map(
+          (item: { name: string; id: number; email: string }) => item.email
+        )
+      );
+    }
+  }, [fetchedInterviewMembers.isLoading, interview_id]);
+
+  //이메일 보내기
+  const fetchData = usePostSendPassEmail();
+  const handleSendPassEmail = () => {
+    fetchData.sendPassEmail(Number(interview_id));
+  };
   return (
     <MainWrapper>
       <Banner />
 
       <NotiBar>
-        <ViewFinalSuccessfulApplier />
+        <ViewFinalSuccessfulApplier
+          groupMembers={memberList}
+          handleSendPassEmail={handleSendPassEmail}
+        />
         <AddCommonQuestionButton onClick={handleAddCommonQuestions}>
           공통 질문 작성하기
           <WriteBoardIcon width="2.4rem" />
@@ -90,8 +113,8 @@ const MainInterview = () => {
           </BoardBox>
           <BoardBox>
             <BoardStackTitle>면접 진행 중</BoardStackTitle>
-            <ViewBoardStack groupMemberList={groupMemberList} />
-            <ViewBoardStack groupMemberList={groupMemberList} />
+            <ViewBoardStack groupMemberList={memberList} />
+            <ViewBoardStack groupMemberList={memberList} />
           </BoardBox>
           <BoardBox>
             <BoardStackTitle>면접 완료</BoardStackTitle>

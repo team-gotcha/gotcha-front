@@ -3,24 +3,28 @@ import styled from 'styled-components';
 import Banner from '../components/main/Banner';
 import ViewListStack from '../components/main/ViewListStack';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { modalState } from '../recoil/modal';
+import { modalContent, modalState } from '../recoil/modal';
 import { useToggleModal } from '../hooks/useToggleModal';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { userInfoState } from '../recoil/userInfo';
 import { useGetApplicants } from '../apis/get/useGetApplicants';
 import ViewListBox from '../components/main/ViewListBox';
+import AddInterviewModal from '../components/common/modal/AddInterviewModal';
 
 const MainProject = () => {
   const [interviewList, setInterviewList] = useState([]);
   const [isProjectEmpty, setIsProjectEmpty] = useState(true);
-  const [todayInterviewNum, setTodayInterviewNum] = useState(3);
-  const [groupMemberList, setGroupMemberList] = useState([
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-  ]);
+  const navigate = useNavigate();
+
+  //Modal관리
+  const [modalItem, setModalItem] = useRecoilState(modalContent);
+  const isModalOpen = useRecoilValue(modalState);
+  const { openModal } = useToggleModal();
+
+  const handleMakeNewInterview = (projectId: number) => {
+    setModalItem(<AddInterviewModal projectId={projectId} />);
+    openModal();
+  };
 
   const location = useLocation();
   const { pathname } = location;
@@ -39,6 +43,12 @@ const MainProject = () => {
   //전역변수
   const GlobalUserInfo = useRecoilValue(userInfoState);
 
+  if (project_id === '0') {
+    //초기화면
+    project_id = String(GlobalUserInfo.projects[0].projectId);
+    navigate(`/main/project/${project_id}`);
+  }
+
   useEffect(() => {
     const filteredList = GlobalUserInfo.projects
       .filter((project) => String(project.projectId) === project_id)
@@ -55,10 +65,6 @@ const MainProject = () => {
     }
   }, [interviewList]);
 
-  //modal관리
-  const isModalOpen = useRecoilValue(modalState);
-  const { openModal } = useToggleModal();
-
   return (
     <>
       <MainWrapper>
@@ -68,12 +74,11 @@ const MainProject = () => {
           {isProjectEmpty && (
             <>
               <ViewListWrapper>
-                <ProjectEmptyComment>
+                <ProjectEmptyComment
+                  onClick={() => handleMakeNewInterview(Number(project_id))}
+                >
                   + 첫 면접을 만들어주세요!
                 </ProjectEmptyComment>
-                <StackWrapper>
-                  <ViewListStack isEmpty={true} />
-                </StackWrapper>
               </ViewListWrapper>
             </>
           )}
@@ -132,9 +137,14 @@ const MainWrapper = styled.div`
   padding: 4.4rem;
 `;
 
-const ProjectEmptyComment = styled.div`
+const ProjectEmptyComment = styled.button`
   color: ${(props) => props.theme.colors.purple.purple700};
   ${(props) => props.theme.fontStyles.title.titleRegular};
   font-size: 2rem;
   font-weight: 400;
+
+  cursor: pointer;
+
+  display: flex;
+  justify-content: flex-start;
 `;

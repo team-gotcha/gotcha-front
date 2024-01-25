@@ -38,7 +38,7 @@ const SideBar = () => {
   const handleMoveToProject = (project_id: number) => {
     navigate(`/main/project/${project_id}`);
   };
-  const handleMoveToInterview = (interview_id: number, project_id: number) => {
+  const handleMoveToInterview = (interview_id: number) => {
     navigate(`/main/interview/${interview_id}`);
   };
 
@@ -50,6 +50,9 @@ const SideBar = () => {
   const pathSegments = pathname.split('/');
   if (pathSegments.includes('interview')) {
     const index = pathSegments.indexOf('interview');
+    interview_id = pathSegments[index + 1];
+  } else if (pathSegments.includes('ready')) {
+    const index = pathSegments.indexOf('ready');
     interview_id = pathSegments[index + 1];
   } else if (pathSegments.includes('project')) {
     const index = pathSegments.indexOf('project');
@@ -96,10 +99,7 @@ const SideBar = () => {
                       <SubTitle
                         key={index}
                         onClick={() =>
-                          handleMoveToInterview(
-                            interview.interviewId,
-                            project.projectId
-                          )
+                          handleMoveToInterview(interview.interviewId)
                         }
                         isActive={
                           interview_id === String(interview.interviewId)
