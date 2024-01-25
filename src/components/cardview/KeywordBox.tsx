@@ -97,7 +97,7 @@ const KeywordBox = ({ modify = true, title = "" }) => {
                 onKeyDown={handleInputKeyDown}
                 onBlur={hideInput}
                 autoFocus
-                style={{ width: `${inputWidth}px` }}
+                // style={{ width: `${inputWidth}px` }}
               />
             </>
           ) : (
@@ -138,7 +138,7 @@ const InfoIcon = styled.img`
 const KeywordDiv = styled.div`
   display: flex;
   align-items: center;
-  width: 30rem;
+  width: 32.4rem;
   gap: 0.8rem;
 
   flex-wrap: wrap;

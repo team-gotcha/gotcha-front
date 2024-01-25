@@ -11,8 +11,7 @@ import info from "../../../assets/images/InfoIcon-blue.svg";
 import { useGetAllEvaluations } from "../../../apis/get/useGetAllEvaluations";
 import { useGetEvalQuestion } from "../../../apis/get/useGetEvalQuestion";
 import { useGetRankingPoint } from "../../../apis/get/useGetRankingPoint";
-import { useGetFinApplicants } from "../../../apis/get/useGetFinApplicants";
-import { useGetAllQuestion } from "../../../apis/get/useGetAllQuestion";
+import { useGetCheckQuestions } from "../../../apis/get/useGetCheckQuestions";
 
 interface BaseModalProps {
   isOpen: boolean;
@@ -25,29 +24,20 @@ const QuestionCheckModal = ({
   setIsOpen,
   setIsOpenModal,
 }: BaseModalProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [items, setItems] = useState([]);
+
   //custom hook
-  // const allEvaluationsData = useGetAllEvaluations(1);
-  // const evalQuestionData = useGetEvalQuestion(1);
-  // const rankingPointData = useGetRankingPoint(1);
-  const finApplicantsData = useGetFinApplicants(1);
-  // const allQuestionData = useGetAllQuestion(1);
+  const checkQuestionData = useGetCheckQuestions(2);
 
   useEffect(() => {
-    if (!finApplicantsData.isLoading) {
-      console.log("완료 지원자 데이터 세팅", finApplicantsData);
+    if (!checkQuestionData.isLoading) {
+      console.log("확인 질문 데이터 세팅", checkQuestionData);
+      setItems(checkQuestionData.checkQuestion);
     }
-  }, [!finApplicantsData.isLoading]);
+  }, [!checkQuestionData.isLoading]);
 
   // console.log();
-
-  const [isHovered, setIsHovered] = useState(false);
-  const [items, setItems] = useState([
-    { id: 1, isCommon: true },
-    { id: 2, isCommon: false },
-    { id: 3, isCommon: true },
-    { id: 4, isCommon: false },
-    { id: 5, isCommon: true },
-  ]);
 
   const moveItem = (dragIndex: number, hoverIndex: number) => {
     const draggedItem = items[dragIndex];
@@ -92,7 +82,9 @@ const QuestionCheckModal = ({
                 {items.map((item, index) => (
                   <QuestionItemDrag
                     key={item?.id}
-                    isCommon={item?.isCommon}
+                    isCommon={item?.common}
+                    content={item?.content}
+                    importance={item.importance}
                     index={index}
                     moveItem={moveItem}
                   />

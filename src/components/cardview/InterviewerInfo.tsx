@@ -32,7 +32,13 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
 
   useEffect(() => {
     if (isLogin && !userDetailData.isLoading && modify) {
-      console.log("유저 상세 데이터 세팅", userDetailData, [files, portfolios]);
+      console.log(
+        "유저 상세 데이터 세팅",
+        isLogin,
+        userIdNumber,
+        userDetailData,
+        [files, portfolios]
+      );
       setUserDetailInfo(userDetailData.userInfo);
     }
   }, [!userDetailData.isLoading, isLogin, userDetailInfo]);
@@ -238,8 +244,8 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
 export default InterviewerInfo;
 
 const Wrapper = styled.div<{ wide: boolean }>`
-  /* padding: ${({ wide }) => (wide ? "6.8rem 3.5rem" : "2.5rem 2.1rem")}; */
-  padding: ${({ wide }) => (wide ? "0" : "2.5rem 2.1rem")};
+  padding: ${({ wide }) => (wide ? "6.8rem 3.5rem" : "2.5rem 2.1rem")};
+  /* padding: ${({ wide }) => (wide ? "0" : "2.5rem 2.1rem")}; */
 `;
 
 const UserProfileDiv = styled.div`
@@ -288,9 +294,10 @@ const UserNameInput = styled.input`
 `;
 
 const InterviewDiv = styled.div<{ wide: boolean }>`
+  width: 100%;
   display: grid;
   grid-template-columns: ${({ wide }) => (wide ? "repeat(2, 1fr)" : "1fr")};
-  gap: 2rem;
+  gap: 2rem 4.5rem;
   margin: 3rem 0 5.5rem;
 `;
 
@@ -342,7 +349,10 @@ const InfoResult = styled(FontStyle)`
 const InfoInput = styled.input`
   display: flex;
   padding: 0.2rem 1rem;
-  justify-content: center;
+  width: 238px;
+  height: 24px;
+  justify-content: flex-start;
+  align-items: center;
   align-items: center;
 
   border-radius: 0.4rem;
@@ -353,7 +363,7 @@ const InfoInput = styled.input`
 const KeywordDiv = styled.div<{ wide: boolean }>`
   display: grid;
   grid-template-columns: ${({ wide }) => (wide ? "repeat(2, 1fr)" : "1fr")};
-  gap: 3.4rem 0;
+  gap: 3.4rem 3.6rem;
   margin: 5rem 0 0;
 `;
 

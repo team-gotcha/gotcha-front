@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { styled } from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { styled } from "styled-components";
 
-import AddIcon from '../../assets/icons/AddIcon';
-import { ReactComponent as FavIcon } from '../../assets/images/FavIcon.svg';
-import { ReactComponent as NotiIcon } from '../../assets/images/NotiIcon.svg';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { modalContent, modalState } from '../../recoil/modal';
-import { useToggleModal } from '../../hooks/useToggleModal';
-import AddProjectModal from '../common/modal/AddProjectModal';
-import { loginState, userInfoState } from '../../recoil/userInfo';
-import { useGetUserInfo } from '../../apis/get/useGetUserInfo';
-import { useGetProjectList } from '../../apis/get/useGetProjectList';
-import AddInterviewModal from '../common/modal/AddInterviewModal';
-import { useLocation, useNavigate } from 'react-router-dom';
+import AddIcon from "../../assets/icons/AddIcon";
+import { ReactComponent as FavIcon } from "../../assets/images/FavIcon.svg";
+import { ReactComponent as NotiIcon } from "../../assets/images/NotiIcon.svg";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { modalContent, modalState } from "../../recoil/modal";
+import { useToggleModal } from "../../hooks/useToggleModal";
+import AddProjectModal from "../common/modal/AddProjectModal";
+import { loginState, userInfoState } from "../../recoil/userInfo";
+import { useGetUserInfo } from "../../apis/get/useGetUserInfo";
+import { useGetProjectList } from "../../apis/get/useGetProjectList";
+import AddInterviewModal from "../common/modal/AddInterviewModal";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const SideBar = () => {
   //전역상태
@@ -39,7 +39,7 @@ const SideBar = () => {
 
   useEffect(() => {
     if (isLogin && !fetchedProjectData.isLoading) {
-      console.log('유저데이터 세팅');
+      console.log("유저데이터 세팅");
       console.log(fetchedProjectData.projectList);
       setUserInfo(fetchedProjectData.projectList);
     }
@@ -55,15 +55,15 @@ const SideBar = () => {
 
   const location = useLocation();
   const { pathname } = location;
-  let interview_id = '';
-  let project_id = '';
+  let interview_id = "";
+  let project_id = "";
   // pathname에서 interview_id 또는 project_id 추출
-  const pathSegments = pathname.split('/');
-  if (pathSegments.includes('interview')) {
-    const index = pathSegments.indexOf('interview');
+  const pathSegments = pathname.split("/");
+  if (pathSegments.includes("interview")) {
+    const index = pathSegments.indexOf("interview");
     interview_id = pathSegments[index + 1];
-  } else if (pathSegments.includes('project')) {
-    const index = pathSegments.indexOf('project');
+  } else if (pathSegments.includes("project")) {
+    const index = pathSegments.indexOf("project");
     project_id = pathSegments[index + 1];
   }
   return (
@@ -156,7 +156,7 @@ const ItemTop = styled.div<{ isActive?: boolean }>`
 
   //활성화된 대주제
   background-color: ${(props) =>
-    props.isActive ? 'var(--purple-200, #E6E5FF)' : 'transparent'};
+    props.isActive ? "var(--purple-200, #E6E5FF)" : "transparent"};
 `;
 
 const InterviewDetail = styled.div`
@@ -175,8 +175,8 @@ const SubTitle = styled.div<{ isActive?: boolean }>`
   //활성화
   color: ${(props) =>
     props.isActive
-      ? '#3733FF'
-      : '${(props) => props.theme.colors.gray.gray500}'};
+      ? "#3733FF"
+      : "${(props) => props.theme.colors.gray.gray500}"};
 `;
 
 const Wrapper = styled.div`
@@ -186,6 +186,7 @@ const Wrapper = styled.div`
   height: 100%;
   border-right: 0.05rem solid #e6e6e6;
   background-color: #fff;
+  z-index: 8;
 `;
 const StyledAddIcon = styled(AddIcon)`
   display: none;

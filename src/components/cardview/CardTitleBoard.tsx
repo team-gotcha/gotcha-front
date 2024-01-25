@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 import CloseIcon from "../../assets/icons/CloseIcon";
 
@@ -14,7 +15,7 @@ const CardTitleBoard = ({
 }) => {
   let font_color;
   let background_color;
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   switch (color) {
     case 1:
@@ -43,7 +44,14 @@ const CardTitleBoard = ({
       </InfoDiv>
       <RightDiv>
         <FinBtn onClick={btnFunc}>{btnText}</FinBtn>
-        {del && <CloseIcon width={20} height={20} fill="#3733FF" />}
+        {del && (
+          <CloseIcon
+            width={20}
+            height={20}
+            fill="#3733FF"
+            onClick={() => navigate("/result")}
+          />
+        )}
       </RightDiv>
     </TopDiv>
   );

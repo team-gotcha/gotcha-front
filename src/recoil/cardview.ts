@@ -60,3 +60,8 @@ export const filesDataState = atom({
     portfolios: [] as File[],
   },
 });
+
+export const renderState = atom({
+  key: "renderState",
+  default: 0,
+});
