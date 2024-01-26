@@ -53,7 +53,7 @@ function App() {
             }
           />
           <Route
-            path="/main/result"
+            path="/main/result/:interview_id"
             element={
               <Layout>
                 <MainFinalResult />

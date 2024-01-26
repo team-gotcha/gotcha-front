@@ -1,40 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import FinalApplierStack from '../components/main/FinalApplierStack';
+import { useGetPassApplicants } from '../apis/get/useGetPassApplicants';
+import { useLocation } from 'react-router-dom';
 
 const MainFinalResult = () => {
-  const dummyData = [
-    {
-      title: '가차린',
-      score: '17.2 / 20',
-      ranking: '2위',
-      keyword: ['다양한 경험', '꼼꼼한'],
-    },
-    {
-      title: '가차린',
-      score: '17.2 / 20',
-      ranking: '2위',
-      keyword: ['다양한 경험', '꼼꼼한'],
-    },
-    {
-      title: '가차린',
-      score: '17.2 / 20',
-      ranking: '2위',
-      keyword: ['다양한 경험', '꼼꼼한'],
-    },
-    {
-      title: '가차린',
-      score: '17.2 / 20',
-      ranking: '2위',
-      keyword: ['다양한 경험', '꼼꼼한'],
-    },
-    {
-      title: '가차린',
-      score: '17.2 / 20',
-      ranking: '2위',
-      keyword: ['다양한 경험', '꼼꼼한'],
-    },
-  ];
+  const [applicantsList, setApplicantsList] = useState([]);
+
+  const location = useLocation();
+  const { pathname } = location;
+  let interview_id = '';
+  let project_id = '';
+  // pathname에서 interview_id 또는 project_id 추출
+  const pathSegments = pathname.split('/');
+  if (pathSegments.includes('result')) {
+    const index = pathSegments.indexOf('result');
+    interview_id = pathSegments[index + 1];
+  } else if (pathSegments.includes('project')) {
+    const index = pathSegments.indexOf('project');
+    project_id = pathSegments[index + 1];
+  }
+
+  const fetchedData = useGetPassApplicants(Number(interview_id));
+  useEffect(() => {
+    if (!fetchedData.isLoading) {
+      setApplicantsList(fetchedData.passApplicants);
+    }
+  }, [fetchedData.isLoading, interview_id]);
 
   return (
     <Wrapper>
@@ -43,7 +35,7 @@ const MainFinalResult = () => {
           <Title>면접 상태입력</Title>
           <SubTitle>세부면접 폴더</SubTitle>
         </TopBar>
-        {dummyData.map((data, index) => (
+        {applicantsList.map((data, index) => (
           <FinalApplierStack key={index} {...data} />
         ))}
       </FinalBoard>
