@@ -5,15 +5,39 @@ import info from "../../assets/images/InfoIcon-gray.svg";
 import CloseIcon from "../../assets/icons/CloseIcon";
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import { userDetailInfoState } from "../../recoil/cardview";
+import {
+  userDetailInfoState,
+  userPostDataState,
+  keywordDataState,
+} from "../../recoil/cardview";
+
+interface Keyword {
+  name: string;
+  keywordType: string;
+}
 
 const KeywordBox = ({ modify = true, title = "" }) => {
   const userDetailInfo = useRecoilValue(userDetailInfoState);
+  const keywordInfo = useRecoilValue(keywordDataState);
+  const setKeywordInfo = useSetRecoilState(keywordDataState);
   // const [titleValue, setTitleValue] = useState<string>("");
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [keywords, setKeywords] = useState<string[]>([]);
-  const [inputWidth, setInputWidth] = useState<number>(20);
+  // const [inputWidth, setInputWidth] = useState<number>(20);
+
+  const getTitleType = () => {
+    switch (title) {
+      case "성향":
+        return "TRAIT";
+      case "스킬":
+        return "SKILL";
+      case "경험":
+        return "EXPERIENCE";
+      default:
+        return "";
+    }
+  };
 
   const getTitleValue = () => {
     switch (title) {
@@ -31,7 +55,7 @@ const KeywordBox = ({ modify = true, title = "" }) => {
   const titleValue = getTitleValue();
 
   useEffect(() => {
-    getTitleValue();
+    !modify && getTitleValue();
   }, []);
 
   const showInput = () => {
@@ -45,22 +69,40 @@ const KeywordBox = ({ modify = true, title = "" }) => {
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
-    setInputWidth(event.target.value.length * 10 + 20);
+    // setInputWidth(event.target.value.length * 10 + 20);
   };
 
   const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       if (inputValue.trim() !== "") {
+        const newKeyword = {
+          name: inputValue.trim(),
+          keywordType: getTitleType(),
+        };
+
+        // 키워드 상태 업데이트
         setKeywords((prevKeywords) => [...prevKeywords, inputValue.trim()]);
+
+        // keywordState atom 업데이트
+        setKeywordInfo((prevData: Keyword[]) => [
+          ...(prevData || []),
+          newKeyword,
+        ]);
+
         setInputValue("");
       }
     }
   };
 
   const handleRemoveKeyword = (index: number) => {
+    // 키워드 상태에서 키워드 제거
     const newKeywords = [...keywords];
+    const newKeywordAtoms = [...keywordInfo];
     newKeywords.splice(index, 1);
+    newKeywordAtoms.splice(index, 1);
     setKeywords(newKeywords);
+
+    setKeywordInfo(newKeywordAtoms);
   };
 
   return (

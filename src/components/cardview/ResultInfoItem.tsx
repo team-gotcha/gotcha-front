@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import ResultViewerInfo from "./ResultviewerInfo";
 import ResultReviewBox from "./ResultReviewBox";
@@ -8,6 +8,10 @@ import ResultReviewBox from "./ResultReviewBox";
 const ResultInfoItem = () => {
   const navigate = useNavigate();
   const [isButtonClicked, setIsButtonClicked] = useState(false);
+
+  let user_id = 1; //이거 받아다가 쓰세요!!!!! 수정 필요!!!!!
+
+  let { interview_id } = useParams(); // 그리고 웬만하면 이것도 받아서 쓰셔요
 
   const handleButtonClick = () => {
     setIsButtonClicked(!isButtonClicked);
@@ -26,7 +30,7 @@ const ResultInfoItem = () => {
           </FinBtn>
         </RightDiv>
       </TopDiv>
-      <Contents onClick={() => navigate("/result/1")}>
+      <Contents onClick={() => navigate(`/result/${interview_id}/${user_id}`)}>
         <InputDiv>
           <ResultViewerInfo />
         </InputDiv>

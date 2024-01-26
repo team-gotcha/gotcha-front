@@ -8,99 +8,118 @@ import LinkIcon from "../../assets/icons/LinkIcon";
 import CloseIcon from "../../assets/icons/CloseIcon";
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import { loginState, userInfoState } from "../../recoil/userInfo";
-import { userDetailInfoState, filesDataState } from "../../recoil/cardview";
+import {
+  userDetailInfoState,
+  userPostDataState,
+  filesDataState,
+} from "../../recoil/cardview";
 import { useGetUserDetail } from "../../apis/get/useGetUserDetail";
 
 const InterviewerInfo = ({ modify = true, wide = true }) => {
   let { user_id } = useParams();
   const userIdNumber: number = parseInt(user_id, 10);
-  const [files, setFiles] = useState<File[]>([]);
-  const [portfolios, setPortfolios] = useState<File[]>([]);
-  const [formData, setFormData] = useState<FormData>(new FormData());
+
+  //입력값 state
+  const [name, setName] = useState("");
+  const [date, setDate] = useState("");
+  const [age, setAge] = useState<number>();
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [education, setEducation] = useState("");
+  const [email, setEmail] = useState("");
+  const [position, setPosition] = useState("");
+  const [path, setPath] = useState("");
 
   //api 연결 관련 코드
-  const [isLogin, setIsLogin] = useRecoilState(loginState);
-  const setUserDetailInfo = useSetRecoilState(userDetailInfoState);
-  const setFilesData = useSetRecoilState(filesDataState);
-  const filesData = useRecoilValue(filesDataState);
-
   const userDetailInfo = useRecoilValue(userDetailInfoState);
+  const setUserDetailInfo = useSetRecoilState(userDetailInfoState);
+
+  const userPostInfo = useRecoilValue(userPostDataState);
+  const setUserPostInfo = useSetRecoilState(userPostDataState);
+
+  const setFilesData = useSetRecoilState(filesDataState);
+  const [resumeFiles, setResumeFiles] = useState<File[]>([]);
+  const [portfolioFiles, setPortfolioFiles] = useState<File[]>([]);
 
   //custom hook
-  const userDetailData = useGetUserDetail(isLogin, userIdNumber);
+  const userDetailData = useGetUserDetail(userIdNumber);
 
   useEffect(() => {
-    if (isLogin && !userDetailData.isLoading && modify) {
+    if (!userDetailData.isLoading && !modify) {
       console.log(
         "유저 상세 데이터 세팅",
-        isLogin,
+
         userIdNumber,
-        userDetailData,
-        [files, portfolios]
+        userDetailData
       );
       setUserDetailInfo(userDetailData.userInfo);
     }
-  }, [!userDetailData.isLoading, isLogin, userDetailInfo]);
+  }, [!userDetailData.isLoading, userDetailInfo]);
 
-  //기본 업로드 정보
+  //기본 정보 세팅
+  useEffect(() => {
+    setUserPostInfo({
+      name: name,
+      date: date,
+      age: age,
+      education: education,
+      position: position,
+      phoneNumber: phoneNumber,
+      path: path,
+      email: email,
+      // interviewId: interviewId,
+    });
+  }, [name, date, age, phoneNumber, education, email, position, path]);
+
+  //파일 업로드 정보
   const handleFiles = (
     event: React.ChangeEvent<HTMLInputElement>,
-    fileType: string
+    fileType: "resume" | "portfolios"
   ) => {
-    const selectedFiles: FileList | null = event.target.files;
+    const selectedFiles = event.target.files;
 
     if (selectedFiles) {
-      const filesArray = Array.from(selectedFiles) as File[];
+      const formData = new FormData();
+      formData.append("applicant-id", "2"); //여기 id 잘 받아서 넘겨줘야함!! 수정 예정!!
 
-      if (fileType === "portfolio") {
-        setPortfolios((prevPortfolios: File[]) => [
-          ...prevPortfolios,
-          ...filesArray,
-        ]);
-        setFilesData((prevData) => ({
-          ...prevData,
-          portfolios: [...prevData.portfolios, ...filesArray],
-        }));
-      } else {
-        setFiles((prevFiles: File[]) => [...prevFiles, ...filesArray]);
-        setFilesData((prevData) => ({
-          ...prevData,
-          resume: [...prevData.resume, ...filesArray],
-        }));
+      Array.from(selectedFiles).forEach((file) => {
+        formData.append(fileType, file);
+      });
+
+      setFilesData(formData);
+
+      //위에는 formData로 보낼 데이터셋, 아래는 배열로 띄울 데이터셋
+      const filesArray = Array.from(selectedFiles);
+
+      if (fileType === "resume") {
+        setResumeFiles((prevFiles) => [...prevFiles, ...filesArray]);
+      } else if (fileType === "portfolios") {
+        setPortfolioFiles((prevFiles) => [...prevFiles, ...filesArray]);
       }
     }
-    console.log(filesData);
   };
 
-  const handleRemoveFile = (index: number, fileType: string) => {
-    if (fileType === "portfolio") {
-      const newPortfolios = [...portfolios];
-      newPortfolios.splice(index, 1);
-      setPortfolios(newPortfolios);
-      setFilesData({
-        ...filesData,
-        portfolios: newPortfolios,
-      });
-      // updateFormData("portfolio", newPortfolios);
-    } else {
-      const newFiles = [...files];
-      newFiles.splice(index, 1);
-      setFiles(newFiles);
-      setFilesData({
-        ...filesData,
-        resume: newFiles,
-      });
-      // updateFormData("resume", newFiles);
+  const handleRemoveFile = (
+    index: number,
+    fileType: "resume" | "portfolios"
+  ) => {
+    if (fileType === "resume") {
+      setResumeFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    } else if (fileType === "portfolios") {
+      setPortfolioFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
     }
-  };
 
-  const updateFormData = (fileType: string, filesArray: File[]) => {
-    const newFormData = new FormData();
-    filesArray.forEach((file, index) => {
-      newFormData.set(`${fileType}_${index}`, file);
+    //아래는 formData로 보낼 데이터셋, 위는 배열로 띄울 데이터셋
+    setFilesData((prevData) => {
+      const updatedFiles = new FormData();
+
+      prevData.forEach((value, key) => {
+        if (key !== fileType) {
+          updatedFiles.append(key, value);
+        }
+      });
+
+      return updatedFiles;
     });
-    setFormData(newFormData);
   };
 
   return (
@@ -108,7 +127,12 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
       <UserProfileDiv>
         <UserProfile></UserProfile>
         {modify ? (
-          <UserNameInput type="text" placeholder="지원자"></UserNameInput>
+          <UserNameInput
+            type="text"
+            placeholder="지원자"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          ></UserNameInput>
         ) : (
           <UserName>{userDetailInfo?.name}</UserName>
         )}
@@ -117,18 +141,27 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
         <InterviewBox>
           <InterviewTitle>면접일</InterviewTitle>
           {modify ? (
-            <ChoiceDate type="date"></ChoiceDate>
+            <ChoiceDate
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            ></ChoiceDate>
           ) : (
             <InfoResult>{userDetailInfo?.date}</InfoResult>
           )}
         </InterviewBox>
+
         <InterviewerBox modify={modify} />
       </InterviewDiv>
       <BasicInfoDiv wide={wide}>
         <InfoBox>
           <Info>나이</Info>
           {modify ? (
-            <InfoInput />
+            <InfoInput
+              value={age}
+              pattern="[0-9]*"
+              onChange={(e) => setAge(Number(e.target.value))}
+            />
           ) : (
             <InfoResult>{userDetailInfo?.age}</InfoResult>
           )}
@@ -136,7 +169,10 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
         <InfoBox>
           <Info>연락처</Info>
           {modify ? (
-            <InfoInput />
+            <InfoInput
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+            />
           ) : (
             <InfoResult>{userDetailInfo?.phoneNumber}</InfoResult>
           )}
@@ -144,7 +180,10 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
         <InfoBox>
           <Info>학력</Info>
           {modify ? (
-            <InfoInput />
+            <InfoInput
+              value={education}
+              onChange={(e) => setEducation(e.target.value)}
+            />
           ) : (
             <InfoResult>{userDetailInfo?.education}</InfoResult>
           )}
@@ -152,7 +191,11 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
         <InfoBox>
           <Info>이메일</Info>
           {modify ? (
-            <InfoInput type="email" />
+            <InfoInput
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           ) : (
             <InfoResult>{userDetailInfo?.email}</InfoResult>
           )}
@@ -160,7 +203,10 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
         <InfoBox>
           <Info>지원 직무</Info>
           {modify ? (
-            <InfoInput />
+            <InfoInput
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+            />
           ) : (
             <InfoResult>{userDetailInfo?.position}</InfoResult>
           )}
@@ -168,7 +214,7 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
         <InfoBox>
           <Info>지원 경로</Info>
           {modify ? (
-            <InfoInput />
+            <InfoInput value={path} onChange={(e) => setPath(e.target.value)} />
           ) : (
             <InfoResult>{userDetailInfo?.path}</InfoResult>
           )}
@@ -181,7 +227,7 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
         <Document>
           <KeyTitle>원본 서류</KeyTitle>
           <DocsDiv>
-            {files.map((file, index) => (
+            {resumeFiles.map((file, index) => (
               // <Docs key={index}>{`${file.name}`}</Docs>
               <Docs key={index}>
                 지원서
@@ -208,14 +254,14 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
                 ></FileInput>
               </>
             )}
-            {portfolios.map((portfolio, index) => (
+            {portfolioFiles.map((portfolio, index) => (
               <Docs key={index}>
                 포트폴리오
                 <CloseIcon
                   width={16}
                   height={16}
                   fill="#999999"
-                  onClick={() => handleRemoveFile(index, "portfolio")}
+                  onClick={() => handleRemoveFile(index, "portfolios")}
                 />
               </Docs>
             ))}
@@ -230,7 +276,7 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
                   type="file"
                   name="portfolio"
                   id="portfolio"
-                  onChange={(e) => handleFiles(e, "portfolio")}
+                  onChange={(e) => handleFiles(e, "portfolios")}
                 ></FileInput>
               </>
             )}

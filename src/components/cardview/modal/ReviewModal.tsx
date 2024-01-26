@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { usePostOneliner } from "../../../apis/post/usePostOneliner";
 
@@ -11,17 +11,20 @@ interface BaseModalProps {
 
 const ReviewModal = ({ isOpen, setIsOpen }: BaseModalProps) => {
   const navigate = useNavigate();
+  let { user_id } = useParams();
+  const userIdNumber: number = parseInt(user_id, 10);
+  let { interview_id } = useParams();
   const postOnlinerData = usePostOneliner();
 
   const [oneLiner, setOneLiner] = useState("");
 
   const handleBtn = () => {
     postOnlinerData.addOneliner({
-      applicantId: 1, //나중에 수정해야함!!
+      applicantId: userIdNumber,
       content: oneLiner,
     });
     setIsOpen(false);
-    navigate("/result");
+    navigate(`/result/${interview_id}`);
   };
   return (
     <Container>

@@ -25,40 +25,34 @@ export const userPostDataState = atom({
   default: {
     name: "",
     date: "",
-    interviewers: [{ id: "" }],
-    age: 0,
+    age: null as number,
     education: "",
     position: "",
     phoneNumber: "",
     path: "",
     email: "",
-    keywords: [{ name: "", keywordType: "" }],
-    interviewId: "",
-    questions: [{ content: "" }],
+    // interviewId: "",
   },
 });
 
 export const keywordDataState = atom({
   key: "keywordDataState",
-  default: [{ name: "", keywordType: "" }],
+  default: [] as { name: string; keywordType: string }[],
 });
 
 export const interviewersDataState = atom({
   key: "interviewersDataState",
-  default: [{ email: "", id: 0, name: "" }],
+  default: [] as { id: number }[],
 });
 
 export const questionsIndivDataState = atom({
   key: "questionsIndivDataState",
-  default: [{ content: "" }],
+  default: [] as { content: string }[],
 });
 
 export const filesDataState = atom({
   key: "filesDataState",
-  default: {
-    resume: [] as File[],
-    portfolios: [] as File[],
-  },
+  default: new FormData(),
 });
 
 export const renderState = atom({

@@ -1,17 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
 
 import ResultInfoItem from "../components/cardview/ResultInfoItem";
 
+import { useGetFinApplicants } from "../apis/get/useGetFinApplicants";
+
 const Result = () => {
+  let { interview_id } = useParams();
+  const InterviewIdNumber: number = parseInt(interview_id, 10);
+  const [results, setResults] = useState([]);
+
+  const finApplicantsData = useGetFinApplicants(InterviewIdNumber);
+  console.log(finApplicantsData);
+
+  useEffect(() => {
+    if (!finApplicantsData.isLoading) {
+      setResults(finApplicantsData.allFinApplicants);
+    }
+  }, [!finApplicantsData.isLoading]);
+
   return (
     <Wrapper>
       <Background />
       <Container>
-        <ResultInfoItem />
-        <ResultInfoItem />
-        <ResultInfoItem />
-        <ResultInfoItem />
+        {results.map((data, index) => (
+          <ResultInfoItem key={index} /> //data 넘겨줘서 띄우기
+        ))}
         <ResultBtn>합격자 선정 완료</ResultBtn>
       </Container>
     </Wrapper>
