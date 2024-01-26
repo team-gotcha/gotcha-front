@@ -31,3 +31,17 @@ export const formatDateString = (dateString: string) => {
   );
   return formattedDate.replace(/\./g, '.');
 };
+
+export const formatDateSmallString = (dateString: string) => {
+  const options: Intl.DateTimeFormatOptions = {
+    month: '2-digit',
+    day: '2-digit',
+  };
+  const formattedDate = new Date(dateString).toLocaleDateString(
+    'ko-KR',
+    options
+  );
+  const [month, day] = formattedDate.split('.'); // Split the formatted date
+  const formattedDateString = `${month}/${day}`;
+  return formattedDateString;
+};

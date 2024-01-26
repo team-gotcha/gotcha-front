@@ -1,18 +1,34 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
-import Header from "../components/layout/Header";
+import Header from '../components/layout/Header';
 
-import onboarding from "../assets/images/onboarding1.svg";
-import onboarding2 from "../assets/videos/onboarding2.mp4";
+import onboarding from '../assets/images/onboarding1.svg';
+import onboarding2 from '../assets/videos/onboarding2.mp4';
+interface onBoardProps {
+  emailList?: Array<string>;
+  onEmailListChange: (emails: string[]) => void;
+  onSubmit: () => void;
+}
 
-const OnboardEmail = () => {
+const OnboardEmail = ({
+  emailList,
+  onEmailListChange,
+  onSubmit,
+}: onBoardProps) => {
   const navigate = useNavigate();
-  const [email1, setEmail1] = useState("");
-  const [email2, setEmail2] = useState("");
-  const [email3, setEmail3] = useState("");
-  const [email4, setEmail4] = useState("");
+  const [email1, setEmail1] = useState('');
+  const [email2, setEmail2] = useState('');
+  const [email3, setEmail3] = useState('');
+  const [email4, setEmail4] = useState('');
+
+  useEffect(() => {
+    const updatedEmailList = [email1, email2, email3, email4].filter(
+      (email) => email.trim() !== ''
+    );
+    onEmailListChange(updatedEmailList);
+  }, [email1, email2, email3, email4, onEmailListChange]);
 
   return (
     <>
@@ -55,12 +71,10 @@ const OnboardEmail = () => {
             </InputBox>
           </TopBox>
           <BtnDiv>
-            <BeforeBtn onClick={() => navigate("/onboarding")}>
+            <BeforeBtn onClick={() => navigate('/onboarding/1')}>
               이전으로
             </BeforeBtn>
-            <NextBtn onClick={() => navigate("/main/project")}>
-              바로 GOTCHA 시작하기
-            </NextBtn>
+            <NextBtn onClick={onSubmit}>바로 GOTCHA 시작하기</NextBtn>
           </BtnDiv>
           <ContentBox>
             <Video muted autoPlay>

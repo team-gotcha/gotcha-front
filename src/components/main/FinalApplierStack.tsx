@@ -2,26 +2,23 @@ import React from 'react';
 import styled from 'styled-components';
 import CommonButton from '../common/CommonButton';
 interface FinalApplierStackProps {
-  title: string;
-  score: string;
-  ranking: string;
-  keyword: Array<string>;
+  id?: number;
+  name?: string;
+  score?: string;
+  rank?: string;
+  keywords?: Array<string>;
+  favorite?: boolean;
 }
-const FinalApplierStack = ({
-  title,
-  score,
-  ranking,
-  keyword,
-}: FinalApplierStackProps) => {
+const FinalApplierStack = ({ ...props }: FinalApplierStackProps) => {
   return (
     <Wrapper>
       <Circle />
-      <Title>{title}</Title>
-      <Score>{score}</Score>
+      <Title>{props.name}</Title>
+      <Score>{props.score}</Score>
       <Comment>
-        전체 <SubTitle>{ranking}</SubTitle>인 면접자 입니다.
+        전체 <SubTitle>{props.rank}</SubTitle>인 면접자 입니다.
         <KeywordList>
-          {keyword.map((keyword, index) => (
+          {props.keywords.map((keyword, index) => (
             <SubTitle key={index}>{keyword}</SubTitle>
           ))}
         </KeywordList>

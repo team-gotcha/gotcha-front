@@ -1,27 +1,27 @@
-import React, { useState } from "react";
-import { styled, css } from "styled-components";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { styled, css } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 interface DropDownProps {
   selectedOption: string;
-  options: string[];
+  options?: Array<{ id: number; value: string; label: string }>;
   handleSelect: (option: string) => void;
 }
 
-const DropDown = ({
+const DropDown: React.FC<DropDownProps> = ({
   selectedOption,
   handleSelect,
-  options = ["활동 유형", "어쩌구", "저쩌구"],
-}: DropDownProps) => {
+  options,
+}) => {
   return (
     <Wrapper>
-      {options.map((option: string) => (
+      {options.map((option) => (
         <ListItem
-          key={option}
-          onMouseDown={() => handleSelect(option)}
-          isSelected={selectedOption === option}
+          key={option.id}
+          onMouseDown={() => handleSelect(option.value)}
+          isSelected={selectedOption === option.value}
         >
-          {option}
+          {option.label}
         </ListItem>
       ))}
     </Wrapper>
@@ -54,7 +54,7 @@ const ListItem = styled.div<{ isSelected: boolean }>`
   font-style: normal;
   font-weight: 400;
 
-  color: ${({ isSelected }) => (isSelected ? "#3733ff" : "#808080")};
+  color: ${({ isSelected }) => (isSelected ? '#3733ff' : '#808080')};
 
   cursor: pointer;
 `;

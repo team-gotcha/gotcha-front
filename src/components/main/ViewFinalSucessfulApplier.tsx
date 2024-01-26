@@ -5,27 +5,40 @@ import CommonTag from '../common/CommonTag';
 import MessageIcon from '../../assets/icons/MessageIcon';
 import ThinMessageIcon from '../../assets/icons/ThinMessageIcon';
 import MailIcon from '../../assets/icons/MailIcon';
+import CommonGroupMembers from '../common/CommonGroupMembers';
+import { usePostSendPassEmail } from '../../apis/post/usePostSendPassEmail';
 
 interface ViewFinalSuccessfulApplierProps {
   isComplete?: boolean; //합격자 선정 완료 여부
+  groupMembers?: Array<string>;
+  handleSendPassEmail?: () => void;
 }
 
 const ViewFinalSuccessfulApplier = ({
-  isComplete = true,
+  isComplete = false,
+  ...props
 }: ViewFinalSuccessfulApplierProps) => {
   return (
     <Wrapper>
       <ViewStack isComplete={isComplete}>
-        {isComplete && <NotiOnTitle>최종 합격자</NotiOnTitle>}
+        {isComplete && (
+          <NotiOnTitle onClick={props.handleSendPassEmail}>
+            최종 합격자
+          </NotiOnTitle>
+        )}
         {!isComplete && <NotiOffTitle>합격자 발표를 완료해주세요</NotiOffTitle>}
-        <GroupMemberList>
-          <GroupMemberImg />
-          <GroupMemberImg />
-          <GroupMemberImg />
-          <GroupMemberImg />
-        </GroupMemberList>
+        <CommonGroupMembers showNum={4} groupMemberList={props.groupMembers} />
       </ViewStack>
-      <MailButton isComplete={isComplete}>
+      <MailButton
+        isComplete={isComplete}
+        onClick={
+          isComplete
+            ? props.handleSendPassEmail
+            : () => {
+                alert('합격자 발표를 완료해주세요!');
+              }
+        }
+      >
         {isComplete ? (
           <MailIcon width="2.8rem" color="#3733FF" />
         ) : (
@@ -94,7 +107,7 @@ const NotiOffTitle = styled.div`
   font-weight: 400;
   color: ${(props) => props.theme.colors.gray.gray500};
 `;
-const MailButton = styled.div<{ isComplete?: boolean }>`
+const MailButton = styled.button<{ isComplete?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;

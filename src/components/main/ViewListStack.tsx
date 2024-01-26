@@ -13,7 +13,7 @@ import CommonGroupMembers from '../common/CommonGroupMembers';
 
 interface ViewListStackProps {
   isStar?: boolean; //즐찾표시 여부 api수정후 applicantData에 포함시킴
-
+  onClick?: () => void;
   isEmpty?: boolean; //빈 스택 여부
   applicantData?: {
     id?: number;
@@ -28,7 +28,7 @@ interface ViewListStackProps {
 
 const ViewListStack = ({ ...props }: ViewListStackProps) => {
   const InterviewStateList = ['면접 준비중', '면접 진행중', '면접 전형 완료'];
-  // Check if applicantData exists before accessing its properties
+
   const applicantName = props.applicantData
     ? props.applicantData.name
     : '새로운 지원자를 추가하세요!';
@@ -40,7 +40,7 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
     : '0';
   const groupMemberList = props.applicantData
     ? props.applicantData.interviewerEmails
-    : ['A'];
+    : [];
 
   const todayDate = useGetTodayDateDotFormat();
   const dueDate = props.applicantData
@@ -59,61 +59,42 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
       statusText = '면접 전형 완료';
       break;
     default:
-      statusText = '면접 준비중';
+      statusText = '면접 진행단계';
       break;
   }
 
   return (
     <>
-      {!props.isEmpty && (
-        <Wrapper>
+      <Wrapper onClick={props.onClick} statusText={statusText}>
+        {!props.isEmpty ? (
           <ApplierName>{applicantName}</ApplierName>
-          <TagList>
-            {keywords.map((keyword, index) => (
-              <CommonTag children={keyword.name} />
-            ))}
-          </TagList>
-          <MemoBox>
-            <MessageIcon width={'2.6rem'} height={'2.8rem'} />
-            <MessageAlert>{questionCount}</MessageAlert>
-          </MemoBox>
-          <CommonGroupMembers groupMemberList={groupMemberList} showNum={5} />
-          <InterviewState>{statusText}</InterviewState>
-          <InterviewDate>{dueDate}</InterviewDate>
-          <FavoriteState>
-            {props.isStar ? <StarOnIcon /> : <StarOffIcon />}
-          </FavoriteState>
-        </Wrapper>
-      )}
+        ) : (
+          <ProjectEmptyComment>{applicantName}</ProjectEmptyComment>
+        )}
 
-      {props.isEmpty && (
-        <Wrapper>
-          <ProjectEmptyComment>새로운 지원자를 추가하세요!</ProjectEmptyComment>
-          <TagList>
-            <CommonTag children="태그" />
-            <CommonTag children="태그" />
-            <CommonTag children="태그" />
-          </TagList>
-          <MemoBox>
-            <MessageIcon width={'2.6rem'} height={'2.8rem'} />
-            <MessageAlert>0</MessageAlert>
-          </MemoBox>
-          <CommonGroupMembers groupMemberList={groupMemberList} showNum={5} />
-          <InterviewState>{InterviewStateList[1]}</InterviewState>
-          <InterviewDate>2023.12.11 월</InterviewDate>
-          <FavoriteState>
-            <StarOffIcon />
-            {}
-          </FavoriteState>
-        </Wrapper>
-      )}
+        <TagList>
+          {keywords.map((keyword, index) => (
+            <CommonTag children={keyword.name} />
+          ))}
+        </TagList>
+        <MemoBox>
+          <MessageIcon width={'2.6rem'} height={'2.8rem'} />
+          <MessageAlert>{questionCount}</MessageAlert>
+        </MemoBox>
+        <CommonGroupMembers groupMemberList={groupMemberList} showNum={5} />
+        <InterviewState statusText={statusText}>{statusText}</InterviewState>
+        <InterviewDate>{dueDate}</InterviewDate>
+        <FavoriteState>
+          {props.isStar ? <StarOnIcon /> : <StarOffIcon />}
+        </FavoriteState>
+      </Wrapper>
     </>
   );
 };
 
 export default ViewListStack;
 
-const Wrapper = styled.div`
+const Wrapper = styled.button<{ statusText?: string }>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -124,29 +105,26 @@ const Wrapper = styled.div`
 
   background-color: ${(props) => props.theme.colors.gray.gray100};
   border-bottom: 0.1rem solid ${(props) => props.theme.colors.purple.purple200};
-  border-left: 0.5rem solid ${(props) => props.theme.colors.purple.purple600};
-`;
-
-const WrapperEmpty = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-
-  width: 100%;
-  height: 5.6rem;
-
-  background-color: ${(props) => props.theme.colors.gray.gray100};
-  border-bottom: 0.1rem solid ${(props) => props.theme.colors.purple.purple200};
-  border-left: 0.5rem solid ${(props) => props.theme.colors.purple.purple200};
+  border-left: ${(props) => {
+    switch (props.statusText) {
+      case '면접 준비중':
+        return `0.5rem solid ${props.theme.colors.blue.blue300}`;
+      case '면접 진행중':
+        return `0.5rem solid ${props.theme.colors.blue.blue500}`;
+      case '면접 전형 완료':
+        return `0.5rem solid ${props.theme.colors.blue.blue200}`;
+      default:
+        return `0.5rem solid ${props.theme.colors.blue.blue300}`;
+    }
+  }};
 `;
 
 const ApplierName = styled.div`
   display: flex;
-  width: 18rem;
+  width: 20rem;
 
   ${(props) => props.theme.fontStyles.body.bodyMedium};
-  font-size: 1%.4;
+  font-size: 1.4rem;
   font-weight: 500;
 
   color: ${(props) => props.theme.colors.gray.gray1100};
@@ -155,11 +133,10 @@ const ApplierName = styled.div`
 const ProjectEmptyComment = styled.div`
   color: ${(props) => props.theme.colors.purple.purple600};
   ${(props) => props.theme.fontStyles.body.bodySemibold};
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   font-weight: 600;
 
-  width: 30rem;
-  padding-left: 1.6rem;
+  width: 20rem;
   display: flex;
   justify-content: flex-start;
 `;
@@ -201,11 +178,18 @@ const MessageAlert = styled.div`
   color: ${(props) => props.theme.colors.gray.gray1100};
 `;
 
-const InterviewState = styled.div`
+const InterviewState = styled.div<{ statusText?: string }>`
   ${(props) => props.theme.fontStyles.body.bodyRegular};
   font-size: 1.4rem;
   font-weight: 400;
-  color: ${(props) => props.theme.colors.blue.blue600};
+  color: ${(props) => {
+    switch (props.statusText) {
+      case '면접 진행단계':
+        return `${props.theme.colors.gray.gray600}`;
+      default:
+        return `${props.theme.colors.purple.purple600}`;
+    }
+  }};
 
   display: flex;
   width: 10rem;

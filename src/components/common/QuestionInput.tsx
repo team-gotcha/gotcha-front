@@ -49,6 +49,11 @@ const Wrapper = styled.div`
   border-radius: 0.75rem;
   border: 1px solid ${(props) => props.theme.colors.gray.gray300};
   background: var(--Gray-100, #fff);
+
+  &:focus-within {
+    border: 1px solid var(--blue-400, #99b5ff);
+    background: var(--blue-100, #f4f7ff);
+  }
 `;
 
 const QuestionHeader = styled.div<QuestionInputProps>`
@@ -65,6 +70,12 @@ const QuestionHeader = styled.div<QuestionInputProps>`
   font-weight: 400;
 
   border-right: 1px solid ${(props) => props.theme.colors.gray.gray300};
+
+  &:focus-within {
+    border: 1px solid var(--blue-400, #99b5ff);
+    background: var(--blue-100, #f4f7ff);
+    color: var(--purple-600, #3733ff);
+  }
 `;
 
 const StyledInput = styled.input<QuestionInputProps>`
@@ -120,4 +131,8 @@ const StyledInput = styled.input<QuestionInputProps>`
     `}
 
   background: ${(props) => props.theme.colors.gray.gray100};
+
+  &:focus {
+    background: var(--blue-100, #f4f7ff);
+  }
 `;

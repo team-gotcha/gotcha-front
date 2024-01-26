@@ -9,14 +9,14 @@ import ExpandMoreIcon from '../../assets/icons/ExpandMoreIcon';
 import DropDown from './DropDown';
 
 interface DropDownBoxProps {
-  options?: string[];
+  options?: Array<{ id: number; value: string; label: string }>;
   // value: string;
-  // onChangeValue: (selectedOption: string) => void;
+  onChangeValue?: (selectedOption: string) => void;
 }
 
-const DropDownBox = ({ options = ['test', 'test'] }: DropDownBoxProps) => {
+const DropDownBox = ({ options }: DropDownBoxProps) => {
   const [isDropdownView, setDropdownView] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(' --- ');
+  const [selectedOption, setSelectedOption] = useState('전체');
   const dropdownRef = useRef<HTMLLabelElement>(null);
 
   useClickOutside(dropdownRef, () => {
