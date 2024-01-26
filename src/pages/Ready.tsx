@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import CardTitleBoard from "../components/cardview/CardTitleBoard";
-import InterviewerInfo from "../components/cardview/InterviewerInfo";
-import MemoItem from "../components/cardview/MemoItem";
-import MemoInput from "../components/cardview/MemoInput";
+import CardTitleBoard from '../components/cardview/CardTitleBoard';
+import InterviewerInfo from '../components/cardview/InterviewerInfo';
+import MemoItem from '../components/cardview/MemoItem';
+import MemoInput from '../components/cardview/MemoInput';
 
-import QuestionCheckModal from "../components/cardview/modal/QuestionCheckModal";
-import QuestionOpenModal from "../components/cardview/modal/QuestionOpenModal";
+import QuestionCheckModal from '../components/cardview/modal/QuestionCheckModal';
+import QuestionOpenModal from '../components/cardview/modal/QuestionOpenModal';
 
-import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import {
   filesDataState,
   userPostDataState,
   keywordDataState,
   interviewersDataState,
   renderState,
-} from "../recoil/cardview";
+} from '../recoil/cardview';
 
-import { useGetIndivQuestions } from "../apis/get/useGetIndivQuestions";
+import { useGetIndivQuestions } from '../apis/get/useGetIndivQuestions';
 
-import { usePostUserReady } from "../apis/post/usePostUserReady";
-import { usePostUserDetail } from "../apis/post/usePostUserDetail";
-import { usePatchFiles } from "../apis/patch/usePatchFiles";
+import { usePostUserReady } from '../apis/post/usePostUserReady';
+import { usePostUserDetail } from '../apis/post/usePostUserDetail';
+import { usePatchFiles } from '../apis/patch/usePatchFiles';
 
 //test
 interface DetailInfoProps {
@@ -94,22 +94,26 @@ const Ready = () => {
     }
   }, [!getIndivQuestionData.isLoading]);
 
-  const handleSubmit = async () => {
+  const handleAfterPost = (applicant_id: number) => {
+    setApplicantId(applicant_id);
+
+    console.log('받은 ID : ', applicant_id); // 여기서 안 넘어오는 중..
+    //데이터로 넘어오는 applicant-id 받아서 연결! 넘겨주는 것들도 다 넘겨주기!!
+    setIsModify(false);
+    navigate(`/ready/${interview_id}/${applicant_id}`);
+    // console.log({
+    //   filesData,
+    // });
+    // userPatchData.addFiles({ filesData: filesData });
+  };
+
+  useEffect(() => {
+    console.log(postDetailData.data);
+  }, [postDetailData.isSuccess]);
+
+  const handleSubmit = () => {
     if (isModify) {
-      const handleAfterPost = async (applicant_id: number) => {
-        setApplicantId(Number(applicant_id));
-
-        console.log("받은 ID : ", applicant_id); // 여기서 안 넘어오는 중..
-        //데이터로 넘어오는 applicant-id 받아서 연결! 넘겨주는 것들도 다 넘겨주기!!
-        setIsModify(false);
-        navigate(`/ready/${interview_id}/${applicant_id}`);
-        // console.log({
-        //   filesData,
-        // });
-        // userPatchData.addFiles({ filesData: filesData });
-      };
-
-      const applicant_id = await postDetailData.detailPost({
+      const applicant_id = postDetailData.detailPost({
         name: basicData.name,
         date: basicData.date,
         interviewers: interviewData,
@@ -124,7 +128,7 @@ const Ready = () => {
       });
 
       setTimeout(() => {
-        console.log("딜레이 후 : ", applicant_id);
+        console.log('딜레이 후 : ', applicant_id);
         handleAfterPost(Number(applicant_id));
       }, 300);
     }

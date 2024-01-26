@@ -43,10 +43,22 @@ const NavigationBar = () => {
     const index = pathSegments.indexOf('interview');
     interview_id = pathSegments[index + 1];
     randomColorIdx = Number(interview_id) % 8;
+  } else if (pathSegments.includes('ready')) {
+    const index = pathSegments.indexOf('ready');
+    interview_id = pathSegments[index + 1];
+    randomColorIdx = Number(interview_id) % 8;
+  } else if (pathSegments.includes('result')) {
+    const index = pathSegments.indexOf('result');
+    interview_id = pathSegments[index + 1];
+    randomColorIdx = Number(interview_id) % 8;
+  } else if (pathSegments.includes('inprogress')) {
+    const index = pathSegments.indexOf('inprogress');
+    interview_id = pathSegments[index + 1];
+    randomColorIdx = Number(interview_id) % 8;
   } else if (pathSegments.includes('project')) {
     const index = pathSegments.indexOf('project');
     project_id = pathSegments[index + 1];
-    randomColorIdx = Number(interview_id) % 8;
+    randomColorIdx = Number(project_id) % 8;
   }
 
   //custom-hook

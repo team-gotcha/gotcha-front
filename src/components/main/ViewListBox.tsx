@@ -24,7 +24,7 @@ const ViewListBox = ({ ...props }: ViewListBoxProps) => {
       {(props.isEmptyNeed || applicantsList.length === 0) && (
         <ViewListStack
           isEmpty={true}
-          onClick={() => navigate(`/ready/${props.interview_id}`)}
+          onClick={() => navigate(`/ready/${props.interview_id}/0`)}
         />
       )}
 

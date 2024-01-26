@@ -1,7 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
-import React from "react";
-import axiosInstance from "..";
-import { useNavigate } from "react-router-dom";
+import { useMutation } from '@tanstack/react-query';
+import React from 'react';
+import axiosInstance from '..';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * 유저 정보 전송
@@ -25,8 +25,8 @@ interface DetailInfoProps {
 }
 
 export const usePostUserDetail = () => {
-  const { mutate, isPending, error, isSuccess } = useMutation({
-    mutationKey: ["detailPost"],
+  const { mutate, isPending, error, isSuccess, data } = useMutation({
+    mutationKey: ['detailPost'],
     mutationFn: async (data: DetailInfoProps) => {
       const res = await axiosInstance.post(`/api/applicants`, data);
       console.log(res.data.applicantId);
@@ -39,5 +39,6 @@ export const usePostUserDetail = () => {
     isPending,
     isSuccess,
     error,
+    data,
   };
 };
