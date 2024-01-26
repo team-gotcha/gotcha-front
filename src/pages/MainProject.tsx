@@ -1,26 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Banner from '../components/main/Banner';
 import ViewListStack from '../components/main/ViewListStack';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { modalState } from '../recoil/modal';
+import { modalContent, modalState } from '../recoil/modal';
 import { useToggleModal } from '../hooks/useToggleModal';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { userInfoState } from '../recoil/userInfo';
+import { useGetApplicants } from '../apis/get/useGetApplicants';
+import ViewListBox from '../components/main/ViewListBox';
+import AddInterviewModal from '../components/common/modal/AddInterviewModal';
 
 const MainProject = () => {
-  const [isProjectEmpty, setIsProjectEmpty] = useState(false);
-  const [todayInterviewNum, setTodayInterviewNum] = useState(3);
-  const [groupMemberList, setGroupMemberList] = useState([
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-  ]);
+  const [interviewList, setInterviewList] = useState([]);
+  const [isProjectEmpty, setIsProjectEmpty] = useState(true);
+  const navigate = useNavigate();
 
-  //modal관리
+  //Modal관리
+  const [modalItem, setModalItem] = useRecoilState(modalContent);
   const isModalOpen = useRecoilValue(modalState);
   const { openModal } = useToggleModal();
+
+  const handleMakeNewInterview = (projectId: number) => {
+    setModalItem(<AddInterviewModal projectId={projectId} />);
+    openModal();
+  };
 
   const location = useLocation();
   const { pathname } = location;
@@ -36,44 +40,59 @@ const MainProject = () => {
     project_id = pathSegments[index + 1];
   }
 
-  //custom -hook
+  //전역변수
+  const GlobalUserInfo = useRecoilValue(userInfoState);
+
+  if (project_id === '0') {
+    //초기화면
+    project_id = String(GlobalUserInfo.projects[0].projectId);
+    navigate(`/main/project/${project_id}`);
+  }
+
+  useEffect(() => {
+    const filteredList = GlobalUserInfo.projects
+      .filter((project) => String(project.projectId) === project_id)
+      .map((project) => project.interviews)[0];
+
+    setInterviewList(filteredList || []);
+  }, [GlobalUserInfo, project_id]);
+
+  useEffect(() => {
+    if (interviewList.length === 0) {
+      setIsProjectEmpty(true);
+    } else {
+      setIsProjectEmpty(false);
+    }
+  }, [interviewList]);
 
   return (
     <>
       <MainWrapper>
-        <Banner todayInterviewNum={todayInterviewNum} />
+        <Banner />
 
         <InterviewListWrapper>
           {isProjectEmpty && (
             <>
               <ViewListWrapper>
-                <ProjectEmptyComment>
+                <ProjectEmptyComment
+                  onClick={() => handleMakeNewInterview(Number(project_id))}
+                >
                   + 첫 면접을 만들어주세요!
                 </ProjectEmptyComment>
-                <StackWrapper>
-                  <ViewListStack isEmpty={isProjectEmpty} />
-                </StackWrapper>
               </ViewListWrapper>
             </>
           )}
           {!isProjectEmpty && (
             <>
-              <ViewListWrapper>
-                <InterviewTitle>세부 면접 이름</InterviewTitle>
-                <StackWrapper>
-                  <ViewListStack isEmpty={isProjectEmpty} />
-                  <ViewListStack isEmpty={isProjectEmpty} />
-                  <ViewListStack isEmpty={isProjectEmpty} />
-                </StackWrapper>
-              </ViewListWrapper>
-              <ViewListWrapper>
-                <InterviewTitle>세부 면접 이름</InterviewTitle>
-                <StackWrapper>
-                  <ViewListStack isEmpty={isProjectEmpty} />
-                  <ViewListStack isEmpty={isProjectEmpty} />
-                </StackWrapper>
-              </ViewListWrapper>
-              {isModalOpen && <h1>모달</h1>}
+              {interviewList.map((interview, index) => (
+                <ViewListWrapper key={index}>
+                  <InterviewTitle>{interview.interviewName}</InterviewTitle>
+                  <ViewListBox
+                    isEmptyNeed={false}
+                    interview_id={interview.interviewId}
+                  />
+                </ViewListWrapper>
+              ))}
             </>
           )}
         </InterviewListWrapper>
@@ -118,9 +137,14 @@ const MainWrapper = styled.div`
   padding: 4.4rem;
 `;
 
-const ProjectEmptyComment = styled.div`
+const ProjectEmptyComment = styled.button`
   color: ${(props) => props.theme.colors.purple.purple700};
   ${(props) => props.theme.fontStyles.title.titleRegular};
   font-size: 2rem;
   font-weight: 400;
+
+  cursor: pointer;
+
+  display: flex;
+  justify-content: flex-start;
 `;

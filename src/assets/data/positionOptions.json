@@ -1,0 +1,15 @@
+[
+  { "id": 1, "value": "MARKETING", "label": "마케팅/광고" },
+  { "id": 2, "value": "PLANNING", "label": "기획/전략" },
+  { "id": 3, "value": "FINANCE", "label": "재무/세무/IR/회계" },
+  { "id": 4, "value": "DESIGN", "label": "디자인/브랜딩" },
+  { "id": 5, "value": "PRODUCTION", "label": "생산/제조" },
+  { "id": 6, "value": "LOGISTICS", "label": "물류/유통" },
+  { "id": 7, "value": "MANAGEMENT", "label": "경영지원" },
+  { "id": 8, "value": "RND", "label": "연구개발/설계" },
+  { "id": 9, "value": "MUSIC", "label": "음악/댄스" },
+  { "id": 10, "value": "DEVELOPMENT", "label": "개발" },
+  { "id": 11, "value": "THEATER", "label": "연극/전시" },
+  { "id": 12, "value": "VIDEO", "label": "영상/영화" },
+  { "id": 13, "value": "FASHION", "label": "패션/뷰티" }
+]

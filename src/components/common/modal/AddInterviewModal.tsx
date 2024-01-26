@@ -8,7 +8,8 @@ import DropDownBox from '../DropDownBox';
 import CloseIconSmall from '../../../assets/icons/CloseIconSmall';
 import { usePostAddInterview } from '../../../apis/post/usePostAddInterview';
 import { useToggleModal } from '../../../hooks/useToggleModal';
-
+import areaOptions from '../../../assets/data/areaOptions.json';
+import positionOptions from '../../../assets/data/positionOptions.json';
 interface AddInterviewModalProps {
   children?: string;
   projectId?: number | undefined;
@@ -23,13 +24,13 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
   const [memberEmailList, setMemberEmailList] = useState([]);
   const { openModal } = useToggleModal();
 
-  const [selectedField, setSelectedField] = useState('SERVICE');
-  const [selectedJob, setSelectedJob] = useState('MARKETING');
+  const [selectedArea, setSelectedArea] = useState('SERVICE');
+  const [selectedPosition, setSelectedPosition] = useState('MARKETING');
   const handleSelectField = (option: string) => {
-    setSelectedField(option);
+    setSelectedArea(option);
   };
   const handleSelectJob = (option: string) => {
-    setSelectedJob(option);
+    setSelectedPosition(option);
   };
 
   //custom-hook
@@ -43,8 +44,8 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
       name: projectTitle,
       emails: memberEmailList,
       projectId: props.projectId,
-      area: selectedField,
-      position: selectedJob,
+      area: selectedArea,
+      position: selectedPosition,
     });
     openModal();
   };
@@ -144,8 +145,8 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
           <SelectWrapper>
             <SubTitle>면접 유형</SubTitle>
             <DropDownWrapper>
-              <DropDownBox />
-              <DropDownBox />
+              <DropDownBox options={areaOptions} />
+              <DropDownBox options={positionOptions} />
             </DropDownWrapper>
           </SelectWrapper>
 

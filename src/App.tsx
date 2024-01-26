@@ -1,9 +1,10 @@
-import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React, { useEffect } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { useRecoilState, useRecoilValue } from "recoil";
-import { loginState } from "./recoil/userInfo";
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { loginState, userInfoState } from './recoil/userInfo';
+
 
 import GlobalStyle from "./style/GlobalStyle";
 import Layout from "./components/layout/Layout";
@@ -16,10 +17,14 @@ import GoogleCallback from "./pages/GoogleCallback";
 import MainProject from "./pages/MainProject";
 import MainInterview from "./pages/MainInterview";
 
-import Ready from "./pages/Ready";
-import InProgress from "./pages/InProgress";
-import Result from "./pages/Result";
-import ResultDetail from "./pages/ResultDetail";
+
+import Ready from './pages/Ready';
+import InProgress from './pages/InProgress';
+import Result from './pages/Result';
+import ResultDetail from './pages/ResultDetail';
+import { useGetProjectList } from './apis/get/useGetProjectList';
+import MainCallback from './pages/MainCallback';
+
 
 function App() {
   const queryClient = new QueryClient();
@@ -27,10 +32,12 @@ function App() {
   //login여부
   const [isLogin, setIsLogin] = useRecoilState(loginState);
 
+  //userData세팅
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+
   return (
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <GlobalStyle />
         <Routes>
           <Route
             path="/main/project/:project_id"
@@ -49,7 +56,7 @@ function App() {
             }
           />
           <Route
-            path="/main/result"
+            path="/main/result/:interview_id"
             element={
               <Layout>
                 <MainFinalResult />
@@ -89,9 +96,9 @@ function App() {
             }
           />
           <Route path="/" element={<Landing />} />
-          <Route path="/onboarding" element={<Onboard />} />
-          <Route path="/onboarding2" element={<OnboardEmail />} />
+          <Route path="/onboarding/:id" element={<Onboard />} />
           <Route path="/google/callback" element={<GoogleCallback />} />
+          <Route path="/main/callback" element={<MainCallback />} />
         </Routes>
       </QueryClientProvider>
     </BrowserRouter>

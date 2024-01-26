@@ -1,30 +1,36 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import Banner from "../components/main/Banner";
-import ViewListStack from "../components/main/ViewListStack";
-import ViewFinalSuccessfulApplier from "../components/main/ViewFinalSucessfulApplier";
-import AddCommonQuestionModal from "../components/common/modal/AddCommonQuestionModal";
-import WriteBoardIcon from "../assets/icons/WriteBoardIcon";
-import ViewBoardStack from "../components/main/ViewBoardStack";
-import CheckIcon from "../assets/icons/CheckIcon";
-import { usePostCommonQuestions } from "../apis/post/usePostCommonQuestions";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { useToggleModal } from "../hooks/useToggleModal";
-import { modalContent, modalState } from "../recoil/modal";
-import { interviewModeState } from "../recoil/mainview";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useGetApplicants } from "../apis/get/useGetApplicants";
+import Banner from '../components/main/Banner';
+import ViewListStack from '../components/main/ViewListStack';
+import ViewFinalSuccessfulApplier from '../components/main/ViewFinalSucessfulApplier';
+import AddCommonQuestionModal from '../components/common/modal/AddCommonQuestionModal';
+import WriteBoardIcon from '../assets/icons/WriteBoardIcon';
+import ViewBoardStack from '../components/main/ViewBoardStack';
+import CheckIcon from '../assets/icons/CheckIcon';
+import { usePostCommonQuestions } from '../apis/post/usePostCommonQuestions';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { useToggleModal } from '../hooks/useToggleModal';
+import { modalContent, modalState } from '../recoil/modal';
+import { interviewModeState } from '../recoil/mainview';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useGetApplicants } from '../apis/get/useGetApplicants';
+import ViewListBox from '../components/main/ViewListBox';
+import { useGetViewer } from '../apis/get/useGetViewer';
+import { usePostSendPassEmail } from '../apis/post/usePostSendPassEmail';
+import { useGetPassApplicants } from '../apis/get/useGetPassApplicants';
+
 
 const MainInterview = () => {
   const navigate = useNavigate();
   const [isInterviewEmpty, setIsInterviewEmpty] = useState(false);
   const [applicantsList, setApplicantsList] = useState([]);
-  const [todayInterviewNum, setTodayInterviewNum] = useState(3);
-  const [groupMemberList, setGroupMemberList] = useState(["A", "B", "C", "D"]);
-  const [isListView, setIsListView] = useRecoilState(interviewModeState);
-  const [lastStageApplierNum, setLastStageApplierNum] = useState(3); //면접완료된 면접자 수 (보드뷰)
+  const [memberList, setMemberList] = useState([]);
 
+  const [isListView, setIsListView] = useRecoilState(interviewModeState);
+  const [preparationApplierList, setPreparationApplierList] = useState([]);
+  const [inProgressApplierList, setInProgressApplierList] = useState([]);
+  const [completionApplierList, setCompletionApplierList] = useState([]);
   const location = useLocation();
   const { pathname } = location;
   let interview_id = "";
@@ -53,27 +59,56 @@ const MainInterview = () => {
     navigate(`/ready/${interview_id}/0`);
   };
 
-  //custom -hook
-  const fetchedData = useGetApplicants(Number(interview_id));
+  //이메일 보내기
+  const fetchData = usePostSendPassEmail();
+  const handleSendPassEmail = () => {
+    fetchData.sendPassEmail(Number(interview_id));
+  };
 
+  //applicant data 받아오기
+  const fetchedData = useGetApplicants(Number(interview_id));
   useEffect(() => {
-    console.log(fetchedData.applicants);
     if (!fetchedData.isLoading) {
-      if (fetchedData.applicants.length === 0) {
-        setIsInterviewEmpty(true);
-      } else {
-        setIsInterviewEmpty(false);
-        setApplicantsList(fetchedData.applicants);
-      }
+      setApplicantsList(fetchedData.applicants);
     }
   }, [fetchedData.isLoading, interview_id]);
 
+  //합격자 명단 받아오기
+  const fetchedPassData = useGetPassApplicants(Number(interview_id));
+  useEffect(() => {
+    if (!fetchedPassData.isLoading) {
+      console.log(fetchedPassData.passApplicants);
+    }
+  }, [fetchedPassData.isLoading, interview_id]);
+
+  useEffect(() => {
+    if (applicantsList.length !== 0) {
+      setPreparationApplierList(
+        fetchedData.applicants.filter(
+          (item: any) => item.status === 'PREPARATION'
+        )
+      );
+      setInProgressApplierList(
+        fetchedData.applicants.filter(
+          (item: any) => item.status === 'IN_PROGRESS'
+        )
+      );
+      setCompletionApplierList(
+        fetchedData.applicants.filter(
+          (item: any) => item.status === 'COMPLETION'
+        )
+      );
+    }
+  }, [applicantsList]);
+
   return (
     <MainWrapper>
-      <Banner todayInterviewNum={todayInterviewNum} />
-
+      <Banner />
       <NotiBar>
-        <ViewFinalSuccessfulApplier />
+        <ViewFinalSuccessfulApplier
+          groupMembers={memberList}
+          handleSendPassEmail={handleSendPassEmail}
+        />
         <AddCommonQuestionButton onClick={handleAddCommonQuestions}>
           공통 질문 작성하기
           <WriteBoardIcon width="2.4rem" />
@@ -82,16 +117,7 @@ const MainInterview = () => {
 
       {isListView ? (
         // 리스트뷰
-        <StackWrapper>
-          <ViewListStack isEmpty={isInterviewEmpty} />
-          {applicantsList.map((applicant, index) => (
-            <ViewListStack
-              key={index}
-              isEmpty={isInterviewEmpty}
-              applicantData={applicant}
-            />
-          ))}
-        </StackWrapper>
+        <ViewListBox isEmptyNeed={true} interview_id={Number(interview_id)} />
       ) : (
         // 보드뷰
         <BoardWrapper>
@@ -102,36 +128,40 @@ const MainInterview = () => {
                 + 지원자 추가
               </AddApplierButton>
             </BoardStackTitle>
-            {isInterviewEmpty ? (
-              //면접자 입력 전
-              <ViewBoardStack isEmpty={isInterviewEmpty} />
-            ) : (
-              <>
-                <ViewBoardStack />
-              </>
+            {preparationApplierList.map((item, index) => (
+              <ViewBoardStack isEmpty={false} applicantData={item} />
+            ))}
+            {!preparationApplierList.length && (
+              <ViewBoardStack isEmpty={true} />
             )}
           </BoardBox>
+
           <BoardBox>
             <BoardStackTitle>면접 진행 중</BoardStackTitle>
-            <ViewBoardStack groupMemberList={groupMemberList} />
-            <ViewBoardStack groupMemberList={groupMemberList} />
+            {inProgressApplierList.map((item, index) => (
+              <ViewBoardStack isEmpty={false} applicantData={item} />
+            ))}
           </BoardBox>
+
           <BoardBox>
             <BoardStackTitle>면접 완료</BoardStackTitle>
-            <ViewFinalStack>
-              <FinalStackTitle>
-                <CheckIcon />
-                {lastStageApplierNum}명의 면접이 완료되었습니다.
-              </FinalStackTitle>
-              <FinalStackSubtitle>
-                갓챠가 분석한 면접 결과를 확인해주세요!
-              </FinalStackSubtitle>
-              {Array.from({ length: lastStageApplierNum + 1 }).map(
-                (_, index) => (
+            {completionApplierList.length && (
+              <ViewFinalStack>
+                <FinalStackTitle>
+                  <CheckIcon />
+                  {completionApplierList.length}
+                  명의 면접이 완료되었습니다.
+                </FinalStackTitle>
+                <FinalStackSubtitle>
+                  갓챠가 분석한 면접 결과를 확인해주세요!
+                </FinalStackSubtitle>
+                {Array.from({
+                  length: completionApplierList.length + 1,
+                }).map((_, index) => (
                   <ViewFinalStackFooter key={index} />
-                )
-              )}
-            </ViewFinalStack>
+                ))}
+              </ViewFinalStack>
+            )}
           </BoardBox>
         </BoardWrapper>
       )}

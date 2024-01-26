@@ -43,7 +43,7 @@ const ResultDetail = () => {
             <ResultReviewBox />
             <QuestionInfoBox>
               <InfoBox>
-                <DropDownBox options={questions} />
+                <DropDownBox />
                 <Comments>
                   평가 점수가 <span>17.0점</span>으로 가장 높은 질문입니다.
                 </Comments>

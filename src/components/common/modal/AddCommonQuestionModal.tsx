@@ -26,11 +26,19 @@ const AddCommonQuestionModal = ({ ...props }: AddCommonQuestionModalProps) => {
   const fetchQuestion = usePostCommonQuestions();
 
   const handleSubmit = () => {
-    fetchQuestion.addCommonQuestions({
-      interviewId: Number(props.interviewId),
-      questions: questionList,
-    });
-    openModal();
+    const nonEmptyQuestions = questionList.filter(
+      (question) => question.trim() !== ''
+    );
+
+    if (nonEmptyQuestions.length > 0) {
+      fetchQuestion.addCommonQuestions({
+        interviewId: Number(props.interviewId),
+        questions: nonEmptyQuestions,
+      });
+      openModal();
+    } else {
+      alert('하나 이상의 질문을 입력해주세요!');
+    }
   };
 
   return (

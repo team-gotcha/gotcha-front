@@ -1,28 +1,54 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { useGetUserInfo } from "../apis/get/useGetUserInfo";
-import CommonButton from "../components/common/CommonButton";
-import Logo from "../assets/icons/Logo";
-import BannerImg from "../assets/images/BannerImg.svg";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { useGetUserInfo } from '../apis/get/useGetUserInfo';
+import CommonButton from '../components/common/CommonButton';
+import Logo from '../assets/icons/Logo';
+import BannerImg from '../assets/images/BannerImg.svg';
 
-import landing1 from "../assets/videos/landing1.mp4";
-import landing2 from "../assets/videos/landing2.mp4";
-import landing3 from "../assets/videos/landing3.mp4";
+import landing1 from '../assets/videos/landing1.mp4';
+import landing2 from '../assets/videos/landing2.mp4';
+import landing3 from '../assets/videos/landing3.mp4';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { loginState } from '../recoil/userInfo';
+import { modalContent, modalState } from '../recoil/modal';
+import { useToggleModal } from '../hooks/useToggleModal';
 
 const Landing = () => {
+  //modal관리
+  const isModalOpen = useRecoilValue(modalState);
+  const modalItem = useRecoilValue(modalContent);
+  const { openModal } = useToggleModal();
+
   const [selectedNavItem, setSelectedNavItem] = useState(0);
   const navigate = useNavigate();
   const loginUrl = `https://accounts.google.com/o/oauth2/v2/auth?include_granted_scopes=true&scope=profile&state=state_parameter_passthrough_value&response_type=code&redirect_uri=${process.env.REACT_APP_GOOGLE_AUTH_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}`;
   const handleLogin = () => {
     window.location.href = loginUrl;
   };
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('refreshToken');
+
+    setIsLogin(false);
+    navigate('/');
+  };
+  const handleStart = () => {
+    if (isLogin) {
+      navigate('/main/callback');
+    } else {
+      alert('로그인 해주세요!');
+      handleLogin();
+    }
+  };
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isLogin, setIsLogin] = useRecoilState(loginState);
 
   const NavData = [
     {
       index: 1,
-      title: "지원자 파악부터 평가까지,\n GOTCHA에서는 빠르고 효율적으로!",
+      title: '지원자 파악부터 평가까지,\n GOTCHA에서는 빠르고 효율적으로!',
       text: `지원자 별 역량과 강점 파악에 너무 많은 시간을 들이고 있지는 않으셨나요? GOTCHA에서는 지원자의 강점을 정리하는 것부터 면접 결과를 발송하기까지의 전 과정을 지원합니다.`,
       video: landing1,
     },
@@ -44,104 +70,147 @@ const Landing = () => {
     setIsVideoPlaying(true);
   }, [selectedNavItem]);
   return (
-    <Wrapper>
-      <TopBar>
-        <Logo />
-        <RowBox>
+    <>
+      <Wrapper>
+        <TopBar>
+          <Logo />
+          <RowBox>
+            {!isLogin ? (
+              <>
+                <CommonButton
+                  color="lineGray"
+                  children="회원가입"
+                  size="small"
+                  onClick={handleLogin}
+                />
+                <CommonButton
+                  color="lineGray"
+                  children="로그인"
+                  size="small"
+                  onClick={handleLogin}
+                />
+              </>
+            ) : (
+              <CommonButton
+                color="lineGray"
+                children="로그아웃"
+                size="small"
+                onClick={handleLogout}
+              />
+            )}
+          </RowBox>
+        </TopBar>
+        <Banner style={{ backgroundImage: `url(${BannerImg})` }}>
+          <BannerTitle>우리 조직에 FIT한 인재,</BannerTitle>
+          <BannerTitle>가장 빠르고 정확하게.</BannerTitle>
+
+          <BannerSubTitle>
+            수많은 지원자들을 쉽게 관리하고, 조직에 가장 잘 맞는 인재를
+            찾아드릴게요.
+          </BannerSubTitle>
+
           <CommonButton
-            color="lineGray"
-            children="회원가입"
-            size="small"
-            onClick={handleLogin}
+            color="fillBlue"
+            children="갓챠 시작하기"
+            size="large"
+            width="30rem"
+            onClick={handleStart}
           />
-          <CommonButton
-            color="lineGray"
-            children="로그인"
-            size="small"
-            onClick={handleLogin}
-          />
-        </RowBox>
-      </TopBar>
-      <Banner style={{ backgroundImage: `url(${BannerImg})` }}>
-        <BannerTitle>우리 조직에 FIT한 인재,</BannerTitle>
-        <BannerTitle>가장 빠르고 정확하게.</BannerTitle>
+        </Banner>
 
-        <BannerSubTitle>
-          수많은 지원자들을 쉽게 관리하고, 조직에 가장 잘 맞는 인재를
-          찾아드릴게요.
-        </BannerSubTitle>
+        <Body>
+          <ColumnWrapper>
+            <NavBar>
+              <NavTitle
+                onClick={() => {
+                  setSelectedNavItem(0);
+                }}
+              >
+                지원자 관리 자동화
+              </NavTitle>
+              <NavTitleCenter
+                onClick={() => {
+                  setSelectedNavItem(1);
+                }}
+              >
+                All in One 면접 진행
+              </NavTitleCenter>
+              <NavTitle
+                onClick={() => {
+                  setSelectedNavItem(2);
+                }}
+              >
+                맞춤형 질문 큐레이션
+              </NavTitle>
+            </NavBar>
+            <NavBody>
+              <BodyLeft>
+                <NavSubTitle>{NavData[selectedNavItem].title}</NavSubTitle>
+                <NavSubText>{NavData[selectedNavItem].text}</NavSubText>
+              </BodyLeft>
+              <BodyRight>
+                {NavData[selectedNavItem].index === 1 && (
+                  <Video muted autoPlay>
+                    <source src={landing1} type="video/mp4" />
+                  </Video>
+                )}
+                {NavData[selectedNavItem].index === 2 && (
+                  <Video muted autoPlay>
+                    <source src={landing2} type="video/mp4" />
+                  </Video>
+                )}
+                {NavData[selectedNavItem].index === 3 && (
+                  <Video muted autoPlay>
+                    <source src={landing3} type="video/mp4" />
+                  </Video>
+                )}
+              </BodyRight>
+            </NavBody>
+          </ColumnWrapper>
 
-        <CommonButton
-          color="fillBlue"
-          children="갓챠 시작하기"
-          size="large"
-          width="30rem"
-          onClick={() => navigate("/onboarding")}
-        />
-      </Banner>
-
-      <Body>
-        <ColumnWrapper>
-          <NavBar>
-            <NavTitle
-              onClick={() => {
-                setSelectedNavItem(0);
-              }}
-            >
-              지원자 관리 자동화
-            </NavTitle>
-            <NavTitleCenter
-              onClick={() => {
-                setSelectedNavItem(1);
-              }}
-            >
-              All in One 면접 진행
-            </NavTitleCenter>
-            <NavTitle
-              onClick={() => {
-                setSelectedNavItem(2);
-              }}
-            >
-              맞춤형 질문 큐레이션
-            </NavTitle>
-          </NavBar>
-          <NavBody>
-            <BodyLeft>
-              <NavSubTitle>{NavData[selectedNavItem].title}</NavSubTitle>
-              <NavSubText>{NavData[selectedNavItem].text}</NavSubText>
-            </BodyLeft>
-            <BodyRight>
-              /
-              {NavData[selectedNavItem].index === 1 && (
-                <Video muted autoPlay>
-                  <source src={landing1} type="video/mp4" />
-                </Video>
-              )}
-              {NavData[selectedNavItem].index === 2 && (
-                <Video muted autoPlay>
-                  <source src={landing2} type="video/mp4" />
-                </Video>
-              )}
-              {NavData[selectedNavItem].index === 3 && (
-                <Video muted autoPlay>
-                  <source src={landing3} type="video/mp4" />
-                </Video>
-              )}
-            </BodyRight>
-          </NavBody>
-        </ColumnWrapper>
-
-        <ColumnWrapper>
-          <NavBar>
-            <NavSubTitle>GOTCHA Q&A</NavSubTitle>
-          </NavBar>
-        </ColumnWrapper>
-      </Body>
-    </Wrapper>
+          <ColumnWrapper>
+            <NavBar>
+              <NavSubTitle>GOTCHA Q&A</NavSubTitle>
+            </NavBar>
+          </ColumnWrapper>
+        </Body>
+      </Wrapper>
+      {isModalOpen && (
+        <ModalWrapper>
+          <ModalBackground onClick={openModal} />
+          <ModalContentWrapper>{modalItem}</ModalContentWrapper>
+        </ModalWrapper>
+      )}
+    </>
   );
 };
 
 export default Landing;
+
+const ModalContentWrapper = styled.main`
+  z-index: 45;
+`;
+const ModalWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 15;
+`;
+
+const ModalBackground = styled.div`
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 15;
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -168,6 +237,7 @@ const NavBody = styled.div`
 `;
 const BodyLeft = styled.div`
   width: 30%;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -175,7 +245,10 @@ const BodyLeft = styled.div`
 
   padding-bottom: 5rem;
 `;
-const BodyRight = styled.div``;
+const BodyRight = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 const NavSubTitle = styled.div`
   color: ${(props) => props.theme.colors.purple.purple600};
   ${(props) => props.theme.fontStyles.headline.headlineBold};
