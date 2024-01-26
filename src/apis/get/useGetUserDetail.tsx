@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
  * @param isLogin
  * @returns {userDetailInfo}
  */
-export const useGetUserDetail = (isLogin: boolean, applicant_id: number) => {
+export const useGetUserDetail = (applicant_id: number) => {
   const { isLoading, data, error } = useQuery({
-    queryKey: ["userDetailInfo", isLogin],
+    queryKey: ["userDetailInfo"],
     queryFn: async () => {
       const res = await axiosInstance.get(`/api/applicants/${applicant_id}`);
       return res.data;

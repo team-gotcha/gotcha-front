@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
  */
 
 interface QCommentsProps {
-  questionId: number;
+  questionId: number | string;
   score: number;
   content: string;
 }

@@ -15,6 +15,7 @@ export const useGetViewer = (interviewId: number) => {
       const res = await axiosInstance.get(
         `/api/interviews/${interviewId}/names`
       );
+      console.log(res.data);
       return res.data;
     },
   });

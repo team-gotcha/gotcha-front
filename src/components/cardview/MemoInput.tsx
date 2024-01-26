@@ -15,7 +15,7 @@ interface QuestionBtnProps {
 }
 
 interface MemoInputProps {
-  applicantId: number;
+  applicantId: string | number;
 }
 
 const MemoInput = ({ applicantId }: MemoInputProps) => {

@@ -1,41 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 
-import Banner from '../components/main/Banner';
-import ViewListStack from '../components/main/ViewListStack';
-import ViewFinalSuccessfulApplier from '../components/main/ViewFinalSucessfulApplier';
-import AddCommonQuestionModal from '../components/common/modal/AddCommonQuestionModal';
-import WriteBoardIcon from '../assets/icons/WriteBoardIcon';
-import ViewBoardStack from '../components/main/ViewBoardStack';
-import CheckIcon from '../assets/icons/CheckIcon';
-import { usePostCommonQuestions } from '../apis/post/usePostCommonQuestions';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { useToggleModal } from '../hooks/useToggleModal';
-import { modalContent, modalState } from '../recoil/modal';
-import { interviewModeState } from '../recoil/mainview';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useGetApplicants } from '../apis/get/useGetApplicants';
+import Banner from "../components/main/Banner";
+import ViewListStack from "../components/main/ViewListStack";
+import ViewFinalSuccessfulApplier from "../components/main/ViewFinalSucessfulApplier";
+import AddCommonQuestionModal from "../components/common/modal/AddCommonQuestionModal";
+import WriteBoardIcon from "../assets/icons/WriteBoardIcon";
+import ViewBoardStack from "../components/main/ViewBoardStack";
+import CheckIcon from "../assets/icons/CheckIcon";
+import { usePostCommonQuestions } from "../apis/post/usePostCommonQuestions";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { useToggleModal } from "../hooks/useToggleModal";
+import { modalContent, modalState } from "../recoil/modal";
+import { interviewModeState } from "../recoil/mainview";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useGetApplicants } from "../apis/get/useGetApplicants";
 
 const MainInterview = () => {
   const navigate = useNavigate();
   const [isInterviewEmpty, setIsInterviewEmpty] = useState(false);
   const [applicantsList, setApplicantsList] = useState([]);
   const [todayInterviewNum, setTodayInterviewNum] = useState(3);
-  const [groupMemberList, setGroupMemberList] = useState(['A', 'B', 'C', 'D']);
+  const [groupMemberList, setGroupMemberList] = useState(["A", "B", "C", "D"]);
   const [isListView, setIsListView] = useRecoilState(interviewModeState);
   const [lastStageApplierNum, setLastStageApplierNum] = useState(3); //면접완료된 면접자 수 (보드뷰)
 
   const location = useLocation();
   const { pathname } = location;
-  let interview_id = '';
-  let project_id = '';
+  let interview_id = "";
+  let project_id = "";
   // pathname에서 interview_id 또는 project_id 추출
-  const pathSegments = pathname.split('/');
-  if (pathSegments.includes('interview')) {
-    const index = pathSegments.indexOf('interview');
+  const pathSegments = pathname.split("/");
+  if (pathSegments.includes("interview")) {
+    const index = pathSegments.indexOf("interview");
     interview_id = pathSegments[index + 1];
-  } else if (pathSegments.includes('project')) {
-    const index = pathSegments.indexOf('project');
+  } else if (pathSegments.includes("project")) {
+    const index = pathSegments.indexOf("project");
     project_id = pathSegments[index + 1];
   }
 
@@ -44,13 +44,13 @@ const MainInterview = () => {
   const [modalItem, setModalItem] = useRecoilState(modalContent);
 
   const handleAddCommonQuestions = () => {
-    console.log('모달');
+    console.log("모달");
     setModalItem(<AddCommonQuestionModal interviewId={interview_id} />);
     openModal();
   };
 
   const handleMoveToAddApplicant = () => {
-    navigate(`/ready/1`);
+    navigate(`/ready/${interview_id}/0`);
   };
 
   //custom -hook

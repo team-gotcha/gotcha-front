@@ -1,14 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import CardTitleBoard from "../components/cardview/CardTitleBoard";
 import InterviewerInfo from "../components/cardview/InterviewerInfo";
 import QuestionItem from "../components/cardview/QuestionItem";
-
 import ReviewModal from "../components/cardview/modal/ReviewModal";
+
+import { useGetAllQuestion } from "../apis/get/useGetAllQuestion";
 
 const InProgress = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [items, setItems] = useState([]);
+
+  const allQuestionData = useGetAllQuestion(2);
+
+  useEffect(() => {
+    if (!allQuestionData.isLoading) {
+      console.log("모든 질문 데이터 세팅", allQuestionData);
+      setItems(allQuestionData.allQuestion);
+    }
+  }, [!allQuestionData.isLoading]);
 
   return (
     <>
@@ -25,10 +36,15 @@ const InProgress = () => {
               <InterviewerInfo modify={false} wide={false} />
             </InputDiv>
             <MemoDiv>
-              <QuestionItem isCommon={true} />
-              <QuestionItem isCommon={false} />
-              <QuestionItem isCommon={true} />
-              <QuestionItem isCommon={true} />
+              {items?.map((item) => (
+                <QuestionItem
+                  key={item?.id}
+                  isCommon={item?.common}
+                  questionId={item?.id}
+                  content={item?.content}
+                  importance={item.importance}
+                />
+              ))}
             </MemoDiv>
           </Contents>
         </Container>

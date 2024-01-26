@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { usePostOpenorNot } from "../../../apis/post/usePostOpenorNot";
 
@@ -11,13 +11,16 @@ interface BaseModalProps {
 
 const QuestionOpenModal = ({ setIsOpenModal, applicantId }: BaseModalProps) => {
   const navigate = useNavigate();
+  // let { user_id } = useParams();
+  // const userIdNumber: number = parseInt(user_id, 10);
+  let { interview_id } = useParams();
   const isOpen = usePostOpenorNot();
   const applicant_id: number = applicantId;
 
   const handleBtn = (agree: boolean) => {
     setIsOpenModal(false);
     // isOpen.setIsOpen({ applicantId: applicant_id, agree: agree });
-    navigate("/inprogress/1");
+    navigate(`/inprogress/${interview_id}/${applicantId}`);
   };
 
   return (

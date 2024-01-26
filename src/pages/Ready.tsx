@@ -11,7 +11,13 @@ import QuestionCheckModal from "../components/cardview/modal/QuestionCheckModal"
 import QuestionOpenModal from "../components/cardview/modal/QuestionOpenModal";
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import { filesDataState, renderState } from "../recoil/cardview";
+import {
+  filesDataState,
+  userPostDataState,
+  keywordDataState,
+  interviewersDataState,
+  renderState,
+} from "../recoil/cardview";
 
 import { useGetIndivQuestions } from "../apis/get/useGetIndivQuestions";
 
@@ -43,48 +49,36 @@ interface QuestionProps {
   writerProfile: string;
 }
 
-// Mock data for testing
-const testData: DetailInfoProps = {
-  name: "최갓차",
-  date: "2022-01-04",
-  interviewers: [{ id: "1" }],
-  age: 22,
-  education: "이화여자대학교 컴퓨터공학과",
-  position: "BE Engineer",
-  phoneNumber: "423-456-7890",
-  path: "사람인",
-  email: "doe4@example.com",
-  keywords: [
-    { name: "열정적", keywordType: "TRAIT" },
-    { name: "Node.js", keywordType: "SKILL" },
-    { name: "단대 회장", keywordType: "EXPERIENCE" },
-  ],
-  interviewId: "4",
-};
-
 const Ready = () => {
+  const navigate = useNavigate();
   let { user_id } = useParams();
   const userIdNumber: number = parseInt(user_id, 10);
+  let { interview_id } = useParams();
+  const InterviewIdNumber: number = parseInt(interview_id, 10);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [comments, setComments] = useState([]);
   const [reply, setReply] = useState([]);
+  const [applicantId, setApplicantId] = useState<number>();
+  const [isModify, setIsModify] = useState(true);
 
-  const filesData = useRecoilValue(filesDataState);
+  const basicData = useRecoilValue(userPostDataState);
+  const interviewData = useRecoilValue(interviewersDataState);
+  const keywordData = useRecoilValue(keywordDataState);
+  // const filesData = useRecoilValue(filesDataState);
+
   const render = useRecoilValue(renderState);
   const setRender = useSetRecoilState(renderState);
-
-  // console.log(filesData);
 
   //custom-hook
   const postReadyData = usePostUserReady();
   const postDetailData = usePostUserDetail();
   const userPatchData = usePatchFiles();
 
-  const getIndivQuestionData = useGetIndivQuestions(2, render);
+  const getIndivQuestionData = useGetIndivQuestions(userIdNumber, render);
 
   useEffect(() => {
-    if (!getIndivQuestionData.isLoading) {
+    if (!getIndivQuestionData.isLoading && !isModify) {
       const newData = getIndivQuestionData.indivQuestion || [];
       setComments(
         newData?.filter(
@@ -100,13 +94,44 @@ const Ready = () => {
     }
   }, [!getIndivQuestionData.isLoading]);
 
-  const handleSubmit = () => {
-    // postReadyData.readyToPost(userIdNumber);
-    // postDetailData.detailPost(testData);
-    console.log({
-      filesData,
-    });
-    userPatchData.addFiles({ filesData: filesData });
+  const handleSubmit = async () => {
+    if (isModify) {
+      const handleAfterPost = async (applicant_id: number) => {
+        setApplicantId(Number(applicant_id));
+
+        console.log("받은 ID : ", applicant_id); // 여기서 안 넘어오는 중..
+        //데이터로 넘어오는 applicant-id 받아서 연결! 넘겨주는 것들도 다 넘겨주기!!
+        setIsModify(false);
+        navigate(`/ready/${interview_id}/${applicant_id}`);
+        // console.log({
+        //   filesData,
+        // });
+        // userPatchData.addFiles({ filesData: filesData });
+      };
+
+      const applicant_id = await postDetailData.detailPost({
+        name: basicData.name,
+        date: basicData.date,
+        interviewers: interviewData,
+        age: basicData.age,
+        education: basicData.education,
+        position: basicData.position,
+        phoneNumber: basicData.phoneNumber,
+        path: basicData.path,
+        email: basicData.email,
+        keywords: keywordData,
+        interviewId: interview_id,
+      });
+
+      setTimeout(() => {
+        console.log("딜레이 후 : ", applicant_id);
+        handleAfterPost(Number(applicant_id));
+      }, 300);
+    }
+  };
+
+  const handleNext = () => {
+    postReadyData.readyToPost(userIdNumber);
     setIsOpen(!isOpen);
   };
 
@@ -115,10 +140,10 @@ const Ready = () => {
       <Wrapper>
         <Background />
         <Container>
-          <CardTitleBoard btnFunc={handleSubmit} />
+          <CardTitleBoard btnFunc={handleNext} subFunc={handleSubmit} />
           <Contents>
             <InputDiv>
-              <InterviewerInfo />
+              <InterviewerInfo modify={isModify} />
             </InputDiv>
             <MemoDiv>
               {comments &&
@@ -126,7 +151,7 @@ const Ready = () => {
                   <MemoItem key={index} item={item} reply={reply} />
                 ))}
 
-              <MemoInput applicantId={userIdNumber} />
+              {!isModify && <MemoInput applicantId={applicantId} />}
             </MemoDiv>
           </Contents>
         </Container>
@@ -138,6 +163,7 @@ const Ready = () => {
             setIsOpen={setIsOpen}
             isOpen={isOpen}
             setIsOpenModal={setIsOpenModal}
+            applicantId={applicantId}
           />
         </ModalWrapper>
       )}
@@ -146,7 +172,7 @@ const Ready = () => {
           <ModalBackground2 onClick={() => setIsOpenModal(!isOpenModal)} />
           <QuestionOpenModal
             setIsOpenModal={setIsOpenModal}
-            applicantId={userIdNumber}
+            applicantId={applicantId}
           />
         </ModalWrapper2>
       )}

@@ -17,18 +17,21 @@ interface BaseModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  applicantId: number;
 }
 
 const QuestionCheckModal = ({
   isOpen,
   setIsOpen,
   setIsOpenModal,
+  applicantId,
 }: BaseModalProps) => {
+  const applicant_id: number = applicantId;
   const [isHovered, setIsHovered] = useState(false);
   const [items, setItems] = useState([]);
 
   //custom hook
-  const checkQuestionData = useGetCheckQuestions(2);
+  const checkQuestionData = useGetCheckQuestions(applicant_id);
 
   useEffect(() => {
     if (!checkQuestionData.isLoading) {

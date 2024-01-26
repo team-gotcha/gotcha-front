@@ -7,12 +7,20 @@ import { usePostQueComment } from "../../apis/post/usePostQueComment";
 
 interface QuestionItemProps {
   isCommon?: boolean;
+  questionId?: number | string;
+  content?: string;
+  importance?: number;
 }
 
-const QuestionItem = ({ isCommon = false }: QuestionItemProps) => {
+const QuestionItem = ({
+  isCommon = false,
+  content = "",
+  importance,
+  questionId,
+}: QuestionItemProps) => {
   const postQCommentData = usePostQueComment();
 
-  const [selectedScore, setSelectedScore] = useState<number | null>(null);
+  const [selectedScore, setSelectedScore] = useState<number | null>(importance);
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -21,7 +29,7 @@ const QuestionItem = ({ isCommon = false }: QuestionItemProps) => {
   const handleScoreClick = (score: number) => {
     setSelectedScore(score);
     postQCommentData.addQComment({
-      questionId: 1, //이것도 수정!!
+      questionId: questionId,
       score: score,
       content: comment,
     });
@@ -62,7 +70,7 @@ const QuestionItem = ({ isCommon = false }: QuestionItemProps) => {
             <ClassTag isCommon={isCommon}>
               {isCommon ? "공통질문" : "개별질문"}
             </ClassTag>
-            <Question>이전 직장에서 한 @ 프로젝트에서 ~</Question>
+            <Question>{content}</Question>
             {isHovered && (
               <MoreDotIcon
                 width={24}

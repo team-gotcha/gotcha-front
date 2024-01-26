@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 interface DetailInfoProps {
   name: string;
   date: string;
-  interviewers: { id: string }[];
+  interviewers: { id: number }[];
   age: number;
   education: string;
   position: string;
@@ -21,7 +21,7 @@ interface DetailInfoProps {
   email: string;
   keywords: { name: string; keywordType: string }[];
   interviewId: string;
-  questions: { content: string }[];
+  // questions: { content: string }[];
 }
 
 export const usePostUserDetail = () => {
@@ -29,8 +29,8 @@ export const usePostUserDetail = () => {
     mutationKey: ["detailPost"],
     mutationFn: async (data: DetailInfoProps) => {
       const res = await axiosInstance.post(`/api/applicants`, data);
-      console.log(data, res);
-      return res.data;
+      console.log(res.data.applicantId);
+      return Number(res.data.applicantId);
     },
   });
 

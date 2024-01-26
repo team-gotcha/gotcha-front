@@ -24,7 +24,7 @@ const InterviewerBox = ({ modify = true }) => {
   const [isDropdownView, setDropdownView] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
 
-  const interviewerData = useGetViewer(1); //interview-id 넣어줘야함
+  const interviewerData = useGetViewer(3); //interview-id 넣어줘야함
 
   useEffect(() => {
     if (modify) {
@@ -35,6 +35,10 @@ const InterviewerBox = ({ modify = true }) => {
       setViewers(newData);
     }
   }, [!interviewerData.isLoading]);
+
+  useEffect(() => {
+    console.log(viewerData);
+  }, [pickedViewers, viewerData]);
 
   const handleToggleSelection = (option: Interviewer) => {
     const isSelected = selectedOptions.includes(option.id);
@@ -49,11 +53,20 @@ const InterviewerBox = ({ modify = true }) => {
         )
       );
       setSelectedOptions(newSelectedOptions);
+      setInterviewerData((prevViewerData) => [
+        ...prevViewerData.filter(
+          (pickedOption) => pickedOption.id !== option.id
+        ),
+      ]);
     } else {
       setPickedViewers((prevPickedViewers) => [...prevPickedViewers, option]);
       setSelectedOptions((prevSelectedOptions) => [
         ...prevSelectedOptions,
         option.id,
+      ]);
+      setInterviewerData((prevViewerData) => [
+        ...prevViewerData,
+        { id: option.id },
       ]);
     }
   };

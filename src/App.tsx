@@ -1,25 +1,25 @@
-import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { loginState } from './recoil/userInfo';
+import { useRecoilState, useRecoilValue } from "recoil";
+import { loginState } from "./recoil/userInfo";
 
-import GlobalStyle from './style/GlobalStyle';
-import Layout from './components/layout/Layout';
-import Landing from './pages/Landing';
-import Onboard from './pages/Onboard';
-import OnboardEmail from './pages/OnboardEmail';
+import GlobalStyle from "./style/GlobalStyle";
+import Layout from "./components/layout/Layout";
+import Landing from "./pages/Landing";
+import Onboard from "./pages/Onboard";
+import OnboardEmail from "./pages/OnboardEmail";
 
-import MainFinalResult from './pages/MainFinalResult';
-import GoogleCallback from './pages/GoogleCallback';
-import MainProject from './pages/MainProject';
-import MainInterview from './pages/MainInterview';
+import MainFinalResult from "./pages/MainFinalResult";
+import GoogleCallback from "./pages/GoogleCallback";
+import MainProject from "./pages/MainProject";
+import MainInterview from "./pages/MainInterview";
 
-import Ready from './pages/Ready';
-import InProgress from './pages/InProgress';
-import Result from './pages/Result';
-import ResultDetail from './pages/ResultDetail';
+import Ready from "./pages/Ready";
+import InProgress from "./pages/InProgress";
+import Result from "./pages/Result";
+import ResultDetail from "./pages/ResultDetail";
 
 function App() {
   const queryClient = new QueryClient();
@@ -57,7 +57,7 @@ function App() {
             }
           />
           <Route
-            path="/ready/:user_id"
+            path="/ready/:interview_id/:user_id"
             element={
               <Layout>
                 <Ready />
@@ -65,7 +65,7 @@ function App() {
             }
           />
           <Route
-            path="/inprogress/:user_id"
+            path="/inprogress/:interview_id/:user_id"
             element={
               <Layout>
                 <InProgress />
@@ -73,7 +73,7 @@ function App() {
             }
           />
           <Route
-            path="/result"
+            path="/result/:interview_id"
             element={
               <Layout>
                 <Result />
@@ -81,7 +81,7 @@ function App() {
             }
           />
           <Route
-            path="/result/:user_id"
+            path="/result/:interview_id/:user_id"
             element={
               <Layout>
                 <ResultDetail />

@@ -16,6 +16,7 @@ export const useGetFinApplicants = (interview_id: number) => {
         `/api/applicants/interview-completed`,
         { params: { "interview-id": interview_id } }
       );
+      console.log(res.data);
       return res.data;
     },
   });

@@ -8,6 +8,7 @@ const CardTitleBoard = ({
   state = "면접 진행 중",
   title = "UXUI 디자이너 면접",
   btnText = "면접 준비 완료",
+  subFunc = () => {},
   btnFunc = () => {},
   info = false,
   color = 1,
@@ -43,6 +44,7 @@ const CardTitleBoard = ({
         <Title>{title}</Title>
       </InfoDiv>
       <RightDiv>
+        {color === 1 && <FinBtn onClick={subFunc}>임시 POST</FinBtn>}
         <FinBtn onClick={btnFunc}>{btnText}</FinBtn>
         {del && (
           <CloseIcon
