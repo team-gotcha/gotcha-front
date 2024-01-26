@@ -25,12 +25,12 @@ interface DetailInfoProps {
 }
 
 export const usePostUserDetail = () => {
-  const { mutate, isPending, error, isSuccess } = useMutation({
+  const { mutate, isPending, error, isSuccess, data } = useMutation({
     mutationKey: ["detailPost"],
     mutationFn: async (data: DetailInfoProps) => {
       const res = await axiosInstance.post(`/api/applicants`, data);
       console.log(res.data.applicantId);
-      return Number(res.data.applicantId);
+      return res.data;
     },
   });
 
@@ -39,5 +39,6 @@ export const usePostUserDetail = () => {
     isPending,
     isSuccess,
     error,
+    data,
   };
 };

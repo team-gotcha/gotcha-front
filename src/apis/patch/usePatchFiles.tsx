@@ -16,12 +16,10 @@ export const usePatchFiles = () => {
   const { mutate, isPending, error, isSuccess } = useMutation({
     mutationKey: ["addFiles"],
     mutationFn: async (filesData: filesProps) => {
-      console.log("넣는 값 :", filesData.filesData);
       const res = await axiosInstance.patch(
         `/api/applicants/files`,
         filesData.filesData
       );
-      console.log(res);
       return res.data;
     },
   });

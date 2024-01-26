@@ -65,7 +65,7 @@ const Ready = () => {
   const basicData = useRecoilValue(userPostDataState);
   const interviewData = useRecoilValue(interviewersDataState);
   const keywordData = useRecoilValue(keywordDataState);
-  // const filesData = useRecoilValue(filesDataState);
+  const filesData = useRecoilValue(filesDataState);
 
   const render = useRecoilValue(renderState);
   const setRender = useSetRecoilState(renderState);
@@ -77,6 +77,14 @@ const Ready = () => {
 
   const getIndivQuestionData = useGetIndivQuestions(userIdNumber, render);
 
+  //user-id 설정
+  useEffect(() => {
+    if (userIdNumber !== 0) {
+      setIsModify(false);
+    }
+  }, []);
+
+  //로딩되었을 때 댓글 정보 세팅하기
   useEffect(() => {
     if (!getIndivQuestionData.isLoading && !isModify) {
       const newData = getIndivQuestionData.indivQuestion || [];
@@ -94,22 +102,34 @@ const Ready = () => {
     }
   }, [!getIndivQuestionData.isLoading]);
 
+  //지원자 정보 post 했을 때 applicantId 받아오기
+  useEffect(() => {
+    if (postDetailData.isSuccess) {
+      console.log(postDetailData.data.applicantId);
+      handleAfterPost(Number(postDetailData.data.applicantId));
+    }
+  }, [postDetailData.isSuccess]);
+
+  const handleAfterPost = async (applicant_id: number) => {
+    setApplicantId(Number(applicant_id));
+    const newFilesData = new FormData();
+
+    const resumeFile = filesData.get("resume");
+    const portfoliosFile = filesData.get("portfolios");
+
+    newFilesData.append("applicant-id", String(applicant_id));
+    newFilesData.append("resume", resumeFile);
+    newFilesData.append("portfolios", portfoliosFile);
+
+    userPatchData.addFiles({ filesData: newFilesData });
+
+    setIsModify(false);
+    navigate(`/ready/${interview_id}/${applicant_id}`);
+  };
+
   const handleSubmit = async () => {
     if (isModify) {
-      const handleAfterPost = async (applicant_id: number) => {
-        setApplicantId(Number(applicant_id));
-
-        console.log("받은 ID : ", applicant_id); // 여기서 안 넘어오는 중..
-        //데이터로 넘어오는 applicant-id 받아서 연결! 넘겨주는 것들도 다 넘겨주기!!
-        setIsModify(false);
-        navigate(`/ready/${interview_id}/${applicant_id}`);
-        // console.log({
-        //   filesData,
-        // });
-        // userPatchData.addFiles({ filesData: filesData });
-      };
-
-      const applicant_id = await postDetailData.detailPost({
+      postDetailData.detailPost({
         name: basicData.name,
         date: basicData.date,
         interviewers: interviewData,
@@ -122,11 +142,6 @@ const Ready = () => {
         keywords: keywordData,
         interviewId: interview_id,
       });
-
-      setTimeout(() => {
-        console.log("딜레이 후 : ", applicant_id);
-        handleAfterPost(Number(applicant_id));
-      }, 300);
     }
   };
 
@@ -163,17 +178,13 @@ const Ready = () => {
             setIsOpen={setIsOpen}
             isOpen={isOpen}
             setIsOpenModal={setIsOpenModal}
-            applicantId={applicantId}
           />
         </ModalWrapper>
       )}
       {isOpenModal && (
         <ModalWrapper2>
           <ModalBackground2 onClick={() => setIsOpenModal(!isOpenModal)} />
-          <QuestionOpenModal
-            setIsOpenModal={setIsOpenModal}
-            applicantId={applicantId}
-          />
+          <QuestionOpenModal setIsOpenModal={setIsOpenModal} />
         </ModalWrapper2>
       )}
     </>

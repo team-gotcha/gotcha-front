@@ -79,7 +79,6 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
 
     if (selectedFiles) {
       const formData = new FormData();
-      formData.append("applicant-id", "2"); //여기 id 잘 받아서 넘겨줘야함!! 수정 예정!!
 
       Array.from(selectedFiles).forEach((file) => {
         formData.append(fileType, file);

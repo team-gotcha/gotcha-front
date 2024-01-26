@@ -7,6 +7,8 @@ import ResultInfoItem from "../components/cardview/ResultInfoItem";
 import { useGetFinApplicants } from "../apis/get/useGetFinApplicants";
 
 const Result = () => {
+  let { user_id } = useParams();
+  const userIdNumber: number = parseInt(user_id, 10);
   let { interview_id } = useParams();
   const InterviewIdNumber: number = parseInt(interview_id, 10);
   const [results, setResults] = useState([]);
@@ -25,7 +27,12 @@ const Result = () => {
       <Background />
       <Container>
         {results.map((data, index) => (
-          <ResultInfoItem key={index} /> //data 넘겨줘서 띄우기
+          <ResultInfoItem
+            key={index}
+            data={data}
+            userIdNumber={userIdNumber}
+            InterviewIdNumber={InterviewIdNumber}
+          /> //data 넘겨줘서 띄우기
         ))}
         <ResultBtn>합격자 선정 완료</ResultBtn>
       </Container>

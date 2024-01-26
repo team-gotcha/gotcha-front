@@ -6,21 +6,19 @@ import { usePostOpenorNot } from "../../../apis/post/usePostOpenorNot";
 
 interface BaseModalProps {
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-  applicantId: number;
 }
 
-const QuestionOpenModal = ({ setIsOpenModal, applicantId }: BaseModalProps) => {
+const QuestionOpenModal = ({ setIsOpenModal }: BaseModalProps) => {
   const navigate = useNavigate();
-  // let { user_id } = useParams();
-  // const userIdNumber: number = parseInt(user_id, 10);
+  let { user_id } = useParams();
+  const userIdNumber: number = parseInt(user_id, 10);
   let { interview_id } = useParams();
   const isOpen = usePostOpenorNot();
-  const applicant_id: number = applicantId;
 
   const handleBtn = (agree: boolean) => {
     setIsOpenModal(false);
-    // isOpen.setIsOpen({ applicantId: applicant_id, agree: agree });
-    navigate(`/inprogress/${interview_id}/${applicantId}`);
+    isOpen.setIsOpen({ applicantId: userIdNumber, agree: agree });
+    navigate(`/inprogress/${interview_id}/${userIdNumber}`);
   };
 
   return (
