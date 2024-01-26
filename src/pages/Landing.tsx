@@ -29,9 +29,10 @@ const Landing = () => {
   };
   const handleStart = () => {
     if (isLogin) {
-      navigate('/main/project/4');
+      navigate('/main/callback');
     } else {
-      navigate('/onboarding');
+      alert('로그인 해주세요!');
+      handleLogin();
     }
   };
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);

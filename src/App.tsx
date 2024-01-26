@@ -21,6 +21,7 @@ import InProgress from './pages/InProgress';
 import Result from './pages/Result';
 import ResultDetail from './pages/ResultDetail';
 import { useGetProjectList } from './apis/get/useGetProjectList';
+import MainCallback from './pages/MainCallback';
 
 function App() {
   const queryClient = new QueryClient();
@@ -30,16 +31,6 @@ function App() {
 
   //userData세팅
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
-
-  //custom hook
-  const fetchedProjectData = useGetProjectList();
-  useEffect(() => {
-    if (isLogin && !fetchedProjectData.isLoading) {
-      console.log('유저데이터 세팅');
-      console.log(fetchedProjectData.projectList);
-      setUserInfo(fetchedProjectData.projectList);
-    }
-  }, [!fetchedProjectData.isLoading, isLogin]);
 
   return (
     <BrowserRouter>
@@ -105,6 +96,7 @@ function App() {
           <Route path="/onboarding" element={<Onboard />} />
           <Route path="/onboarding2" element={<OnboardEmail />} />
           <Route path="/google/callback" element={<GoogleCallback />} />
+          <Route path="/main/callback" element={<MainCallback />} />
         </Routes>
       </QueryClientProvider>
     </BrowserRouter>
