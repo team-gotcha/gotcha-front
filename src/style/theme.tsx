@@ -42,6 +42,16 @@ export const theme = {
       yellow300: '#FFF733',
     },
   },
+  profileColor: {
+    blue1: '#94B8FF',
+    blue2: '#E8E9FF',
+    blue3: '#59AFFF',
+    blue4: '#DFF0FF',
+    blue5: '#8C94BF',
+    blue6: '#CFFFFF',
+    blue7: '#6285FF',
+    blue8: '#B2D6FF',
+  },
   fontStyles: {
     display: {
       displayRegular: `

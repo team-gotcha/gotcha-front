@@ -28,7 +28,7 @@ interface ViewListStackProps {
 
 const ViewListStack = ({ ...props }: ViewListStackProps) => {
   const InterviewStateList = ['면접 준비중', '면접 진행중', '면접 전형 완료'];
-  // Check if applicantData exists before accessing its properties
+
   const applicantName = props.applicantData
     ? props.applicantData.name
     : '새로운 지원자를 추가하세요!';
@@ -40,7 +40,7 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
     : '0';
   const groupMemberList = props.applicantData
     ? props.applicantData.interviewerEmails
-    : ['A'];
+    : [];
 
   const todayDate = useGetTodayDateDotFormat();
   const dueDate = props.applicantData
@@ -59,13 +59,13 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
       statusText = '면접 전형 완료';
       break;
     default:
-      statusText = '면접 준비중';
+      statusText = '면접 진행단계';
       break;
   }
 
   return (
     <>
-      <Wrapper onClick={props.onClick}>
+      <Wrapper onClick={props.onClick} statusText={statusText}>
         {!props.isEmpty ? (
           <ApplierName>{applicantName}</ApplierName>
         ) : (
@@ -82,7 +82,7 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
           <MessageAlert>{questionCount}</MessageAlert>
         </MemoBox>
         <CommonGroupMembers groupMemberList={groupMemberList} showNum={5} />
-        <InterviewState>{statusText}</InterviewState>
+        <InterviewState statusText={statusText}>{statusText}</InterviewState>
         <InterviewDate>{dueDate}</InterviewDate>
         <FavoriteState>
           {props.isStar ? <StarOnIcon /> : <StarOffIcon />}
@@ -94,7 +94,7 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
 
 export default ViewListStack;
 
-const Wrapper = styled.button`
+const Wrapper = styled.button<{ statusText?: string }>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -105,7 +105,18 @@ const Wrapper = styled.button`
 
   background-color: ${(props) => props.theme.colors.gray.gray100};
   border-bottom: 0.1rem solid ${(props) => props.theme.colors.purple.purple200};
-  border-left: 0.5rem solid ${(props) => props.theme.colors.purple.purple600};
+  border-left: ${(props) => {
+    switch (props.statusText) {
+      case '면접 준비중':
+        return `0.5rem solid ${props.theme.colors.blue.blue300}`;
+      case '면접 진행중':
+        return `0.5rem solid ${props.theme.colors.blue.blue500}`;
+      case '면접 전형 완료':
+        return `0.5rem solid ${props.theme.colors.blue.blue200}`;
+      default:
+        return `0.5rem solid ${props.theme.colors.blue.blue300}`;
+    }
+  }};
 `;
 
 const ApplierName = styled.div`
@@ -167,11 +178,18 @@ const MessageAlert = styled.div`
   color: ${(props) => props.theme.colors.gray.gray1100};
 `;
 
-const InterviewState = styled.div`
+const InterviewState = styled.div<{ statusText?: string }>`
   ${(props) => props.theme.fontStyles.body.bodyRegular};
   font-size: 1.4rem;
   font-weight: 400;
-  color: ${(props) => props.theme.colors.blue.blue600};
+  color: ${(props) => {
+    switch (props.statusText) {
+      case '면접 진행단계':
+        return `${props.theme.colors.gray.gray600}`;
+      default:
+        return `${props.theme.colors.purple.purple600}`;
+    }
+  }};
 
   display: flex;
   width: 10rem;

@@ -4,23 +4,26 @@ import styled from 'styled-components';
 import { useGetLogin } from '../apis/get/useGetLogin';
 import { useGetUserInfo } from '../apis/get/useGetUserInfo';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { loginState, userInfoState } from '../recoil/userInfo';
+import {
+  defaultProjectId,
+  loginState,
+  userInfoState,
+} from '../recoil/userInfo';
 import { useGetProjectList } from '../apis/get/useGetProjectList';
 
 const GoogleCallback = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useRecoilState(loginState);
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const [firstProjectId, setfirstProjectId] = useRecoilState(defaultProjectId);
 
   // 현재 url에서 code 부분 추출
   const params = new URLSearchParams(window.location.search);
   const code = params.get('code');
 
-  const GlobalUserInfo = useRecoilValue(userInfoState);
-  const [projectId, setProjectId] = useState(0);
-
   //custom-hook
   const fetchedData = useGetLogin(code);
+  const fetchedProjectData = useGetProjectList();
 
   useEffect(() => {
     if (localStorage.getItem('accessToken') !== null) {
@@ -39,9 +42,9 @@ const GoogleCallback = () => {
       );
       console.log('로그인 성공');
       setIsLogin(true);
-      navigate('/main/project/4');
+      navigate('/main/callback');
     }
-  }, [fetchedData.isLoading]);
+  }, [fetchedData.isLoading, fetchedProjectData.isLoading]);
 
   return (
     <div>

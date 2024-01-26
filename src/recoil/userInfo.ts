@@ -23,6 +23,17 @@ export const userInfoState = atom({
   },
 });
 
+export const defaultProjectId = atom({
+  key: 'defaultProjectId',
+  default: selector({
+    key: 'defaultProjectId/Default',
+    get: ({ get }) => {
+      const projects = get(userInfoState).projects;
+      return projects.length > 0 ? projects[0].projectId : 0;
+    },
+  }),
+});
+
 export const userInfoStateDefaultSelector = selector({
   key: 'userInfoStateDefaultSelector',
   get: ({ get }) => {

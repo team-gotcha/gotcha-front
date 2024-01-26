@@ -48,6 +48,21 @@ const emptyStyles = css`
   border-style: dashed;
 `;
 
+const getRandomColor = (props: GroupMemberImgProps) => {
+  const themeColors = [
+    'blue1',
+    'blue2',
+    'blue3',
+    'blue4',
+    'blue5',
+    'blue6',
+    'blue7',
+    'blue8',
+  ];
+  const randomColor = themeColors[props.index % themeColors.length];
+  return randomColor;
+};
+
 const GroupMemberImg = styled.div<GroupMemberImgProps & { isEmpty: boolean }>`
   width: 2.6rem;
   height: 2.6rem;
@@ -62,7 +77,10 @@ const GroupMemberImg = styled.div<GroupMemberImgProps & { isEmpty: boolean }>`
   font-size: 1.2rem;
   font-weight: 400;
   color: ${(props) => props.theme.colors.gray.gray900};
-  background-color: ${(props) => props.theme.colors.gray.gray200};
+  background-color: ${(props) =>
+    props.isEmpty
+      ? props.theme.colors.gray.gray200
+      : props.theme.profileColor[getRandomColor(props)]};
   ${(props) => props.isEmpty && emptyStyles}
 
   z-index: ${(props) => props.index};
