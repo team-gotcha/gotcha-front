@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { useGetUserInfo } from "../apis/get/useGetUserInfo";
-import CommonButton from "../components/common/CommonButton";
-import Logo from "../assets/icons/Logo";
-import BannerImg from "../assets/images/BannerImg.svg";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { useGetUserInfo } from '../apis/get/useGetUserInfo';
+import CommonButton from '../components/common/CommonButton';
+import Logo from '../assets/icons/Logo';
+import BannerImg from '../assets/images/BannerImg.svg';
 
-import landing1 from "../assets/videos/landing1.mp4";
-import landing2 from "../assets/videos/landing2.mp4";
-import landing3 from "../assets/videos/landing3.mp4";
+import landing1 from '../assets/videos/landing1.mp4';
+import landing2 from '../assets/videos/landing2.mp4';
+import landing3 from '../assets/videos/landing3.mp4';
+import { useRecoilState } from 'recoil';
+import { loginState } from '../recoil/userInfo';
 
 const Landing = () => {
   const [selectedNavItem, setSelectedNavItem] = useState(0);
@@ -17,12 +19,28 @@ const Landing = () => {
   const handleLogin = () => {
     window.location.href = loginUrl;
   };
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('refreshToken');
+
+    setIsLogin(false);
+    navigate('/');
+  };
+  const handleStart = () => {
+    if (isLogin) {
+      navigate('/main/project/4');
+    } else {
+      navigate('/onboarding');
+    }
+  };
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isLogin, setIsLogin] = useRecoilState(loginState);
 
   const NavData = [
     {
       index: 1,
-      title: "지원자 파악부터 평가까지,\n GOTCHA에서는 빠르고 효율적으로!",
+      title: '지원자 파악부터 평가까지,\n GOTCHA에서는 빠르고 효율적으로!',
       text: `지원자 별 역량과 강점 파악에 너무 많은 시간을 들이고 있지는 않으셨나요? GOTCHA에서는 지원자의 강점을 정리하는 것부터 면접 결과를 발송하기까지의 전 과정을 지원합니다.`,
       video: landing1,
     },
@@ -48,18 +66,29 @@ const Landing = () => {
       <TopBar>
         <Logo />
         <RowBox>
-          <CommonButton
-            color="lineGray"
-            children="회원가입"
-            size="small"
-            onClick={handleLogin}
-          />
-          <CommonButton
-            color="lineGray"
-            children="로그인"
-            size="small"
-            onClick={handleLogin}
-          />
+          {!isLogin ? (
+            <>
+              <CommonButton
+                color="lineGray"
+                children="회원가입"
+                size="small"
+                onClick={handleLogin}
+              />
+              <CommonButton
+                color="lineGray"
+                children="로그인"
+                size="small"
+                onClick={handleLogin}
+              />
+            </>
+          ) : (
+            <CommonButton
+              color="lineGray"
+              children="로그아웃"
+              size="small"
+              onClick={handleLogout}
+            />
+          )}
         </RowBox>
       </TopBar>
       <Banner style={{ backgroundImage: `url(${BannerImg})` }}>
@@ -76,7 +105,7 @@ const Landing = () => {
           children="갓챠 시작하기"
           size="large"
           width="30rem"
-          onClick={() => navigate("/onboarding")}
+          onClick={handleStart}
         />
       </Banner>
 
@@ -111,7 +140,6 @@ const Landing = () => {
               <NavSubText>{NavData[selectedNavItem].text}</NavSubText>
             </BodyLeft>
             <BodyRight>
-              /
               {NavData[selectedNavItem].index === 1 && (
                 <Video muted autoPlay>
                   <source src={landing1} type="video/mp4" />
@@ -168,6 +196,7 @@ const NavBody = styled.div`
 `;
 const BodyLeft = styled.div`
   width: 30%;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -175,7 +204,10 @@ const BodyLeft = styled.div`
 
   padding-bottom: 5rem;
 `;
-const BodyRight = styled.div``;
+const BodyRight = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 const NavSubTitle = styled.div`
   color: ${(props) => props.theme.colors.purple.purple600};
   ${(props) => props.theme.fontStyles.headline.headlineBold};

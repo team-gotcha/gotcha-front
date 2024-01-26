@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { loginState } from './recoil/userInfo';
+import { loginState, userInfoState } from './recoil/userInfo';
 
 import GlobalStyle from './style/GlobalStyle';
 import Layout from './components/layout/Layout';
@@ -20,6 +20,7 @@ import Ready from './pages/Ready';
 import InProgress from './pages/InProgress';
 import Result from './pages/Result';
 import ResultDetail from './pages/ResultDetail';
+import { useGetProjectList } from './apis/get/useGetProjectList';
 
 function App() {
   const queryClient = new QueryClient();
@@ -27,10 +28,22 @@ function App() {
   //login여부
   const [isLogin, setIsLogin] = useRecoilState(loginState);
 
+  //userData세팅
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+
+  //custom hook
+  const fetchedProjectData = useGetProjectList();
+  useEffect(() => {
+    if (isLogin && !fetchedProjectData.isLoading) {
+      console.log('유저데이터 세팅');
+      console.log(fetchedProjectData.projectList);
+      setUserInfo(fetchedProjectData.projectList);
+    }
+  }, [!fetchedProjectData.isLoading, isLogin]);
+
   return (
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <GlobalStyle />
         <Routes>
           <Route
             path="/main/project/:project_id"

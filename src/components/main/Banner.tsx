@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useGetTodayDate } from '../../hooks/useGetTodayDate';
+import { useGetTodayInterviewNum } from '../../apis/get/useGetTodayInterviewNum';
 
-interface BannerProps {
-  todayInterviewNum: number;
-}
-
-const Banner = ({ todayInterviewNum }: BannerProps) => {
+const Banner = () => {
   const todayDate = useGetTodayDate();
-
+  const fetchedData = useGetTodayInterviewNum();
+  const [todayInterviewNum, setTodayInterviewNum] = useState(0);
+  useEffect(() => {
+    if (!fetchedData.isLoading) {
+      setTodayInterviewNum(fetchedData.todayInterviewNum.count);
+    }
+  }, [fetchedData.isLoading]);
   return (
     <Wrapper>
       <BannerDate>{todayDate}</BannerDate>

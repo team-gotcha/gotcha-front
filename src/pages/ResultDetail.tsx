@@ -1,14 +1,14 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import CardTitleBoard from "../components/cardview/CardTitleBoard";
-import InterviewerInfo from "../components/cardview/InterviewerInfo";
-import ResultReviewBox from "../components/cardview/ResultReviewBox";
-import QuestionItem from "../components/cardview/QuestionItem";
+import CardTitleBoard from '../components/cardview/CardTitleBoard';
+import InterviewerInfo from '../components/cardview/InterviewerInfo';
+import ResultReviewBox from '../components/cardview/ResultReviewBox';
+import QuestionItem from '../components/cardview/QuestionItem';
 
-import DropDownBox from "../components/common/DropDownBox";
+import DropDownBox from '../components/common/DropDownBox';
 
-const questions = ["질문 1", "질문 2", "질문 3"];
+const questions = ['질문 1', '질문 2', '질문 3'];
 
 const ResultDetail = () => {
   return (
@@ -29,7 +29,7 @@ const ResultDetail = () => {
             <ResultReviewBox />
             <QuestionInfoBox>
               <InfoBox>
-                <DropDownBox options={questions} />
+                <DropDownBox />
                 <Comments>
                   평가 점수가 <span>17.0점</span>으로 가장 높은 질문입니다.
                 </Comments>

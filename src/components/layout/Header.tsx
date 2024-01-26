@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { styled } from 'styled-components';
+import Logo from '../../assets/icons/Logo';
 
 const Header = () => {
   return (
     <Wrapper>
-      <Title>GOTCHA</Title>
+      <Logo />
     </Wrapper>
   );
 };
@@ -18,7 +19,6 @@ const Wrapper = styled.header`
   top: 0;
   width: 100%;
   height: 5.8rem;
-  padding: 0 4.5rem;
   border-bottom: 0.05rem solid #e6e6e6;
   background-color: #fff;
   z-index: 6;
