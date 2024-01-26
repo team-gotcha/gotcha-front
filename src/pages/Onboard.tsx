@@ -1,46 +1,85 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import Header from "../components/layout/Header";
+import Header from '../components/layout/Header';
 
-import onboarding from "../assets/images/onboarding1.svg";
-import onboarding1 from "../assets/videos/onboarding1.mp4";
+import onboarding from '../assets/images/onboarding1.svg';
+import onboarding1 from '../assets/videos/onboarding1.mp4';
+import OnboardEmail from './OnboardEmail';
+import { usePostAddProject } from '../apis/post/usePostAddProject';
 
 const Onboard = () => {
   const navigate = useNavigate();
-  const [interviewName, setInterviewName] = useState("");
+  const [interviewName, setInterviewName] = useState('');
+  const [emailList, setEmailList] = useState(['']);
+
+  const handleEmailListChange = (updatedEmailList: string[]) => {
+    setEmailList(updatedEmailList);
+  };
+
+  //custom-hook
+  const fetchData = usePostAddProject();
+
+  /**
+   * project 데이터 전송해 생성하는 기능
+   */
+  const handleSubmit = () => {
+    fetchData.addProject({
+      name: interviewName,
+      emails: emailList,
+    });
+    navigate('/main/callback');
+  };
+
+  //페이지 이동
+  const { id } = useParams();
   return (
     <>
-      <Header />
-      <Wrapper>
-        <Container>
-          <TopBox>
-            <Step src={onboarding} />
-            <TextDiv>
-              <Title>첫번째 프로젝트의 제목을 알려주세요.</Title>
-              <Comments>
-                회원님과 팀이 현재 지행하는 면접은 무엇인가요?
-              </Comments>
-            </TextDiv>
-            <Input
-              placeholder="면접 이름"
-              value={interviewName}
-              onChange={(e) => setInterviewName(e.target.value)}
-            />
-          </TopBox>
-          <BtnDiv>
-            <BeforeBtn onClick={() => navigate("/")}>이전으로</BeforeBtn>
-            <NextBtn onClick={() => navigate("/onboarding2")}>다음으로</NextBtn>
-          </BtnDiv>
-          <ContentBox>
-            <ProjText>{interviewName}</ProjText>
-            <Video muted autoPlay>
-              <source src={onboarding1} type="video/mp4" />
-            </Video>
-          </ContentBox>
-        </Container>
-      </Wrapper>
+      {id === '1' && (
+        <>
+          <Header />
+          <Wrapper>
+            <Container>
+              <TopBox>
+                <Step src={onboarding} />
+                <TextDiv>
+                  <Title>첫번째 프로젝트의 제목을 알려주세요.</Title>
+                  <Comments>
+                    회원님과 팀이 현재 지행하는 면접은 무엇인가요?
+                  </Comments>
+                </TextDiv>
+                <Input
+                  placeholder="면접 이름"
+                  value={interviewName}
+                  onChange={(e) => setInterviewName(e.target.value)}
+                />
+              </TopBox>
+              <BtnDiv>
+                <BeforeBtn onClick={() => navigate('/')}>이전으로</BeforeBtn>
+                <NextBtn onClick={() => navigate('/onboarding/2')}>
+                  다음으로
+                </NextBtn>
+              </BtnDiv>
+              <ContentBox>
+                <ProjText>{interviewName}</ProjText>
+                <Video muted autoPlay>
+                  <source src={onboarding1} type="video/mp4" />
+                </Video>
+              </ContentBox>
+            </Container>
+          </Wrapper>
+        </>
+      )}
+      {id === '2' && (
+        <>
+          <OnboardEmail
+            emailList={emailList}
+            onEmailListChange={handleEmailListChange}
+            onSubmit={handleSubmit}
+          />
+        </>
+      )}
     </>
   );
 };

@@ -9,10 +9,17 @@ import BannerImg from '../assets/images/BannerImg.svg';
 import landing1 from '../assets/videos/landing1.mp4';
 import landing2 from '../assets/videos/landing2.mp4';
 import landing3 from '../assets/videos/landing3.mp4';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginState } from '../recoil/userInfo';
+import { modalContent, modalState } from '../recoil/modal';
+import { useToggleModal } from '../hooks/useToggleModal';
 
 const Landing = () => {
+  //modal관리
+  const isModalOpen = useRecoilValue(modalState);
+  const modalItem = useRecoilValue(modalContent);
+  const { openModal } = useToggleModal();
+
   const [selectedNavItem, setSelectedNavItem] = useState(0);
   const navigate = useNavigate();
   const loginUrl = `https://accounts.google.com/o/oauth2/v2/auth?include_granted_scopes=true&scope=profile&state=state_parameter_passthrough_value&response_type=code&redirect_uri=${process.env.REACT_APP_GOOGLE_AUTH_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}`;
@@ -63,114 +70,147 @@ const Landing = () => {
     setIsVideoPlaying(true);
   }, [selectedNavItem]);
   return (
-    <Wrapper>
-      <TopBar>
-        <Logo />
-        <RowBox>
-          {!isLogin ? (
-            <>
+    <>
+      <Wrapper>
+        <TopBar>
+          <Logo />
+          <RowBox>
+            {!isLogin ? (
+              <>
+                <CommonButton
+                  color="lineGray"
+                  children="회원가입"
+                  size="small"
+                  onClick={handleLogin}
+                />
+                <CommonButton
+                  color="lineGray"
+                  children="로그인"
+                  size="small"
+                  onClick={handleLogin}
+                />
+              </>
+            ) : (
               <CommonButton
                 color="lineGray"
-                children="회원가입"
+                children="로그아웃"
                 size="small"
-                onClick={handleLogin}
+                onClick={handleLogout}
               />
-              <CommonButton
-                color="lineGray"
-                children="로그인"
-                size="small"
-                onClick={handleLogin}
-              />
-            </>
-          ) : (
-            <CommonButton
-              color="lineGray"
-              children="로그아웃"
-              size="small"
-              onClick={handleLogout}
-            />
-          )}
-        </RowBox>
-      </TopBar>
-      <Banner style={{ backgroundImage: `url(${BannerImg})` }}>
-        <BannerTitle>우리 조직에 FIT한 인재,</BannerTitle>
-        <BannerTitle>가장 빠르고 정확하게.</BannerTitle>
+            )}
+          </RowBox>
+        </TopBar>
+        <Banner style={{ backgroundImage: `url(${BannerImg})` }}>
+          <BannerTitle>우리 조직에 FIT한 인재,</BannerTitle>
+          <BannerTitle>가장 빠르고 정확하게.</BannerTitle>
 
-        <BannerSubTitle>
-          수많은 지원자들을 쉽게 관리하고, 조직에 가장 잘 맞는 인재를
-          찾아드릴게요.
-        </BannerSubTitle>
+          <BannerSubTitle>
+            수많은 지원자들을 쉽게 관리하고, 조직에 가장 잘 맞는 인재를
+            찾아드릴게요.
+          </BannerSubTitle>
 
-        <CommonButton
-          color="fillBlue"
-          children="갓챠 시작하기"
-          size="large"
-          width="30rem"
-          onClick={handleStart}
-        />
-      </Banner>
+          <CommonButton
+            color="fillBlue"
+            children="갓챠 시작하기"
+            size="large"
+            width="30rem"
+            onClick={handleStart}
+          />
+        </Banner>
 
-      <Body>
-        <ColumnWrapper>
-          <NavBar>
-            <NavTitle
-              onClick={() => {
-                setSelectedNavItem(0);
-              }}
-            >
-              지원자 관리 자동화
-            </NavTitle>
-            <NavTitleCenter
-              onClick={() => {
-                setSelectedNavItem(1);
-              }}
-            >
-              All in One 면접 진행
-            </NavTitleCenter>
-            <NavTitle
-              onClick={() => {
-                setSelectedNavItem(2);
-              }}
-            >
-              맞춤형 질문 큐레이션
-            </NavTitle>
-          </NavBar>
-          <NavBody>
-            <BodyLeft>
-              <NavSubTitle>{NavData[selectedNavItem].title}</NavSubTitle>
-              <NavSubText>{NavData[selectedNavItem].text}</NavSubText>
-            </BodyLeft>
-            <BodyRight>
-              {NavData[selectedNavItem].index === 1 && (
-                <Video muted autoPlay>
-                  <source src={landing1} type="video/mp4" />
-                </Video>
-              )}
-              {NavData[selectedNavItem].index === 2 && (
-                <Video muted autoPlay>
-                  <source src={landing2} type="video/mp4" />
-                </Video>
-              )}
-              {NavData[selectedNavItem].index === 3 && (
-                <Video muted autoPlay>
-                  <source src={landing3} type="video/mp4" />
-                </Video>
-              )}
-            </BodyRight>
-          </NavBody>
-        </ColumnWrapper>
+        <Body>
+          <ColumnWrapper>
+            <NavBar>
+              <NavTitle
+                onClick={() => {
+                  setSelectedNavItem(0);
+                }}
+              >
+                지원자 관리 자동화
+              </NavTitle>
+              <NavTitleCenter
+                onClick={() => {
+                  setSelectedNavItem(1);
+                }}
+              >
+                All in One 면접 진행
+              </NavTitleCenter>
+              <NavTitle
+                onClick={() => {
+                  setSelectedNavItem(2);
+                }}
+              >
+                맞춤형 질문 큐레이션
+              </NavTitle>
+            </NavBar>
+            <NavBody>
+              <BodyLeft>
+                <NavSubTitle>{NavData[selectedNavItem].title}</NavSubTitle>
+                <NavSubText>{NavData[selectedNavItem].text}</NavSubText>
+              </BodyLeft>
+              <BodyRight>
+                {NavData[selectedNavItem].index === 1 && (
+                  <Video muted autoPlay>
+                    <source src={landing1} type="video/mp4" />
+                  </Video>
+                )}
+                {NavData[selectedNavItem].index === 2 && (
+                  <Video muted autoPlay>
+                    <source src={landing2} type="video/mp4" />
+                  </Video>
+                )}
+                {NavData[selectedNavItem].index === 3 && (
+                  <Video muted autoPlay>
+                    <source src={landing3} type="video/mp4" />
+                  </Video>
+                )}
+              </BodyRight>
+            </NavBody>
+          </ColumnWrapper>
 
-        <ColumnWrapper>
-          <NavBar>
-            <NavSubTitle>GOTCHA Q&A</NavSubTitle>
-          </NavBar>
-        </ColumnWrapper>
-      </Body>
-    </Wrapper>
+          <ColumnWrapper>
+            <NavBar>
+              <NavSubTitle>GOTCHA Q&A</NavSubTitle>
+            </NavBar>
+          </ColumnWrapper>
+        </Body>
+      </Wrapper>
+      {isModalOpen && (
+        <ModalWrapper>
+          <ModalBackground onClick={openModal} />
+          <ModalContentWrapper>{modalItem}</ModalContentWrapper>
+        </ModalWrapper>
+      )}
+    </>
   );
 };
 
 export default Landing;
+
+const ModalContentWrapper = styled.main`
+  z-index: 45;
+`;
+const ModalWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 15;
+`;
+
+const ModalBackground = styled.div`
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 15;
+`;
 
 const Wrapper = styled.div`
   display: flex;

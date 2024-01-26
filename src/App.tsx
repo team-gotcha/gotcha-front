@@ -93,8 +93,7 @@ function App() {
             }
           />
           <Route path="/" element={<Landing />} />
-          <Route path="/onboarding" element={<Onboard />} />
-          <Route path="/onboarding2" element={<OnboardEmail />} />
+          <Route path="/onboarding/:id" element={<Onboard />} />
           <Route path="/google/callback" element={<GoogleCallback />} />
           <Route path="/main/callback" element={<MainCallback />} />
         </Routes>
