@@ -36,14 +36,17 @@ const NavigationBar = () => {
 
   let interview_id = '';
   let project_id = '';
+  let randomColorIdx = 0;
   // pathname에서 interview_id 또는 project_id 추출
   const pathSegments = pathname.split('/');
   if (pathSegments.includes('interview')) {
     const index = pathSegments.indexOf('interview');
     interview_id = pathSegments[index + 1];
+    randomColorIdx = Number(interview_id) % 8;
   } else if (pathSegments.includes('project')) {
     const index = pathSegments.indexOf('project');
     project_id = pathSegments[index + 1];
+    randomColorIdx = Number(interview_id) % 8;
   }
 
   //custom-hook
@@ -81,14 +84,14 @@ const NavigationBar = () => {
       );
       setTitle(matchingProject ? matchingProject.projectName : '');
     } else {
-      setTitle('세오스');
+      setTitle('갓챠');
     }
   }, [interview_id, project_id, userInfo]);
   return (
     <Wrapper>
       <TopDiv>
         <ProjInfo>
-          <Pic />
+          <Pic randomColorIdx={randomColorIdx} />
           <Title>{title}</Title>
         </ProjInfo>
         <IconDiv>
@@ -167,11 +170,27 @@ const ProjInfo = styled.div`
   gap: 1.6rem;
 `;
 
-const Pic = styled.div`
+const getRandomColor = (randomColorIdx: number) => {
+  const themeColors = [
+    'blue1',
+    'blue2',
+    'blue3',
+    'blue4',
+    'blue5',
+    'blue6',
+    'blue7',
+    'blue8',
+  ];
+  const randomColor = themeColors[randomColorIdx];
+  return randomColor;
+};
+
+const Pic = styled.div<{ randomColorIdx: number }>`
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
-  background-color: var(--Gray-300, #e6e6e6);
+  background-color: ${(props) =>
+    props.theme.profileColor[getRandomColor(props.randomColorIdx)]};
 `;
 
 const Title = styled.div`
