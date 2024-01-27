@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { styled } from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import React, { useState, useEffect, useRef } from 'react';
+import { styled } from 'styled-components';
+import { useNavigate, useParams } from 'react-router-dom';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import QuestionItemDrag from "../QuestionItemDrag";
-import InfoIcon from "../../../assets/icons/InfoIcon";
+import QuestionItemDrag from '../QuestionItemDrag';
+import InfoIcon from '../../../assets/icons/InfoIcon';
 
-import info from "../../../assets/images/InfoIcon-blue.svg";
+import info from '../../../assets/images/InfoIcon-blue.svg';
+import * as StompJs from '@stomp/stompjs';
 
-import { useGetAllEvaluations } from "../../../apis/get/useGetAllEvaluations";
-import { useGetEvalQuestion } from "../../../apis/get/useGetEvalQuestion";
-import { useGetRankingPoint } from "../../../apis/get/useGetRankingPoint";
-import { useGetCheckQuestions } from "../../../apis/get/useGetCheckQuestions";
+import { useGetAllEvaluations } from '../../../apis/get/useGetAllEvaluations';
+import { useGetEvalQuestion } from '../../../apis/get/useGetEvalQuestion';
+import { useGetRankingPoint } from '../../../apis/get/useGetRankingPoint';
+import { useGetCheckQuestions } from '../../../apis/get/useGetCheckQuestions';
 
 interface BaseModalProps {
   isOpen: boolean;
@@ -35,7 +36,7 @@ const QuestionCheckModal = ({
 
   useEffect(() => {
     if (!checkQuestionData.isLoading) {
-      console.log("확인 질문 데이터 세팅", checkQuestionData);
+      console.log('확인 질문 데이터 세팅', checkQuestionData);
       setItems(checkQuestionData.checkQuestion);
     }
   }, [!checkQuestionData.isLoading]);
@@ -56,6 +57,43 @@ const QuestionCheckModal = ({
     setIsOpenModal(true);
     setIsOpen(!isOpen);
   };
+
+  /**
+   * 웹소켓 파트
+   */
+  const token = localStorage.getItem('accessToken');
+
+  //클라이언트 객체 생성
+  const socket = new StompJs.Client({
+    brokerURL: `wss://gotchaa.shop/ws`,
+    connectHeaders: {
+      Authorization: `Bearer ${token}`,
+    },
+    debug: function (str) {
+      console.log(str);
+    },
+    reconnectDelay: 5000, // 자동 재 연결
+    heartbeatIncoming: 4000,
+    heartbeatOutgoing: 4000,
+  });
+
+  //연결시 실행할 함수
+  socket.onConnect = (frame) => {
+    console.log('소켓 연결 성공');
+  };
+
+  useEffect(() => {
+    //mount
+    console.log('소켓 연결 시작');
+    socket.activate();
+    return () => {
+      //unmount
+      console.log('소켓 연결 끝');
+      socket.deactivate();
+    };
+  }, []);
+
+  //useEffect(() => {}, [items]);
 
   return (
     <>
