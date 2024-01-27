@@ -1,5 +1,6 @@
 import React, { useState, useEffect, ChangeEvent, KeyboardEvent } from "react";
 import { styled } from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import {
@@ -15,30 +16,29 @@ interface Interviewer {
 }
 
 const InterviewerBox = ({ modify = true }) => {
+  let { interview_id } = useParams();
+  const InterviewIdNumber: number = parseInt(interview_id, 10);
   const setInterviewerData = useSetRecoilState(interviewersDataState);
-  const viewerData = useRecoilValue(interviewersDataState);
   const userDetailInfo = useRecoilValue(userDetailInfoState);
 
   const [viewers, setViewers] = useState([]);
   const [pickedViewers, setPickedViewers] = useState<Interviewer[]>([]);
   const [isDropdownView, setDropdownView] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
+  const [resultViewers, setResultViewers] = useState<string[]>([]);
 
-  const interviewerData = useGetViewer(3); //interview-id 넣어줘야함
+  const interviewerData = useGetViewer(InterviewIdNumber);
 
   useEffect(() => {
     if (modify) {
       const newData = interviewerData.interviewerInfo || [];
       setViewers(newData);
     } else {
+      console.log(userDetailInfo.interviewerNames);
       const newData = userDetailInfo.interviewerNames || [];
-      setViewers(newData);
+      setResultViewers(newData);
     }
   }, [!interviewerData.isLoading]);
-
-  useEffect(() => {
-    console.log(viewerData);
-  }, [pickedViewers, viewerData]);
 
   const handleToggleSelection = (option: Interviewer) => {
     const isSelected = selectedOptions.includes(option.id);
@@ -75,7 +75,7 @@ const InterviewerBox = ({ modify = true }) => {
     <Container>
       <TopDiv>
         <KeyTitle>면접관</KeyTitle>
-        {modify && (
+        {modify ? (
           <DropdownDiv>
             <SelectBar onClick={() => setDropdownView(!isDropdownView)}>
               면접관 추가
@@ -95,12 +95,19 @@ const InterviewerBox = ({ modify = true }) => {
               </Wrapper>
             )}
           </DropdownDiv>
+        ) : (
+          <ResultBox>
+            {resultViewers.map((item: string, index) => (
+              <Keyword key={index}>{item}</Keyword>
+            ))}
+          </ResultBox>
         )}
       </TopDiv>
       <KeywordDiv>
-        {pickedViewers.map((item: Interviewer) => (
-          <Keyword key={item.id}>{item.name}</Keyword>
-        ))}
+        {modify &&
+          pickedViewers.map((item: Interviewer) => (
+            <Keyword key={item.id}>{item.name}</Keyword>
+          ))}
       </KeywordDiv>
     </Container>
   );
@@ -222,4 +229,13 @@ const Keyword = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 160%;
+`;
+
+const ResultBox = styled.div`
+  display: flex;
+  align-items: center;
+  width: 30rem;
+  gap: 0.8rem;
+
+  flex-wrap: wrap;
 `;

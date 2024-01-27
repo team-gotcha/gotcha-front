@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
 
 import CardTitleBoard from "../components/cardview/CardTitleBoard";
 import InterviewerInfo from "../components/cardview/InterviewerInfo";
@@ -9,10 +10,13 @@ import ReviewModal from "../components/cardview/modal/ReviewModal";
 import { useGetAllQuestion } from "../apis/get/useGetAllQuestion";
 
 const InProgress = () => {
+  let { user_id } = useParams();
+  const userIdNumber: number = parseInt(user_id, 10);
+
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);
 
-  const allQuestionData = useGetAllQuestion(2);
+  const allQuestionData = useGetAllQuestion(userIdNumber);
 
   useEffect(() => {
     if (!allQuestionData.isLoading) {

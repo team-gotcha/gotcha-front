@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -17,21 +18,20 @@ interface BaseModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-  applicantId: number;
 }
 
 const QuestionCheckModal = ({
   isOpen,
   setIsOpen,
   setIsOpenModal,
-  applicantId,
 }: BaseModalProps) => {
-  const applicant_id: number = applicantId;
+  let { user_id } = useParams();
+  const userIdNumber: number = parseInt(user_id, 10);
   const [isHovered, setIsHovered] = useState(false);
   const [items, setItems] = useState([]);
 
   //custom hook
-  const checkQuestionData = useGetCheckQuestions(applicant_id);
+  const checkQuestionData = useGetCheckQuestions(userIdNumber);
 
   useEffect(() => {
     if (!checkQuestionData.isLoading) {
@@ -109,6 +109,7 @@ const Container = styled.div`
   /* justify-content: center; */
   align-items: center;
   border-radius: 1.2rem;
+  min-width: 50rem;
   overflow: hidden;
   z-index: 200;
 `;
@@ -170,6 +171,7 @@ const StartBtn = styled.button`
 `;
 const Box = styled.div`
   padding: 2rem;
+  width: 100%;
   background-color: #fff;
 `;
 

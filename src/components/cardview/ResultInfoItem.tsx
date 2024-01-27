@@ -5,13 +5,30 @@ import { useNavigate, useParams } from "react-router-dom";
 import ResultViewerInfo from "./ResultviewerInfo";
 import ResultReviewBox from "./ResultReviewBox";
 
-const ResultInfoItem = () => {
+interface InterviewDataProps {
+  data: {
+    applicantName: string;
+    date: string;
+    email: string;
+    interviewName: string;
+    interviewStatus: string;
+    interviewers: string[];
+    keywords: { name: string; keywordType: string }[];
+    oneLiners: string | null;
+    ranking: number;
+    totalScore: number;
+  };
+  userIdNumber: number;
+  InterviewIdNumber: number;
+}
+
+const ResultInfoItem = ({
+  data,
+  userIdNumber,
+  InterviewIdNumber,
+}: InterviewDataProps) => {
   const navigate = useNavigate();
   const [isButtonClicked, setIsButtonClicked] = useState(false);
-
-  let user_id = 1; //이거 받아다가 쓰세요!!!!! 수정 필요!!!!!
-
-  let { interview_id } = useParams(); // 그리고 웬만하면 이것도 받아서 쓰셔요
 
   const handleButtonClick = () => {
     setIsButtonClicked(!isButtonClicked);
@@ -30,11 +47,16 @@ const ResultInfoItem = () => {
           </FinBtn>
         </RightDiv>
       </TopDiv>
-      <Contents onClick={() => navigate(`/result/${interview_id}/${user_id}`)}>
+      <Contents
+        onClick={
+          () => navigate(`/result/${InterviewIdNumber}/${userIdNumber}`)
+          // userIdNumber 수정해야함!!
+        }
+      >
         <InputDiv>
-          <ResultViewerInfo />
+          <ResultViewerInfo data={data} />
         </InputDiv>
-        <ResultReviewBox />
+        <ResultReviewBox data={data} />
       </Contents>
     </Container>
   );

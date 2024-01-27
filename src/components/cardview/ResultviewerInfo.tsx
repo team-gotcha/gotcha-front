@@ -1,28 +1,44 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
 
-const ResultViewerInfo = () => {
+interface InterviewDataProps {
+  data: {
+    applicantName: string;
+    date: string;
+    email: string;
+    interviewName: string;
+    interviewStatus: string;
+    interviewers: string[];
+    keywords: { name: string; keywordType: string }[];
+    oneLiners: string | null;
+    ranking: number;
+    totalScore: number;
+  };
+}
+
+const ResultViewerInfo = ({ data }: InterviewDataProps) => {
   return (
     <>
       <UserProfileDiv>
         <UserProfile></UserProfile>
-        <UserName>가차린</UserName>
+        <UserName>{data.applicantName}</UserName>
       </UserProfileDiv>
       <InterviewDiv>
         <InterviewBox>
           <InterviewTitle>면접일</InterviewTitle>
-          <Result>12월 7일</Result>
+          <Result>{data.date}</Result>
         </InterviewBox>
         <InterviewBox>
           <InterviewTitle>면접관</InterviewTitle>
           <ResultDiv>
-            <Result>배수연</Result>
-            <Result>염혜인</Result>
+            {data.interviewers.map((item: string, index) => (
+              <Result key={index}>{item}</Result>
+            ))}
           </ResultDiv>
         </InterviewBox>
         <InterviewBox>
           <InterviewTitle>이메일</InterviewTitle>
-          <Result>abec@naver.com</Result>
+          <Result>{data.email}</Result>
         </InterviewBox>
       </InterviewDiv>
     </>

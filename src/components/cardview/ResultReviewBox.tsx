@@ -1,16 +1,42 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
 
-const ResultReviewBox = () => {
+interface InterviewDataProps {
+  data?: {
+    applicantName: string;
+    date: string;
+    email: string;
+    interviewName: string;
+    interviewStatus: string;
+    interviewers: string[];
+    keywords: { name: string; keywordType: string }[];
+    oneLiners: string | null;
+    ranking: number;
+    totalScore: number;
+  };
+}
+
+const ResultReviewBox = ({ data }: InterviewDataProps) => {
+  if (!data) {
+    return null;
+  }
   return (
     <Container>
       <TopBox>
         <ScoreBox>
-          <ReviewScore>17.2 / </ReviewScore>
+          <ReviewScore>{data.totalScore} / </ReviewScore>
           <TotalScore>20</TotalScore>
         </ScoreBox>
         <Comments>
-          전체 <span>2위</span>인 면접자입니다. <span>다양한 경험, 꼼꼼한</span>
+          전체 <span>{data.ranking}위</span>인 면접자입니다.{" "}
+          <span>
+            {data.keywords.map((keyword, index) => (
+              <span key={index}>
+                {keyword.name}
+                {index < data.keywords.length - 1 && ", "}
+              </span>
+            ))}
+          </span>
           의 키워드를 가지고 있어요.
         </Comments>
       </TopBox>
@@ -21,15 +47,15 @@ const ResultReviewBox = () => {
         </Reviews>
         <Reviews>
           <Profile />
-          <ReviewCom>이러쿵저러쿵</ReviewCom>
+          <ReviewCom>한줄평 데이터가 어떤 식으로 넘어오는지 몰라서</ReviewCom>
         </Reviews>
         <Reviews>
           <Profile />
-          <ReviewCom>요러쿵저러쿵</ReviewCom>
+          <ReviewCom>아직 mockdata입니다</ReviewCom>
         </Reviews>
         <Reviews>
           <Profile />
-          <ReviewCom>쿵치팍치</ReviewCom>
+          <ReviewCom>데이터 들어오면 수정하도록 하겠습니다!!</ReviewCom>
         </Reviews>
       </ReviewBox>
     </Container>

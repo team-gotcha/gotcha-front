@@ -14,6 +14,7 @@ const ReviewModal = ({ isOpen, setIsOpen }: BaseModalProps) => {
   let { user_id } = useParams();
   const userIdNumber: number = parseInt(user_id, 10);
   let { interview_id } = useParams();
+
   const postOnlinerData = usePostOneliner();
 
   const [oneLiner, setOneLiner] = useState("");

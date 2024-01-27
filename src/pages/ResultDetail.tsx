@@ -1,16 +1,30 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
 
-import CardTitleBoard from '../components/cardview/CardTitleBoard';
-import InterviewerInfo from '../components/cardview/InterviewerInfo';
-import ResultReviewBox from '../components/cardview/ResultReviewBox';
-import QuestionItem from '../components/cardview/QuestionItem';
+import CardTitleBoard from "../components/cardview/CardTitleBoard";
+import InterviewerInfo from "../components/cardview/InterviewerInfo";
+import ResultReviewBox from "../components/cardview/ResultReviewBox";
+import QuestionItem from "../components/cardview/QuestionItem";
 
-import DropDownBox from '../components/common/DropDownBox';
+import DropDownBox from "../components/common/DropDownBox";
 
-const questions = ['질문 1', '질문 2', '질문 3'];
+import { useGetRankingPoint } from "../apis/get/useGetRankingPoint";
+import { useGetEvalQuestion } from "../apis/get/useGetEvalQuestion";
+import { useGetAllEvaluations } from "../apis/get/useGetAllEvaluations";
+
+const questions = ["질문 1", "질문 2", "질문 3"];
 
 const ResultDetail = () => {
+  let { user_id } = useParams();
+  const userIdNumber: number = parseInt(user_id, 10);
+
+  const RankingData = useGetRankingPoint(userIdNumber);
+  const QEvaluationData = useGetEvalQuestion(1); //QuestionId 보내줘야 함
+  const AllEvaluationData = useGetAllEvaluations(userIdNumber);
+  //지금 완료된 지원자 id를 몰라서 못 가져오는 상황. 추후 수정 예정!!
+
+  console.log(RankingData, QEvaluationData, AllEvaluationData);
   return (
     <Wrapper>
       <Background />
