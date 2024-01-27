@@ -1,30 +1,39 @@
-import React, { useState } from "react";
-import { styled } from "styled-components";
+import React, { useState } from 'react';
+import { styled } from 'styled-components';
 
-import SendOffIcon from "../../assets/icons/SendOffIcno";
-import SendOnIcon from "../../assets/icons/SendOnIcon";
+import SendOffIcon from '../../assets/icons/SendOffIcno';
+import SendOnIcon from '../../assets/icons/SendOnIcon';
 
-import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import { renderState } from "../../recoil/cardview";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
+import { renderState } from '../../recoil/cardview';
 
-import { usePostIndivQuestions } from "../../apis/post/usePostIndivQuestions";
+import { usePostIndivQuestions } from '../../apis/post/usePostIndivQuestions';
+import { useLocation } from 'react-router-dom';
 
 interface QuestionBtnProps {
   isClicked: boolean;
   onClick: () => void;
 }
 
-interface MemoInputProps {
-  applicantId: number;
-}
-
-const MemoInput = ({ applicantId }: MemoInputProps) => {
+const MemoInput = () => {
   const [isQuestionClicked, setIsQuestionClicked] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
 
   const render = useRecoilValue(renderState);
   const setRender = useSetRecoilState(renderState);
+
+  //url에서 applicant id 받아오가
+  const location = useLocation();
+  const { pathname } = location;
+
+  // pathname에서 interview_id 또는 project_id 추출
+  const pathSegments = pathname.split('/');
+  let applicantId = 0;
+  if (pathSegments.includes('ready')) {
+    const index = pathSegments.indexOf('ready');
+    applicantId = Number(pathSegments[index + 2]);
+  }
 
   const postDetailData = usePostIndivQuestions();
 
@@ -34,7 +43,7 @@ const MemoInput = ({ applicantId }: MemoInputProps) => {
       applicantId: applicantId,
     });
     setRender(render + 1);
-    setInputValue("");
+    setInputValue('');
   };
 
   const handleQuestionClick = () => {
@@ -50,7 +59,7 @@ const MemoInput = ({ applicantId }: MemoInputProps) => {
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       handleSend();
     }
   };
@@ -152,11 +161,11 @@ const QuestionBtn = styled.button<QuestionBtnProps>`
 
   border: ${({ isClicked }) =>
     isClicked
-      ? "1px solid var(--purple-600, #3733FF)"
-      : "1px solid var(--Gray-800, #666)"};
+      ? '1px solid var(--purple-600, #3733FF)'
+      : '1px solid var(--Gray-800, #666)'};
   background: var(--Gray-100, #fff);
   color: ${({ isClicked }) =>
-    isClicked ? "var(--purple-600, #3733FF);" : "var(--Gray-900, #4d4d4d)"};
+    isClicked ? 'var(--purple-600, #3733FF);' : 'var(--Gray-900, #4d4d4d)'};
   text-align: center;
 
   font-size: 12px;
@@ -175,7 +184,7 @@ const InputDiv = styled.div<{ isInputFocused: boolean }>`
 
   border-top: 1px solid var(--purple-400, #b4b2ff);
   background: ${({ isInputFocused }) =>
-    isInputFocused ? "#fff" : "var(--purple-100, #f3f2ff)"};
+    isInputFocused ? '#fff' : 'var(--purple-100, #f3f2ff)'};
 `;
 
 const Input = styled.input`

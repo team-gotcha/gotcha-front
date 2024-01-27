@@ -10,11 +10,13 @@ import {
 } from '../../hooks/useGetTodayDate';
 import StarOnIcon from '../../assets/icons/StarOnIcon';
 import CommonGroupMembers from '../common/CommonGroupMembers';
+import { useNavigate } from 'react-router-dom';
 
 interface ViewListStackProps {
   isStar?: boolean; //즐찾표시 여부 api수정후 applicantData에 포함시킴
   onClick?: () => void;
   isEmpty?: boolean; //빈 스택 여부
+  interviewId?: string;
   applicantData?: {
     id?: number;
     questionCount?: number;
@@ -28,7 +30,7 @@ interface ViewListStackProps {
 
 const ViewListStack = ({ ...props }: ViewListStackProps) => {
   const InterviewStateList = ['면접 준비중', '면접 진행중', '면접 전형 완료'];
-
+  const navigate = useNavigate();
   const applicantName = props.applicantData
     ? props.applicantData.name
     : '새로운 지원자를 추가하세요!';
@@ -63,9 +65,16 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
       break;
   }
 
+  const handleApplicantClick = () => {
+    navigate(`/ready/${props.interviewId}/${props.applicantData.id}`);
+  };
+
   return (
     <>
-      <Wrapper onClick={props.onClick} statusText={statusText}>
+      <Wrapper
+        onClick={props.isEmpty ? props.onClick : handleApplicantClick}
+        statusText={statusText}
+      >
         {!props.isEmpty ? (
           <ApplierName>{applicantName}</ApplierName>
         ) : (
