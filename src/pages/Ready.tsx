@@ -114,12 +114,14 @@ const Ready = () => {
     setApplicantId(Number(applicant_id));
     const newFilesData = new FormData();
 
-    const resumeFile = filesData.get("resume");
-    const portfoliosFile = filesData.get("portfolios");
+    const resumeFile = filesData.resume;
+    const portfoliosFile = filesData.portfolio;
+
+    console.log(resumeFile, portfoliosFile);
 
     newFilesData.append("applicant-id", String(applicant_id));
     newFilesData.append("resume", resumeFile);
-    newFilesData.append("portfolios", portfoliosFile);
+    newFilesData.append("portfolio", portfoliosFile);
 
     userPatchData.addFiles({ filesData: newFilesData });
 
@@ -142,6 +144,8 @@ const Ready = () => {
         keywords: keywordData,
         interviewId: interview_id,
       });
+
+      handleAfterPost(Number(postDetailData.data.applicantId));
     }
   };
 

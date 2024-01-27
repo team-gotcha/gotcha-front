@@ -12,6 +12,8 @@ export const userDetailInfoState = atom({
     phoneNumber: "",
     path: "",
     email: "",
+    portfolio: "",
+    resumeLink: "",
     traitKeywords: [""],
     skillKeywords: [""],
     experienceKeywords: [""],
@@ -31,7 +33,7 @@ export const userPostDataState = atom({
     phoneNumber: "",
     path: "",
     email: "",
-    // interviewId: "",
+    interviewId: "",
   },
 });
 
@@ -52,7 +54,7 @@ export const questionsIndivDataState = atom({
 
 export const filesDataState = atom({
   key: "filesDataState",
-  default: new FormData(),
+  default: {} as { resume: File; portfolio: File },
 });
 
 export const renderState = atom({

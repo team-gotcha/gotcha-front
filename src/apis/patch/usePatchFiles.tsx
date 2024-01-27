@@ -20,6 +20,7 @@ export const usePatchFiles = () => {
         `/api/applicants/files`,
         filesData.filesData
       );
+      console.log(res.data);
       return res.data;
     },
   });
