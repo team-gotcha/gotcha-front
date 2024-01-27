@@ -18,6 +18,7 @@ import { useGetUserDetail } from "../../apis/get/useGetUserDetail";
 const InterviewerInfo = ({ modify = true, wide = true }) => {
   let { user_id } = useParams();
   const userIdNumber: number = parseInt(user_id, 10);
+  let { interview_id } = useParams();
 
   //입력값 state
   const [name, setName] = useState("");
@@ -37,8 +38,8 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
   const setUserPostInfo = useSetRecoilState(userPostDataState);
 
   const setFilesData = useSetRecoilState(filesDataState);
-  const [resumeFiles, setResumeFiles] = useState<File[]>([]);
-  const [portfolioFiles, setPortfolioFiles] = useState<File[]>([]);
+  const [resumeFiles, setResumeFiles] = useState<File>();
+  const [portfolioFiles, setPortfolioFiles] = useState<File>();
 
   //custom hook
   const userDetailData = useGetUserDetail(userIdNumber);
@@ -66,59 +67,55 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
       phoneNumber: phoneNumber,
       path: path,
       email: email,
-      // interviewId: interviewId,
+      interviewId: interview_id,
     });
   }, [name, date, age, phoneNumber, education, email, position, path]);
 
   //파일 업로드 정보
   const handleFiles = (
     event: React.ChangeEvent<HTMLInputElement>,
-    fileType: "resume" | "portfolios"
+    fileType: "resume" | "portfolio"
   ) => {
     const selectedFiles = event.target.files;
 
-    if (selectedFiles) {
-      const formData = new FormData();
-
-      Array.from(selectedFiles).forEach((file) => {
-        formData.append(fileType, file);
-      });
-
-      setFilesData(formData);
-
-      //위에는 formData로 보낼 데이터셋, 아래는 배열로 띄울 데이터셋
+    if (selectedFiles && selectedFiles.length > 0) {
       const filesArray = Array.from(selectedFiles);
 
       if (fileType === "resume") {
-        setResumeFiles((prevFiles) => [...prevFiles, ...filesArray]);
-      } else if (fileType === "portfolios") {
-        setPortfolioFiles((prevFiles) => [...prevFiles, ...filesArray]);
+        setResumeFiles(filesArray[0]);
+        setFilesData({
+          resume: filesArray[0],
+          portfolio: portfolioFiles,
+        });
+      } else if (fileType === "portfolio") {
+        setPortfolioFiles(filesArray[0]);
+        setFilesData({
+          resume: resumeFiles,
+          portfolio: filesArray[0],
+        });
       }
     }
   };
 
-  const handleRemoveFile = (
-    index: number,
-    fileType: "resume" | "portfolios"
-  ) => {
+  const handleRemoveFile = (fileType: "resume" | "portfolio") => {
     if (fileType === "resume") {
-      setResumeFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-    } else if (fileType === "portfolios") {
-      setPortfolioFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-    }
-
-    //아래는 formData로 보낼 데이터셋, 위는 배열로 띄울 데이터셋
-    setFilesData((prevData) => {
-      const updatedFiles = new FormData();
-
-      prevData.forEach((value, key) => {
-        if (key !== fileType) {
-          updatedFiles.append(key, value);
-        }
+      setResumeFiles(null);
+      setFilesData({
+        resume: null,
+        portfolio: portfolioFiles,
       });
+    } else if (fileType === "portfolio") {
+      setPortfolioFiles(null);
+      setFilesData({
+        resume: resumeFiles,
+        portfolio: null,
+      });
+    }
+  };
 
-      return updatedFiles;
-    });
+  const handleDocsClick = (url: string) => {
+    // 특정 URL을 새 창으로 열기
+    window.open(url);
   };
 
   return (
@@ -226,18 +223,23 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
         <Document>
           <KeyTitle>원본 서류</KeyTitle>
           <DocsDiv>
-            {resumeFiles.map((file, index) => (
+            {resumeFiles && modify && (
               // <Docs key={index}>{`${file.name}`}</Docs>
-              <Docs key={index}>
+              <Docs>
                 지원서
                 <CloseIcon
                   width={16}
                   height={16}
                   fill="#999999"
-                  onClick={() => handleRemoveFile(index, "resume")}
+                  onClick={() => handleRemoveFile("resume")}
                 />
               </Docs>
-            ))}
+            )}
+            {!modify && (
+              <Docs onClick={() => handleDocsClick(userDetailInfo.resumeLink)}>
+                지원서
+              </Docs>
+            )}
 
             {modify && (
               <>
@@ -253,17 +255,22 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
                 ></FileInput>
               </>
             )}
-            {portfolioFiles.map((portfolio, index) => (
-              <Docs key={index}>
+            {portfolioFiles && modify && (
+              <Docs>
                 포트폴리오
                 <CloseIcon
                   width={16}
                   height={16}
                   fill="#999999"
-                  onClick={() => handleRemoveFile(index, "portfolios")}
+                  onClick={() => handleRemoveFile("portfolio")}
                 />
               </Docs>
-            ))}
+            )}
+            {!modify && (
+              <Docs onClick={() => handleDocsClick(userDetailInfo.portfolio)}>
+                포트폴리오
+              </Docs>
+            )}
 
             {modify && (
               <>
@@ -275,7 +282,7 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
                   type="file"
                   name="portfolio"
                   id="portfolio"
-                  onChange={(e) => handleFiles(e, "portfolios")}
+                  onChange={(e) => handleFiles(e, "portfolio")}
                 ></FileInput>
               </>
             )}
@@ -451,6 +458,8 @@ const Docs = styled.div`
   font-weight: 400;
   line-height: 160%; /* 19.2px */
   letter-spacing: -0.036px;
+
+  cursor: pointer;
 `;
 
 const Portfolio = styled.label`

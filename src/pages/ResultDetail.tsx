@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import CardTitleBoard from "../components/cardview/CardTitleBoard";
 import InterviewerInfo from "../components/cardview/InterviewerInfo";
-import ResultReviewBox from "../components/cardview/ResultReviewBox";
+import ResultReviewBoxDetail from "../components/cardview/ResultReviewBoxDetail";
 import QuestionItem from "../components/cardview/QuestionItem";
 
 import DropDownBox from "../components/common/DropDownBox";
@@ -18,13 +18,20 @@ const questions = ["질문 1", "질문 2", "질문 3"];
 const ResultDetail = () => {
   let { user_id } = useParams();
   const userIdNumber: number = parseInt(user_id, 10);
+  const [items, setItems] = useState();
 
   const RankingData = useGetRankingPoint(userIdNumber);
   const QEvaluationData = useGetEvalQuestion(1); //QuestionId 보내줘야 함
   const AllEvaluationData = useGetAllEvaluations(userIdNumber);
-  //지금 완료된 지원자 id를 몰라서 못 가져오는 상황. 추후 수정 예정!!
 
-  console.log(RankingData, QEvaluationData, AllEvaluationData);
+  useEffect(() => {
+    if (!AllEvaluationData.isLoading) {
+      console.log("확인 질문 데이터 세팅", AllEvaluationData);
+      setItems(AllEvaluationData.allEvaluationsInfo);
+      console.log(RankingData, QEvaluationData, AllEvaluationData);
+    }
+  }, [!AllEvaluationData.isLoading]);
+
   return (
     <Wrapper>
       <Background />
@@ -40,7 +47,7 @@ const ResultDetail = () => {
             <InterviewerInfo modify={false} />
           </InputDiv>
           <RightBox>
-            <ResultReviewBox />
+            <ResultReviewBoxDetail detailData={items} />
             <QuestionInfoBox>
               <InfoBox>
                 <DropDownBox />

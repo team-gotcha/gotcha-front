@@ -7,6 +7,7 @@ import ResultReviewBox from "./ResultReviewBox";
 
 interface InterviewDataProps {
   data: {
+    applicantId: number;
     applicantName: string;
     date: string;
     email: string;
@@ -48,10 +49,7 @@ const ResultInfoItem = ({
         </RightDiv>
       </TopDiv>
       <Contents
-        onClick={
-          () => navigate(`/result/${InterviewIdNumber}/${userIdNumber}`)
-          // userIdNumber 수정해야함!!
-        }
+        onClick={() => navigate(`/result/${InterviewIdNumber}/${userIdNumber}`)}
       >
         <InputDiv>
           <ResultViewerInfo data={data} />

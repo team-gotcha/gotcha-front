@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import CloseIcon from "../../assets/icons/CloseIcon";
 
@@ -17,6 +17,7 @@ const CardTitleBoard = ({
   let font_color;
   let background_color;
   const navigate = useNavigate();
+  let { interview_id } = useParams();
 
   switch (color) {
     case 1:
@@ -51,7 +52,7 @@ const CardTitleBoard = ({
             width={20}
             height={20}
             fill="#3733FF"
-            onClick={() => navigate("/result")}
+            onClick={() => navigate(`/result/${interview_id}`)}
           />
         )}
       </RightDiv>
