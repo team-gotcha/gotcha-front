@@ -88,16 +88,18 @@ const Ready = () => {
   useEffect(() => {
     if (!getIndivQuestionData.isLoading && !isModify) {
       const newData = getIndivQuestionData.indivQuestion || [];
-      setComments(
-        newData?.filter(
-          (comment: QuestionProps) => comment.commentTargetId === null
-        )
-      );
-      setReply(
-        newData?.filter(
-          (comment: QuestionProps) => comment.commentTargetId !== null
-        )
-      );
+      if (newData) {
+        setComments(
+          newData?.filter(
+            (comment: QuestionProps) => comment.commentTargetId === null
+          )
+        );
+        setReply(
+          newData?.filter(
+            (comment: QuestionProps) => comment.commentTargetId !== null
+          )
+        );
+      }
       console.log(render);
     }
   }, [!getIndivQuestionData.isLoading]);
@@ -145,7 +147,7 @@ const Ready = () => {
         interviewId: interview_id,
       });
 
-      handleAfterPost(Number(postDetailData.data.applicantId));
+      // handleAfterPost(Number(postDetailData.data.applicantId));
     }
   };
 

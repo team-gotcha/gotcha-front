@@ -2,19 +2,6 @@ import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
 
 interface InterviewDataProps {
-  data?: {
-    applicantId: number;
-    applicantName: string;
-    date: string;
-    email: string;
-    interviewName: string;
-    interviewStatus: string;
-    interviewers: string[];
-    keywords: { name: string; keywordType: string }[];
-    oneLiners: string | null;
-    ranking: number;
-    totalScore: number;
-  };
   detailData?: {
     applicantName: string;
     keywords: { name: string; keywordType: string }[];
@@ -24,21 +11,21 @@ interface InterviewDataProps {
   };
 }
 
-const ResultReviewBox = ({ data, detailData }: InterviewDataProps) => {
+const ResultReviewBoxDetail = ({ detailData }: InterviewDataProps) => {
   return (
     <Container>
       <TopBox>
         <ScoreBox>
-          <ReviewScore>{data.totalScore}/</ReviewScore>
+          <ReviewScore>{detailData.totalScore}/</ReviewScore>
           <TotalScore>20</TotalScore>
         </ScoreBox>
         <Comments>
-          전체 <span>{data.ranking} 위</span>인 면접자입니다.
+          전체 <span>{detailData.ranking} 위</span>인 면접자입니다.
           <span>
-            {data.keywords.map((keyword, index) => (
+            {detailData.keywords.map((keyword, index) => (
               <span key={index}>
                 {keyword.name}
-                {index < data.keywords.length - 1 && ", "}
+                {index < detailData.keywords.length - 1 && ", "}
               </span>
             ))}
           </span>
@@ -67,7 +54,7 @@ const ResultReviewBox = ({ data, detailData }: InterviewDataProps) => {
   );
 };
 
-export default ResultReviewBox;
+export default ResultReviewBoxDetail;
 
 const Container = styled.div`
   padding: 2rem 4rem 3rem;

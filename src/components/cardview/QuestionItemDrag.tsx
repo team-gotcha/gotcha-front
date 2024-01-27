@@ -129,7 +129,7 @@ const QuestionItemDrag = ({
             )}
           </QuestionBox>
           <InputBox>
-            <Answer placeholder="답변을 입력해주세요." />
+            <Answer>면접 시작시 답변창이 활성화됩니다.</Answer>
           </InputBox>
         </QuestionDiv>
       </Container>
@@ -255,7 +255,7 @@ const InputBox = styled.div`
   align-items: center;
 `;
 
-const Answer = styled.input`
+const Answer = styled.div`
   border: none;
   width: 100%;
 
@@ -265,9 +265,7 @@ const Answer = styled.input`
   line-height: 160%; /* 22.4px */
   letter-spacing: -0.042px;
 
-  & ::placeholder {
-    color: var(--Gray-500, #b3b3b3);
-  }
+  color: var(--Gray-500, #b3b3b3);
 `;
 
 const DropdownDiv = styled.div`

@@ -15,7 +15,7 @@ interface QuestionBtnProps {
 }
 
 interface MemoInputProps {
-  applicantId: string | number;
+  applicantId: number;
 }
 
 const MemoInput = ({ applicantId }: MemoInputProps) => {
@@ -31,7 +31,7 @@ const MemoInput = ({ applicantId }: MemoInputProps) => {
   const handleSend = () => {
     postDetailData.indivQuestions({
       content: inputValue,
-      applicantId: 2,
+      applicantId: applicantId,
     });
     setRender(render + 1);
     setInputValue("");
