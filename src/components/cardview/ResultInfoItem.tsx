@@ -6,7 +6,7 @@ import ResultViewerInfo from "./ResultviewerInfo";
 import ResultReviewBox from "./ResultReviewBox";
 
 interface InterviewDataProps {
-  data: {
+  data?: {
     applicantId: number;
     applicantName: string;
     date: string;
@@ -15,7 +15,12 @@ interface InterviewDataProps {
     interviewStatus: string;
     interviewers: string[];
     keywords: { name: string; keywordType: string }[];
-    oneLiners: string | null;
+    oneLiners:
+      | {
+          writerName: string;
+          content: string;
+        }[]
+      | null;
     ranking: number;
     totalScore: number;
   };

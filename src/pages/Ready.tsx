@@ -102,7 +102,7 @@ const Ready = () => {
       }
       console.log(render);
     }
-  }, [!getIndivQuestionData.isLoading]);
+  }, [!getIndivQuestionData.isLoading, render]);
 
   //지원자 정보 post 했을 때 applicantId 받아오기
   useEffect(() => {
@@ -129,6 +129,7 @@ const Ready = () => {
 
     setIsModify(false);
     navigate(`/ready/${interview_id}/${applicant_id}`);
+    window.location.reload();
   };
 
   const handleSubmit = async () => {
@@ -146,8 +147,6 @@ const Ready = () => {
         keywords: keywordData,
         interviewId: interview_id,
       });
-
-      // handleAfterPost(Number(postDetailData.data.applicantId));
     }
   };
 
@@ -172,7 +171,7 @@ const Ready = () => {
                   <MemoItem key={index} item={item} reply={reply} />
                 ))}
 
-              {!isModify && <MemoInput applicantId={applicantId} />}
+              {!isModify && <MemoInput />}
             </MemoDiv>
           </Contents>
         </Container>
