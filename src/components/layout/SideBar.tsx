@@ -24,6 +24,15 @@ const SideBar = () => {
 
   const navigate = useNavigate();
 
+  //url로 접근 시 데이터 세팅
+  const fetchedProjectData = useGetProjectList();
+  useEffect(() => {
+    if (isLogin && !fetchedProjectData.isLoading) {
+      console.log('유저데이터 세팅');
+      setUserInfo(fetchedProjectData.projectList);
+    }
+  }, [fetchedProjectData.isLoading]);
+
   //modal관리
   const handleMakeNewProject = () => {
     setModalItem(<AddProjectModal />);
