@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import CardTitleBoard from "../components/cardview/CardTitleBoard";
-import InterviewerInfo from "../components/cardview/InterviewerInfo";
-import ResultReviewBoxDetail from "../components/cardview/ResultReviewBoxDetail";
-import QuestionItem from "../components/cardview/QuestionItem";
+import CardTitleBoard from '../components/cardview/CardTitleBoard';
+import InterviewerInfo from '../components/cardview/InterviewerInfo';
+import ResultReviewBoxDetail from '../components/cardview/ResultReviewBoxDetail';
+import QuestionItem from '../components/cardview/QuestionItem';
 
-import DropDownBox from "../components/common/DropDownBox";
+import DropDownBox from '../components/common/DropDownBox';
 
-import { useGetRankingPoint } from "../apis/get/useGetRankingPoint";
-import { useGetEvalQuestion } from "../apis/get/useGetEvalQuestion";
-import { useGetAllEvaluations } from "../apis/get/useGetAllEvaluations";
+import { useGetRankingPoint } from '../apis/get/useGetRankingPoint';
+import { useGetEvalQuestion } from '../apis/get/useGetEvalQuestion';
+import { useGetAllEvaluations } from '../apis/get/useGetAllEvaluations';
 
-const questions = ["질문 1", "질문 2", "질문 3"];
+const questions = ['질문 1', '질문 2', '질문 3'];
 
 const ResultDetail = () => {
   let { user_id } = useParams();
@@ -26,7 +26,7 @@ const ResultDetail = () => {
 
   useEffect(() => {
     if (!AllEvaluationData.isLoading) {
-      console.log("확인 질문 데이터 세팅", AllEvaluationData);
+      console.log('확인 질문 데이터 세팅', AllEvaluationData);
       setItems(AllEvaluationData.allEvaluationsInfo);
       console.log(RankingData, QEvaluationData, AllEvaluationData);
     }

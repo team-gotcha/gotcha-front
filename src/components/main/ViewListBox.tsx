@@ -29,7 +29,12 @@ const ViewListBox = ({ ...props }: ViewListBoxProps) => {
       )}
 
       {applicantsList.map((applicant, index) => (
-        <ViewListStack key={index} isEmpty={false} applicantData={applicant} />
+        <ViewListStack
+          key={index}
+          isEmpty={false}
+          applicantData={applicant}
+          interviewId={String(props.interview_id)}
+        />
       ))}
     </StackWrapper>
   );

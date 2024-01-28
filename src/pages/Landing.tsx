@@ -13,6 +13,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginState } from '../recoil/userInfo';
 import { modalContent, modalState } from '../recoil/modal';
 import { useToggleModal } from '../hooks/useToggleModal';
+import { usePostLogout } from '../apis/post/usePostLogout';
 
 const Landing = () => {
   //modal관리
@@ -30,6 +31,8 @@ const Landing = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userId');
     localStorage.removeItem('refreshToken');
+
+    fetchLogout.logout();
 
     setIsLogin(false);
     navigate('/');
@@ -69,6 +72,8 @@ const Landing = () => {
   useEffect(() => {
     setIsVideoPlaying(true);
   }, [selectedNavItem]);
+
+  const fetchLogout = usePostLogout();
   return (
     <>
       <Wrapper>
