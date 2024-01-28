@@ -21,6 +21,14 @@ interface BaseModalProps {
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+interface QuestionProps {
+  questionId: number;
+  questionBody: {
+    value: Number | String | null;
+    type: 'ORDER' | 'IMPORTANCE' | 'CONTENT' | 'DELETE';
+  };
+}
+
 const QuestionCheckModal = ({
   isOpen,
   setIsOpen,
@@ -66,20 +74,56 @@ const QuestionCheckModal = ({
   //클라이언트 객체 생성
   const socket = new StompJs.Client({
     brokerURL: `wss://gotchaa.shop/ws`,
-    connectHeaders: {
-      Authorization: `Bearer ${token}`,
-    },
     debug: function (str) {
       console.log(str);
+    },
+    connectHeaders: {
+      Authorization: `Bearer ${token}`,
     },
     reconnectDelay: 5000, // 자동 재 연결
     heartbeatIncoming: 4000,
     heartbeatOutgoing: 4000,
   });
 
+  //메세지 보내기
+  const handlePubQuestion = ({ questionId, questionBody }: QuestionProps) => {
+    const strQeustionBody = JSON.stringify(questionBody);
+    socket.publish({
+      destination: `/pub/question/${questionId}`,
+      body: strQeustionBody,
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  };
+  //메세지 받기 연결
+  const handleConnectSubQuestion = (questionId: number) => {
+    socket.subscribe(`/sub/question/${questionId}`, handleGetSubQuestion, {
+      Authorization: `Bearer ${token}`,
+    });
+  };
+  //메세지 받으면 실행되는 콜백함수
+  const handleGetSubQuestion = (message: any) => {
+    if (message.body) {
+      alert('got message with body ' + message.body);
+    } else {
+      alert('got empty message');
+    }
+  };
+
   //연결시 실행할 함수
   socket.onConnect = (frame) => {
     console.log('소켓 연결 성공');
+
+    //test
+    handlePubQuestion({
+      questionId: 42,
+      questionBody: { value: '수정', type: 'CONTENT' },
+    });
+    handleConnectSubQuestion(42);
+  };
+
+  socket.onStompError = function (frame) {
+    console.log('Broker reported error: ' + frame.headers['message']);
+    console.log('Additional details: ' + frame.body);
   };
 
   useEffect(() => {
