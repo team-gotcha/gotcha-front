@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 interface DropDownProps {
   selectedOption: string;
   options?: Array<{ id: number; value: string; label: string }>;
-  handleSelect: (option: string) => void;
+  handleSelect: (id: number, value: string, label: string) => void;
 }
 
 const DropDown: React.FC<DropDownProps> = ({
@@ -18,7 +18,9 @@ const DropDown: React.FC<DropDownProps> = ({
       {options.map((option) => (
         <ListItem
           key={option.id}
-          onMouseDown={() => handleSelect(option.value)}
+          onMouseDown={() =>
+            handleSelect(option.id, option.value, option.label)
+          }
           isSelected={selectedOption === option.value}
         >
           {option.label}

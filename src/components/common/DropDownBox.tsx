@@ -17,6 +17,7 @@ interface DropDownBoxProps {
 const DropDownBox = ({ options }: DropDownBoxProps) => {
   const [isDropdownView, setDropdownView] = useState(false);
   const [selectedOption, setSelectedOption] = useState('전체');
+  const [selectedLabel, seSelectedLabel] = useState('전체');
   const dropdownRef = useRef<HTMLLabelElement>(null);
 
   useClickOutside(dropdownRef, () => {
@@ -29,14 +30,15 @@ const DropDownBox = ({ options }: DropDownBoxProps) => {
     setDropdownView(!isDropdownView);
   };
 
-  const handleSelect = (option: string) => {
-    setSelectedOption(option);
+  const handleSelect = (id: number, value: string, label: string) => {
+    setSelectedOption(value);
+    seSelectedLabel(label);
     setDropdownView(false);
   };
   return (
     <Wrapper>
       <Container onMouseDown={handleClickContainer} ref={dropdownRef}>
-        <div>{selectedOption}</div>
+        <div>{selectedLabel}</div>
         {/* {isDropdownView ? <Close /> : <Open />} */}
         <ExpandMoreIcon fill="#3733ff" />
       </Container>
