@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useGetRefresh } from './get/useGetRefresh';
+import { usePostRefresh } from './post/usePostRefresh';
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -17,17 +18,22 @@ axiosInstance.interceptors.request.use((config) => {
 // 응답 인터셉터
 axiosInstance.interceptors.response.use(
   (response) => {
-    //console.log(response);
+    console.log(response);
     return response;
   },
   (error) => {
-    console.log(error.response.status);
+    //const refreshFetch = usePostRefresh();
     if (error.response.status === 401) {
       console.log('accessToken만료');
-      console.log(localStorage.getItem('refreshToken'));
       //accessToken재발급
-
-      //재로그인
+      //refreshFetch.refresh(localStorage.getItem('refreshToken'));
+      axios
+        .post(`${process.env.REACT_APP_API_URL}api/refresh`, {
+          refreshToken: localStorage.getItem('refreshToken'),
+        })
+        .then((res) => {
+          localStorage.setItem('refreshToken', res.data.access_token);
+        });
     }
     return error.response;
   }

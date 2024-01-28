@@ -28,11 +28,11 @@ const Landing = () => {
     window.location.href = loginUrl;
   };
   const handleLogout = () => {
+    //fetchLogout.logout();
+
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userId');
     localStorage.removeItem('refreshToken');
-
-    fetchLogout.logout();
 
     setIsLogin(false);
     navigate('/');

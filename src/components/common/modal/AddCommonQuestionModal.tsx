@@ -17,11 +17,13 @@ interface AddCommonQuestionModalProps {
 const AddCommonQuestionModal = ({ ...props }: AddCommonQuestionModalProps) => {
   const [questionList, setQuestionList] = useState(['', '', '', '', '']);
   const { openModal } = useToggleModal();
+
   const handleQuestionChange = (index: number, value: string) => {
     const newQuestionList = [...questionList];
     newQuestionList[index] = value;
     setQuestionList(newQuestionList);
   };
+
   //custom-hook
   const fetchQuestion = usePostCommonQuestions();
 
@@ -31,6 +33,7 @@ const AddCommonQuestionModal = ({ ...props }: AddCommonQuestionModalProps) => {
     );
 
     if (nonEmptyQuestions.length > 0) {
+      console.log(`공통 질문 전송 ${nonEmptyQuestions}`);
       fetchQuestion.addCommonQuestions({
         interviewId: Number(props.interviewId),
         questions: nonEmptyQuestions,

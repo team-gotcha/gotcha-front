@@ -114,11 +114,17 @@ const QuestionCheckModal = ({
     console.log('소켓 연결 성공');
 
     //test
-    handlePubQuestion({
-      questionId: 42,
-      questionBody: { value: '수정', type: 'CONTENT' },
+    // handlePubQuestion({
+    //   questionId: 42,
+    //   questionBody: { value: '수정', type: 'CONTENT' },
+    // });
+    // handleConnectSubQuestion(42);
+
+    //item당 열기
+    items.forEach(function (item) {
+      //구독 소켓 연결
+      handleConnectSubQuestion(item.id);
     });
-    handleConnectSubQuestion(42);
   };
 
   socket.onStompError = function (frame) {
