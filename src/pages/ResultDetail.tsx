@@ -47,7 +47,7 @@ const ResultDetail = () => {
             <InterviewerInfo modify={false} />
           </InputDiv>
           <RightBox>
-            <ResultReviewBoxDetail detailData={items} />
+            {items && <ResultReviewBoxDetail detailData={items} />}
             <QuestionInfoBox>
               <InfoBox>
                 <DropDownBox />

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
 
+import CommonGroupMembers from "../common/CommonGroupMembers";
+
 interface InterviewDataProps {
   data?: {
     applicantId: number;
@@ -11,20 +13,16 @@ interface InterviewDataProps {
     interviewStatus: string;
     interviewers: string[];
     keywords: { name: string; keywordType: string }[];
-    oneLiners: string | null;
-    ranking: number;
-    totalScore: number;
-  };
-  detailData?: {
-    applicantName: string;
-    keywords: { name: string; keywordType: string }[];
-    oneLiners: string | null;
+    oneLiners: {
+      writerName: string;
+      content: string;
+    }[];
     ranking: number;
     totalScore: number;
   };
 }
 
-const ResultReviewBox = ({ data, detailData }: InterviewDataProps) => {
+const ResultReviewBox = ({ data }: InterviewDataProps) => {
   return (
     <Container>
       <TopBox>
@@ -46,22 +44,16 @@ const ResultReviewBox = ({ data, detailData }: InterviewDataProps) => {
         </Comments>
       </TopBox>
       <ReviewBox>
-        <Reviews>
-          <Profile />
-          <ReviewCom>한줄평입니다</ReviewCom>
-        </Reviews>
-        <Reviews>
-          <Profile />
-          <ReviewCom>한줄평 데이터가 어떤 식으로 넘어오는지 몰라서</ReviewCom>
-        </Reviews>
-        <Reviews>
-          <Profile />
-          <ReviewCom>아직 mockdata입니다</ReviewCom>
-        </Reviews>
-        <Reviews>
-          <Profile />
-          <ReviewCom>데이터 들어오면 수정하도록 하겠습니다!!</ReviewCom>
-        </Reviews>
+        {data.oneLiners &&
+          data.oneLiners.map((item, index) => (
+            <Reviews key={index}>
+              <CommonGroupMembers
+                groupMemberList={[item.writerName]}
+                showNum={1}
+              />
+              <ReviewCom>{item.content}</ReviewCom>
+            </Reviews>
+          ))}
       </ReviewBox>
     </Container>
   );

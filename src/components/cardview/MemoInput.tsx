@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { styled } from 'styled-components';
+
+import React, { useState } from "react";
+import { styled } from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
+
 
 import SendOffIcon from '../../assets/icons/SendOffIcno';
 import SendOnIcon from '../../assets/icons/SendOnIcon';
@@ -15,7 +18,13 @@ interface QuestionBtnProps {
   onClick: () => void;
 }
 
+interface MemoInputProps {
+  applicantId: number;
+}
+
 const MemoInput = () => {
+  let { user_id } = useParams();
+  const userIdNumber: number = parseInt(user_id, 10);
   const [isQuestionClicked, setIsQuestionClicked] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -40,7 +49,7 @@ const MemoInput = () => {
   const handleSend = () => {
     postDetailData.indivQuestions({
       content: inputValue,
-      applicantId: applicantId,
+      applicantId: userIdNumber,
     });
     setRender(render + 1);
     setInputValue('');

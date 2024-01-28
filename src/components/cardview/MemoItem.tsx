@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
 
 import ChatIcon from "../../assets/icons/ChatIcon";
 import HeartIcon from "../../assets/icons/HeartIcon";
@@ -33,6 +34,8 @@ interface MemoItemProps {
 }
 
 const MemoItem = ({ item, reply }: MemoItemProps) => {
+  let { user_id } = useParams();
+  const userIdNumber: number = parseInt(user_id, 10);
   const [isChatClicked, setIsChatClicked] = useState<boolean>(false);
   const [isHeartClicked, setIsHeartClicked] = useState<boolean>(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -79,7 +82,7 @@ const MemoItem = ({ item, reply }: MemoItemProps) => {
   const handleSend = () => {
     postDetailData.indivQuestions({
       content: inputValue,
-      applicantId: 2,
+      applicantId: userIdNumber,
       commentTargetId: item.id,
     });
     setRender(render + 1);
