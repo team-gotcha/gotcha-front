@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 
 interface InterviewDataProps {
-  data: {
+  data?: {
+    applicantId: number;
     applicantName: string;
     date: string;
     email: string;
@@ -10,7 +11,12 @@ interface InterviewDataProps {
     interviewStatus: string;
     interviewers: string[];
     keywords: { name: string; keywordType: string }[];
-    oneLiners: string | null;
+    oneLiners:
+      | {
+          writerName: string;
+          content: string;
+        }[]
+      | null;
     ranking: number;
     totalScore: number;
   };
@@ -31,9 +37,10 @@ const ResultViewerInfo = ({ data }: InterviewDataProps) => {
         <InterviewBox>
           <InterviewTitle>면접관</InterviewTitle>
           <ResultDiv>
-            {data.interviewers.map((item: string, index) => (
-              <Result key={index}>{item}</Result>
-            ))}
+            {data &&
+              data.interviewers.map((item: string, index) => (
+                <Result key={index}>{item}</Result>
+              ))}
           </ResultDiv>
         </InterviewBox>
         <InterviewBox>

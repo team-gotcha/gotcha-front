@@ -24,14 +24,15 @@ const Result = () => {
     <Wrapper>
       <Background />
       <Container>
-        {results.map((data, index) => (
-          <ResultInfoItem
-            key={index}
-            data={data}
-            userIdNumber={data.applicantId}
-            InterviewIdNumber={InterviewIdNumber}
-          />
-        ))}
+        {results &&
+          results.map((data, index) => (
+            <ResultInfoItem
+              key={index}
+              data={data}
+              userIdNumber={data.applicantId}
+              InterviewIdNumber={InterviewIdNumber}
+            />
+          ))}
         <ResultBtn>합격자 선정 완료</ResultBtn>
       </Container>
     </Wrapper>
