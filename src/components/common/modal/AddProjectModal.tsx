@@ -7,6 +7,7 @@ import CommonTag from '../CommonTag';
 import CloseIconSmall from '../../../assets/icons/CloseIconSmall';
 import { usePostAddProject } from '../../../apis/post/usePostAddProject';
 import { useToggleModal } from '../../../hooks/useToggleModal';
+import { Navigate, useNavigate } from 'react-router';
 
 interface AddProjectModalProps {
   children?: string;
@@ -23,6 +24,7 @@ const AddProjectModal = ({ ...props }: AddProjectModalProps) => {
 
   //custom-hook
   const fetchData = usePostAddProject();
+  const navigate = useNavigate();
 
   /**
    * project 데이터 전송해 생성하는 기능

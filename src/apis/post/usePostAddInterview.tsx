@@ -22,6 +22,8 @@ export const usePostAddInterview = () => {
     mutationKey: ['addInterview'],
     mutationFn: async (data: InterviewProps) => {
       const res = await axiosInstance.post(`/api/interviews`, data);
+      //응답 처리
+      console.log(res);
       return res.data;
     },
   });

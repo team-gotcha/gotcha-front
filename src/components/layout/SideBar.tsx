@@ -36,6 +36,7 @@ const SideBar = () => {
   //modal관리
   const handleMakeNewProject = () => {
     setModalItem(<AddProjectModal />);
+
     openModal();
   };
   const handleMakeNewInterview = (projectId: number) => {
@@ -273,6 +274,7 @@ const InterviewDiv = styled.div`
   gap: 2.4rem;
 
   padding: 1.4rem 1rem;
+  overflow-y: auto;
 `;
 
 const InterviewItem = styled.div`
