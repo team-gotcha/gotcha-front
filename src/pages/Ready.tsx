@@ -155,6 +155,11 @@ const Ready = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleCheckModal = () => {
+    setIsOpen(!isOpen);
+    window.location.reload();
+  };
+
   return (
     <>
       <Wrapper>
@@ -178,7 +183,7 @@ const Ready = () => {
       </Wrapper>
       {isOpen && (
         <ModalWrapper>
-          <ModalBackground onClick={() => setIsOpen(!isOpen)} />
+          <ModalBackground onClick={handleCheckModal} />
           <QuestionCheckModal
             setIsOpen={setIsOpen}
             isOpen={isOpen}

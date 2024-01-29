@@ -11,9 +11,7 @@ import info from "../../../assets/images/InfoIcon-blue.svg";
 import Stomp from "@stomp/stompjs";
 import { Client } from "@stomp/stompjs";
 
-import { useGetAllEvaluations } from "../../../apis/get/useGetAllEvaluations";
-import { useGetEvalQuestion } from "../../../apis/get/useGetEvalQuestion";
-import { useGetRankingPoint } from "../../../apis/get/useGetRankingPoint";
+import { usePostInprogress } from "../../../apis/post/usePostInprogress";
 import { useGetCheckQuestions } from "../../../apis/get/useGetCheckQuestions";
 
 interface BaseModalProps {

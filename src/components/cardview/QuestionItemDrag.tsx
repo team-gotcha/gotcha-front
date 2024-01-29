@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { styled } from 'styled-components';
-import { useDrag, useDrop } from 'react-dnd';
+import React, { useEffect, useState } from "react";
+import { styled } from "styled-components";
+import { useDrag, useDrop } from "react-dnd";
 
-import MoreDotIcon from '../../assets/icons/MoreDotIcon';
+import MoreDotIcon from "../../assets/icons/MoreDotIcon";
 
 interface QuestionProps {
   questionId: number;
   questionBody: {
     value: Number | String | null;
-    type: 'ORDER' | 'IMPORTANCE' | 'CONTENT' | 'DELETE';
+    type: "ORDER" | "IMPORTANCE" | "CONTENT" | "DELETE";
   };
 }
 
 const ItemTypes = {
-  QUESTION_ITEM: 'questionItem',
+  QUESTION_ITEM: "questionItem",
 };
 
 interface DragItem {
@@ -37,7 +37,7 @@ interface QuestionItemProps {
 const QuestionItemDrag = ({
   isCommon = false,
   index = 1,
-  content = '',
+  content = "",
   importance,
   moveItem = () => {},
   ...props
@@ -46,13 +46,14 @@ const QuestionItemDrag = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(content);
 
   const handleScoreClick = (score: number) => {
-    //setSelectedScore(score);
     //wss score 수정
     props.handlePub({
       questionId: index,
-      questionBody: { value: score, type: 'IMPORTANCE' },
+      questionBody: { value: score, type: "IMPORTANCE" },
     });
   };
 
@@ -61,22 +62,27 @@ const QuestionItemDrag = ({
   };
 
   const handleOptionClick = (option: string) => {
-    if (option === '삭제하기') {
+    if (option === "삭제하기") {
       //wss 삭제
       props.handlePub({
         questionId: index,
-        questionBody: { value: null, type: 'DELETE' },
+        questionBody: { value: null, type: "DELETE" },
       });
-    } else if (option === '수정하기') {
-      //wss 수정
-      props.handlePub({
-        questionId: index,
-        questionBody: { value: '수정된내용', type: 'CONTENT' }, //수정된 내용 받아서 value에 넣어주세욤 ~
-      });
+    } else if (option === "수정하기") {
+      setIsEditing(true);
     }
 
     setSelectedOption(option);
     setIsDropdownVisible(false);
+  };
+
+  const handleEditSubmit = () => {
+    props.handlePub({
+      questionId: index,
+      questionBody: { value: editedContent, type: "CONTENT" },
+    });
+
+    setIsEditing(false);
   };
 
   const [{ isDragging }, drag] = useDrag({
@@ -135,9 +141,20 @@ const QuestionItemDrag = ({
         <QuestionDiv>
           <QuestionBox isCommon={isCommon}>
             <ClassTag isCommon={isCommon}>
-              {isCommon ? '공통질문' : '개별질문'}
+              {isCommon ? "공통질문" : "개별질문"}
             </ClassTag>
-            <Question>{content}</Question>
+            {isEditing ? (
+              <EditInput
+                type="text"
+                value={editedContent}
+                onChange={(e) => setEditedContent(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleEditSubmit()}
+                autoFocus
+              />
+            ) : (
+              <Question>{content}</Question>
+            )}
+
             {isHovered && (
               <MoreDotIcon
                 width={24}
@@ -148,14 +165,14 @@ const QuestionItemDrag = ({
             {isDropdownVisible && (
               <DropdownDiv>
                 <Option
-                  selected={selectedOption === '삭제하기'}
-                  onClick={() => handleOptionClick('삭제하기')}
+                  selected={selectedOption === "삭제하기"}
+                  onClick={() => handleOptionClick("삭제하기")}
                 >
                   삭제하기
                 </Option>
                 <Option
-                  selected={selectedOption === '수정하기'}
-                  onClick={() => handleOptionClick('수정하기')}
+                  selected={selectedOption === "수정하기"}
+                  onClick={() => handleOptionClick("수정하기")}
                 >
                   수정하기
                 </Option>
@@ -187,7 +204,7 @@ const Container = styled.div<{ isCommon: boolean }>`
   grid-template-columns: 1fr 4.8fr;
   width: 100%;
   border-radius: 1.2rem;
-  border: 1px solid ${({ isCommon }) => (isCommon ? '#E6E5FF' : '#FFE2EC')};
+  border: 1px solid ${({ isCommon }) => (isCommon ? "#E6E5FF" : "#FFE2EC")};
   background: var(--Gray-100, #fff);
   box-shadow: 0px 0px 6px 2px rgba(215, 215, 215, 0.15);
 `;
@@ -196,15 +213,15 @@ const ImpScoreDiv = styled.div<{ isCommon: boolean }>`
   display: flex;
   flex-direction: column;
   border-right: 1px solid
-    ${({ isCommon }) => (isCommon ? '#E6E5FF' : '#FFE2EC')};
+    ${({ isCommon }) => (isCommon ? "#E6E5FF" : "#FFE2EC")};
 `;
 
 const Title = styled.div<{ isCommon: boolean }>`
   padding: 1.6rem;
   border-bottom: 1px solid
-    ${({ isCommon }) => (isCommon ? '#E6E5FF' : '#FFE2EC')};
+    ${({ isCommon }) => (isCommon ? "#E6E5FF" : "#FFE2EC")};
 
-  color: ${({ isCommon }) => (isCommon ? '#3733ff' : '#FF2070')};
+  color: ${({ isCommon }) => (isCommon ? "#3733ff" : "#FF2070")};
   text-align: center;
 
   font-size: 14px;
@@ -225,7 +242,7 @@ const ScoreBox = styled.div`
 const Score = styled.div<{ selected: boolean; isCommon: boolean }>`
   cursor: pointer;
   color: ${({ selected, isCommon }) =>
-    selected ? (isCommon ? '#3733FF' : '#FF2070') : '#999'};
+    selected ? (isCommon ? "#3733FF" : "#FF2070") : "#999"};
 
   text-align: center;
 
@@ -248,7 +265,7 @@ const QuestionBox = styled.div<{ isCommon: boolean }>`
   padding: 1.6rem;
   width: 100%;
   border-bottom: 1px solid
-    ${({ isCommon }) => (isCommon ? '#E6E5FF' : '#FFE2EC')};
+    ${({ isCommon }) => (isCommon ? "#E6E5FF" : "#FFE2EC")};
 `;
 
 const ClassTag = styled.div<{ isCommon: boolean }>`
@@ -260,8 +277,8 @@ const ClassTag = styled.div<{ isCommon: boolean }>`
   align-items: center;
 
   border-radius: 2rem;
-  background: ${({ isCommon }) => (isCommon ? '#f4f7ff' : '#FFE2EC')};
-  color: ${({ isCommon }) => (isCommon ? '#8280ff' : '#FF2070')};
+  background: ${({ isCommon }) => (isCommon ? "#f4f7ff" : "#FFE2EC")};
+  color: ${({ isCommon }) => (isCommon ? "#8280ff" : "#FF2070")};
 
   font-size: 12px;
   font-style: normal;
@@ -273,6 +290,19 @@ const ClassTag = styled.div<{ isCommon: boolean }>`
 
 const Question = styled.div`
   color: var(--Gray-1100, #1a1a1a);
+  width: 100%;
+
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 155%; /* 21.7px */
+  letter-spacing: -0.042px;
+`;
+
+const EditInput = styled.input`
+  outline: none;
+  border: none;
+  color: var(--Gray-700, #808080);
   width: 100%;
 
   font-size: 14px;
@@ -328,9 +358,9 @@ const Option = styled.div<{ selected: boolean }>`
   align-items: center;
   align-self: stretch;
   background: ${({ selected }) =>
-    selected ? 'var(--purple-100, #F3F2FF)' : 'var(--Gray-100, #fff)'};
+    selected ? "var(--purple-100, #F3F2FF)" : "var(--Gray-100, #fff)"};
   color: ${({ selected }) =>
-    selected ? 'var(--Gray-1100, #1A1A1A)' : 'var(--Gray-500, #b3b3b3)'};
+    selected ? "var(--Gray-1100, #1A1A1A)" : "var(--Gray-500, #b3b3b3)"};
   text-align: center;
   border-bottom: 1px solid var(--Gray-300, #e6e6e6);
   font-size: 1rem;
