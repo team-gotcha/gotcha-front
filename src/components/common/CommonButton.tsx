@@ -41,6 +41,7 @@ const StyledButton = styled.button<ButtonType>`
   &:hover {
     ${({ color }) => getButtonColor('fillBlue')};
   }
+  z-index: 1;
 `;
 
 export default CommonButton;

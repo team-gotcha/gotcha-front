@@ -5,6 +5,9 @@ import { useGetUserInfo } from '../apis/get/useGetUserInfo';
 import CommonButton from '../components/common/CommonButton';
 import Logo from '../assets/icons/Logo';
 import BannerImg from '../assets/images/BannerImg.svg';
+import Qna1 from '../assets/images/Qna1.svg';
+import Qna2 from '../assets/images/Qna2.svg';
+import Qna3 from '../assets/images/Qna3.svg';
 
 import landing1 from '../assets/videos/landing1.mp4';
 import landing2 from '../assets/videos/landing2.mp4';
@@ -29,7 +32,6 @@ const Landing = () => {
   };
   const handleLogout = () => {
     //fetchLogout.logout();
-
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userId');
     localStorage.removeItem('refreshToken');
@@ -105,7 +107,8 @@ const Landing = () => {
             )}
           </RowBox>
         </TopBar>
-        <Banner style={{ backgroundImage: `url(${BannerImg})` }}>
+        <BannerBack />
+        <Banner>
           <BannerTitle>우리 조직에 FIT한 인재,</BannerTitle>
           <BannerTitle>가장 빠르고 정확하게.</BannerTitle>
 
@@ -173,11 +176,26 @@ const Landing = () => {
             </NavBody>
           </ColumnWrapper>
 
-          <ColumnWrapper>
-            <NavBar>
-              <NavSubTitle>GOTCHA Q&A</NavSubTitle>
-            </NavBar>
-          </ColumnWrapper>
+          <ColumnWrapperCenter>
+            <NavSubTitle>GOTCHA Q&A</NavSubTitle>
+            <RowBox>
+              <QnaBox style={{ backgroundImage: `url(${Qna1})` }} />
+              <QnaBox style={{ backgroundImage: `url(${Qna2})` }} />
+              <QnaBox style={{ backgroundImage: `url(${Qna3})` }} />
+            </RowBox>
+          </ColumnWrapperCenter>
+
+          <FooterWrapper>
+            <FooterTitle>우리팀에 필요한 인재</FooterTitle>
+            <FooterTitle>GOTHCA와 함께 찾으러 가기</FooterTitle>
+            <CommonButton
+              color="lineGray"
+              children="갓챠 시작하기"
+              size="large"
+              width="30rem"
+              onClick={handleStart}
+            />
+          </FooterWrapper>
         </Body>
       </Wrapper>
       {isModalOpen && (
@@ -191,6 +209,36 @@ const Landing = () => {
 };
 
 export default Landing;
+const QnaBox = styled.div`
+  width: 39.2rem;
+  height: 37.4rem;
+`;
+
+const FooterWrapper = styled.div`
+  width: 80%;
+  height: 32rem;
+  border-radius: 20px;
+  background: var(--purple-600, #3733ff);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  margin-left: 10%;
+  margin-bottom: 10%;
+  gap: 2rem;
+`;
+
+const FooterTitle = styled.div`
+  color: #fff;
+  text-align: center;
+  font-size: 4rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%; /* 56px */
+  letter-spacing: -0.12px;
+`;
 
 const ModalContentWrapper = styled.main`
   z-index: 45;
@@ -282,15 +330,28 @@ const NavSubText = styled.div`
 const Body = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: 15%;
 
   padding-top: 8.4rem;
+`;
+const ColumnWrapperCenter = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  width: 100%;
+  height: 80rem;
+
+  padding-top: 4.7rem;
+
+  gap: 5rem;
 `;
 const ColumnWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  margin-left: 15%;
 
   width: 100%;
   height: 80rem;
@@ -345,6 +406,9 @@ const NavTitle = styled.button`
 
 //Banner
 const Banner = styled.div`
+  position: relative;
+  background-image: url(${BannerImg});
+
   display: flex;
   flex-direction: column;
   height: 50rem;
@@ -354,6 +418,22 @@ const Banner = styled.div`
   justify-content: center;
   align-items: center;
 `;
+const BannerBack = styled.div`
+  position: absolute; /* 절대 위치로 배치 */
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.85) 38.12%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  backdrop-filter: blur(2px);
+  height: 50rem;
+  width: 100vw;
+  background-size: cover;
+  top: 7.3rem;
+  left: 0;
+  z-index: 1;
+`;
+
 const BannerTitle = styled.div`
   background: linear-gradient(
     89deg,
@@ -372,6 +452,7 @@ const BannerTitle = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: 155%; /* 100.75px */
+  z-index: 2;
 `;
 const BannerSubTitle = styled.div`
   color: var(--Gray-1100, #1a1a1a);
@@ -383,6 +464,7 @@ const BannerSubTitle = styled.div`
 
   padding-bottom: 5rem;
   padding-top: 2rem;
+  z-index: 2;
 `;
 
 //TopBar
