@@ -108,7 +108,7 @@ const Ready = () => {
   useEffect(() => {
     if (postDetailData.isSuccess) {
       console.log(postDetailData.data.applicantId);
-      handleAfterPost(Number(postDetailData.data.applicantId));
+      // handleAfterPost(Number(postDetailData.data.applicantId));
     }
   }, [postDetailData.isSuccess]);
 
