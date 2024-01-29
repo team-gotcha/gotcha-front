@@ -28,7 +28,6 @@ const MainCallback = () => {
   useEffect(() => {
     if (!fetchedProjectData.isLoading) {
       console.log('유저데이터 세팅');
-      console.log(fetchedProjectData.projectList);
       setUserInfo(fetchedProjectData.projectList);
       console.log(isEmailSet);
       //이메일 여부 판단

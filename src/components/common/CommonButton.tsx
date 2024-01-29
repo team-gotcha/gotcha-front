@@ -37,6 +37,10 @@ const StyledButton = styled.button<ButtonType>`
   ${({ width }) => width && `width: ${width};`}
   ${({ height }) => height && `height: ${height};`}
   ${({ padding }) => padding && `padding: ${padding};`}
+
+  &:hover {
+    ${({ color }) => getButtonColor('fillBlue')};
+  }
 `;
 
 export default CommonButton;

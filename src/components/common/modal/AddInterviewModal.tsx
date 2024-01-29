@@ -10,6 +10,8 @@ import { usePostAddInterview } from '../../../apis/post/usePostAddInterview';
 import { useToggleModal } from '../../../hooks/useToggleModal';
 import areaOptions from '../../../assets/data/areaOptions.json';
 import positionOptions from '../../../assets/data/positionOptions.json';
+import { useRecoilState } from 'recoil';
+import { userInfoState } from '../../../recoil/userInfo';
 interface AddInterviewModalProps {
   children?: string;
   projectId?: number | undefined;
@@ -23,6 +25,8 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
   const [memberEmail, setMemberEmail] = useState('');
   const [memberEmailList, setMemberEmailList] = useState([]);
   const { openModal } = useToggleModal();
+
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
   const [selectedArea, setSelectedArea] = useState('SERVICE');
   const [selectedPosition, setSelectedPosition] = useState('MARKETING');

@@ -1,23 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { styled } from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import React, { useState, useEffect, useRef } from 'react';
+import { styled } from 'styled-components';
+import { useNavigate, useParams } from 'react-router-dom';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import QuestionItemDrag from "../QuestionItemDrag";
-import InfoIcon from "../../../assets/icons/InfoIcon";
+import QuestionItemDrag from '../QuestionItemDrag';
+import InfoIcon from '../../../assets/icons/InfoIcon';
 
-import info from "../../../assets/images/InfoIcon-blue.svg";
+import info from '../../../assets/images/InfoIcon-blue.svg';
+import * as StompJs from '@stomp/stompjs';
 
-import { useGetAllEvaluations } from "../../../apis/get/useGetAllEvaluations";
-import { useGetEvalQuestion } from "../../../apis/get/useGetEvalQuestion";
-import { useGetRankingPoint } from "../../../apis/get/useGetRankingPoint";
-import { useGetCheckQuestions } from "../../../apis/get/useGetCheckQuestions";
+import { useGetAllEvaluations } from '../../../apis/get/useGetAllEvaluations';
+import { useGetEvalQuestion } from '../../../apis/get/useGetEvalQuestion';
+import { useGetRankingPoint } from '../../../apis/get/useGetRankingPoint';
+import { useGetCheckQuestions } from '../../../apis/get/useGetCheckQuestions';
 
 interface BaseModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+interface QuestionProps {
+  questionId: number;
+  questionBody: {
+    value: Number | String | null;
+    type: 'ORDER' | 'IMPORTANCE' | 'CONTENT' | 'DELETE';
+  };
 }
 
 const QuestionCheckModal = ({
@@ -35,7 +44,7 @@ const QuestionCheckModal = ({
 
   useEffect(() => {
     if (!checkQuestionData.isLoading) {
-      console.log("확인 질문 데이터 세팅", checkQuestionData);
+      console.log('확인 질문 데이터 세팅', checkQuestionData);
       setItems(checkQuestionData.checkQuestion);
     }
   }, [!checkQuestionData.isLoading]);
@@ -56,6 +65,85 @@ const QuestionCheckModal = ({
     setIsOpenModal(true);
     setIsOpen(!isOpen);
   };
+
+  /**
+   * 웹소켓 파트
+   */
+  const token = localStorage.getItem('accessToken');
+
+  //클라이언트 객체 생성
+  const socket = new StompJs.Client({
+    brokerURL: `wss://gotchaa.shop/ws`,
+    debug: function (str) {
+      console.log(str);
+    },
+    connectHeaders: {
+      Authorization: `Bearer ${token}`,
+    },
+    reconnectDelay: 5000, // 자동 재 연결
+    heartbeatIncoming: 4000,
+    heartbeatOutgoing: 4000,
+  });
+
+  //메세지 보내기
+  const handlePubQuestion = ({ questionId, questionBody }: QuestionProps) => {
+    const strQeustionBody = JSON.stringify(questionBody);
+    socket.publish({
+      destination: `/pub/question/${questionId}`,
+      body: strQeustionBody,
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  };
+  //메세지 받기 연결
+  const handleConnectSubQuestion = (questionId: number) => {
+    socket.subscribe(`/sub/question/${questionId}`, handleGetSubQuestion, {
+      Authorization: `Bearer ${token}`,
+    });
+  };
+  //메세지 받으면 실행되는 콜백함수
+  const handleGetSubQuestion = (message: any) => {
+    if (message.body) {
+      alert('got message with body ' + message.body);
+    } else {
+      alert('got empty message');
+    }
+  };
+
+  //연결시 실행할 함수
+  socket.onConnect = (frame) => {
+    console.log('소켓 연결 성공');
+
+    //test
+    // handlePubQuestion({
+    //   questionId: 42,
+    //   questionBody: { value: '수정', type: 'CONTENT' },
+    // });
+    // handleConnectSubQuestion(42);
+
+    //item당 열기
+    items.forEach(function (item) {
+      //구독 소켓 연결
+      handleConnectSubQuestion(item.id);
+    });
+  };
+
+  socket.onStompError = function (frame) {
+    console.log('Broker reported error: ' + frame.headers['message']);
+    console.log('Additional details: ' + frame.body);
+  };
+
+  useEffect(() => {
+    //mount
+    console.log('소켓 연결 시작');
+    socket.activate();
+    return () => {
+      //unmount
+      console.log('소켓 연결 끝');
+      socket.deactivate();
+    };
+  }, []);
+
+  //useEffect(() => {}, [items]);
 
   return (
     <>
