@@ -1,23 +1,25 @@
-import React, { useState, useRef } from 'react';
-import { styled } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef } from "react";
+import { styled } from "styled-components";
+import { useNavigate } from "react-router-dom";
 
-import useClickOutside from '../../hooks/useClickOutside';
-import ExpandMoreIcon from '../../assets/icons/ExpandMoreIcon';
+import useClickOutside from "../../hooks/useClickOutside";
+import ExpandMoreIcon from "../../assets/icons/ExpandMoreIcon";
 
 //components
-import DropDown from './DropDown';
+import DropDown from "./DropDown";
 
 interface DropDownBoxProps {
   options?: Array<{ id: number; value: string; label: string }>;
   // value: string;
   onChangeValue?: (selectedOption: string) => void;
+
+  questions?: Array<{ id: number; totalScore: number }>;
 }
 
-const DropDownBox = ({ options }: DropDownBoxProps) => {
+const DropDownBox = ({ options, questions }: DropDownBoxProps) => {
   const [isDropdownView, setDropdownView] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('전체');
-  const [selectedLabel, seSelectedLabel] = useState('전체');
+  const [selectedOption, setSelectedOption] = useState("전체");
+  const [selectedLabel, seSelectedLabel] = useState("전체");
   const dropdownRef = useRef<HTMLLabelElement>(null);
 
   useClickOutside(dropdownRef, () => {
@@ -39,7 +41,6 @@ const DropDownBox = ({ options }: DropDownBoxProps) => {
     <Wrapper>
       <Container onMouseDown={handleClickContainer} ref={dropdownRef}>
         <div>{selectedLabel}</div>
-        {/* {isDropdownView ? <Close /> : <Open />} */}
         <ExpandMoreIcon fill="#3733ff" />
       </Container>
       {isDropdownView && (

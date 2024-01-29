@@ -7,6 +7,7 @@ import SendOffIcon from "../../assets/icons/SendOffIcno";
 import SendOnIcon from "../../assets/icons/SendOnIcon";
 
 import { usePatchQOpen } from "../../apis/patch/usePatchQOpen";
+import { usePostLike } from "../../apis/post/usePostLike";
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import { renderState } from "../../recoil/cardview";
@@ -35,6 +36,7 @@ const MemoReplyItem = ({ item }: MemoReplyItemProps) => {
 
   const render = useRecoilValue(renderState);
   const setRender = useSetRecoilState(renderState);
+  const postLikes = usePostLike();
   const openStatus = usePatchQOpen();
 
   const handleQuestionClick = (question_id: number) => {
@@ -47,6 +49,7 @@ const MemoReplyItem = ({ item }: MemoReplyItemProps) => {
   };
 
   const handleHeartClick = () => {
+    postLikes.postLike(item.id);
     setIsHeartClicked(!isHeartClicked);
   };
 

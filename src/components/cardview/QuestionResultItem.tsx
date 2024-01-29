@@ -1,96 +1,32 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
-import { useDrag, useDrop } from "react-dnd";
-
-import MoreDotIcon from "../../assets/icons/MoreDotIcon";
-
-const ItemTypes = {
-  QUESTION_ITEM: "questionItem",
-};
-
-interface DragItem {
-  type: string;
-  index: number;
-}
 
 interface QuestionItemProps {
   isCommon?: boolean;
-  index?: number;
-  content?: string;
-  importance: number;
-  moveItem?: (dragIndex: number, hoverIndex: number) => void;
+  questionId?: number | string;
+  contents?: string;
+  importance?: number;
+  answer?: string;
 }
 
-const QuestionItemDrag = ({
+const QuestionResultItem = ({
   isCommon = false,
-  index = 1,
-  content = "",
+  contents = "",
   importance,
-  moveItem = () => {},
+  answer,
 }: QuestionItemProps) => {
   const [selectedScore, setSelectedScore] = useState<number | null>(importance);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  const handleScoreClick = (score: number) => {
-    setSelectedScore(score);
-  };
-
-  const handleMoreDotClick = () => {
-    setIsDropdownVisible((prev) => !prev);
-  };
-
-  const handleOptionClick = (option: string) => {
-    setSelectedOption(option);
-    setIsDropdownVisible(false);
-  };
-
-  const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.QUESTION_ITEM,
-    item: { type: ItemTypes.QUESTION_ITEM, index },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  });
-
-  const [, drop] = useDrop({
-    accept: ItemTypes.QUESTION_ITEM,
-    hover: (draggedItem: DragItem, monitor) => {
-      if (!draggedItem || !drag) {
-        return;
-      }
-
-      const dragIndex = draggedItem.index;
-      const hoverIndex = index;
-
-      if (dragIndex === hoverIndex) {
-        return;
-      }
-
-      moveItem(dragIndex, hoverIndex);
-
-      draggedItem.index = hoverIndex;
-    },
-  });
-
-  const opacity = isDragging ? 0.5 : 1;
   return (
-    <Wrapper
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      ref={(node) => drag(drop(node))}
-      style={{ opacity }}
-    >
+    <Wrapper>
       <Container isCommon={isCommon}>
         <ImpScoreDiv isCommon={isCommon}>
-          <Title isCommon={isCommon}>중요도</Title>
+          <Title isCommon={isCommon}>점수</Title>
           <ScoreBox>
             {[1, 2, 3, 4, 5].map((score) => (
               <Score
                 key={score}
                 selected={selectedScore === score}
-                onClick={() => handleScoreClick(score)}
                 isCommon={isCommon}
               >
                 {score}
@@ -103,33 +39,10 @@ const QuestionItemDrag = ({
             <ClassTag isCommon={isCommon}>
               {isCommon ? "공통질문" : "개별질문"}
             </ClassTag>
-            <Question>{content}</Question>
-            {isHovered && (
-              <MoreDotIcon
-                width={24}
-                height={24}
-                onClick={handleMoreDotClick}
-              />
-            )}
-            {isDropdownVisible && (
-              <DropdownDiv>
-                <Option
-                  selected={selectedOption === "삭제하기"}
-                  onClick={() => handleOptionClick("삭제하기")}
-                >
-                  삭제하기
-                </Option>
-                <Option
-                  selected={selectedOption === "수정하기"}
-                  onClick={() => handleOptionClick("수정하기")}
-                >
-                  수정하기
-                </Option>
-              </DropdownDiv>
-            )}
+            <Question>{contents}</Question>
           </QuestionBox>
           <InputBox>
-            <Answer>면접 시작시 답변창이 활성화됩니다.</Answer>
+            <Answer>{answer}</Answer>
           </InputBox>
         </QuestionDiv>
       </Container>
@@ -137,7 +50,7 @@ const QuestionItemDrag = ({
   );
 };
 
-export default QuestionItemDrag;
+export default QuestionResultItem;
 
 const Wrapper = styled.div`
   position: relative;
@@ -265,7 +178,9 @@ const Answer = styled.div`
   line-height: 160%; /* 22.4px */
   letter-spacing: -0.042px;
 
-  color: var(--Gray-500, #b3b3b3);
+  /* & ::placeholder {
+    color: var(--Gray-500, #b3b3b3);
+  } */
 `;
 
 const DropdownDiv = styled.div`

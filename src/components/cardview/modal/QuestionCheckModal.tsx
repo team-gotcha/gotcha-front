@@ -1,19 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { styled } from 'styled-components';
-import { useNavigate, useParams } from 'react-router-dom';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import React, { useState, useEffect, useRef } from "react";
+import { styled } from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
-import QuestionItemDrag from '../QuestionItemDrag';
-import InfoIcon from '../../../assets/icons/InfoIcon';
+import QuestionItemDrag from "../QuestionItemDrag";
+import InfoIcon from "../../../assets/icons/InfoIcon";
 
-import info from '../../../assets/images/InfoIcon-blue.svg';
-import * as StompJs from '@stomp/stompjs';
+import info from "../../../assets/images/InfoIcon-blue.svg";
+import * as StompJs from "@stomp/stompjs";
 
-import { useGetAllEvaluations } from '../../../apis/get/useGetAllEvaluations';
-import { useGetEvalQuestion } from '../../../apis/get/useGetEvalQuestion';
-import { useGetRankingPoint } from '../../../apis/get/useGetRankingPoint';
-import { useGetCheckQuestions } from '../../../apis/get/useGetCheckQuestions';
+import { useGetCheckQuestions } from "../../../apis/get/useGetCheckQuestions";
+import { usePostInprogress } from "../../../apis/post/usePostInprogress";
 
 interface BaseModalProps {
   isOpen: boolean;
@@ -25,7 +23,7 @@ interface QuestionProps {
   questionId: number;
   questionBody: {
     value: Number | String | null;
-    type: 'ORDER' | 'IMPORTANCE' | 'CONTENT' | 'DELETE';
+    type: "ORDER" | "IMPORTANCE" | "CONTENT" | "DELETE";
   };
 }
 
@@ -39,12 +37,13 @@ const QuestionCheckModal = ({
   const [isHovered, setIsHovered] = useState(false);
   const [items, setItems] = useState([]);
 
-  //custom hook
+  //custom-hook
+  const postReadyData = usePostInprogress();
   const checkQuestionData = useGetCheckQuestions(userIdNumber);
 
   useEffect(() => {
     if (!checkQuestionData.isLoading) {
-      console.log('확인 질문 데이터 세팅', checkQuestionData);
+      console.log("확인 질문 데이터 세팅", checkQuestionData);
       setItems(checkQuestionData.checkQuestion);
     }
   }, [!checkQuestionData.isLoading]);
@@ -52,6 +51,7 @@ const QuestionCheckModal = ({
   // console.log();
 
   const moveItem = (dragIndex: number, hoverIndex: number) => {
+    console.log("원래 있던 index", dragIndex, "새로 옮긴 index", hoverIndex);
     const draggedItem = items[dragIndex];
     setItems((prevItems) => {
       const newItems = [...prevItems];
@@ -62,6 +62,7 @@ const QuestionCheckModal = ({
   };
 
   const handleBtn = () => {
+    postReadyData.readyToProgress(userIdNumber);
     setIsOpenModal(true);
     setIsOpen(!isOpen);
   };
@@ -69,7 +70,7 @@ const QuestionCheckModal = ({
   /**
    * 웹소켓 파트
    */
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem("accessToken");
 
   //클라이언트 객체 생성
   const socket = new StompJs.Client({
@@ -103,15 +104,15 @@ const QuestionCheckModal = ({
   //메세지 받으면 실행되는 콜백함수
   const handleGetSubQuestion = (message: any) => {
     if (message.body) {
-      alert('got message with body ' + message.body);
+      alert("got message with body " + message.body);
     } else {
-      alert('got empty message');
+      alert("got empty message");
     }
   };
 
   //연결시 실행할 함수
   socket.onConnect = (frame) => {
-    console.log('소켓 연결 성공');
+    console.log("소켓 연결 성공");
 
     //test
     // handlePubQuestion({
@@ -128,17 +129,17 @@ const QuestionCheckModal = ({
   };
 
   socket.onStompError = function (frame) {
-    console.log('Broker reported error: ' + frame.headers['message']);
-    console.log('Additional details: ' + frame.body);
+    console.log("Broker reported error: " + frame.headers["message"]);
+    console.log("Additional details: " + frame.body);
   };
 
   useEffect(() => {
     //mount
-    console.log('소켓 연결 시작');
+    console.log("소켓 연결 시작");
     socket.activate();
     return () => {
       //unmount
-      console.log('소켓 연결 끝');
+      console.log("소켓 연결 끝");
       socket.deactivate();
     };
   }, []);
