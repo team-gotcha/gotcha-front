@@ -23,10 +23,11 @@ interface DragItem {
 
 interface QuestionItemProps {
   isCommon?: boolean;
+  id?: number;
   index?: number;
   content?: string;
-  importance: number;
-  moveItem?: (dragIndex: number, hoverIndex: number) => void;
+  importance?: number;
+  moveItem?: (dragIndex: number, hoverIndex: number, id: number) => void;
 
   //wss
   handlePub?: ({ questionId, questionBody }: QuestionProps) => void;
@@ -37,12 +38,12 @@ interface QuestionItemProps {
 const QuestionItemDrag = ({
   isCommon = false,
   index = 1,
+  id,
   content = "",
   importance,
   moveItem = () => {},
   ...props
 }: QuestionItemProps) => {
-  //const [selectedScore, setSelectedScore] = useState<number | null>(importance);
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -107,7 +108,7 @@ const QuestionItemDrag = ({
         return;
       }
 
-      moveItem(dragIndex, hoverIndex);
+      moveItem(dragIndex, hoverIndex, id);
 
       draggedItem.index = hoverIndex;
     },

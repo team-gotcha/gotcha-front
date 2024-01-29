@@ -50,8 +50,15 @@ const QuestionCheckModal = ({
     }
   }, [!checkQuestionData.isLoading]);
 
-  const moveItem = (dragIndex: number, hoverIndex: number) => {
-    console.log("원래 있던 index", dragIndex, "새로 옮긴 index", hoverIndex);
+  const moveItem = (dragIndex: number, hoverIndex: number, index: number) => {
+    console.log(
+      "원래 있던 index",
+      dragIndex,
+      "새로 옮긴 index",
+      hoverIndex,
+      "해당 item id",
+      index
+    );
     const draggedItem = items[dragIndex];
     setItems((prevItems) => {
       const newItems = [...prevItems];
@@ -199,10 +206,11 @@ const QuestionCheckModal = ({
                 {items.map((item, index) => (
                   <QuestionItemDrag
                     key={item?.id}
+                    id={item?.id}
                     isCommon={item?.common}
                     content={item?.content}
-                    importance={item.importance}
-                    index={item?.id}
+                    importance={item?.importance}
+                    index={index}
                     moveItem={moveItem}
                     //wss
                     handlePub={handlePubQuestion}
