@@ -79,9 +79,9 @@ const QuestionCheckModal = ({
     connectHeaders: {
       Authorization: `Bearer ${token}`,
     },
-    reconnectDelay: 5000, // 자동 재 연결
-    heartbeatIncoming: 3000,
-    heartbeatOutgoing: 3000,
+    reconnectDelay: 3000, // 자동 재 연결
+    heartbeatIncoming: 0,
+    heartbeatOutgoing: 0,
   });
   //메세지 보내기
   const handlePubQuestion = ({ questionId, questionBody }: QuestionProps) => {

@@ -118,7 +118,7 @@ const QuestionItemDrag = ({
     >
       <Container isCommon={isCommon}>
         <ImpScoreDiv isCommon={isCommon}>
-          <Title isCommon={isCommon}>점수</Title>
+          <Title isCommon={isCommon}>중요도</Title>
           <ScoreBox>
             {[1, 2, 3, 4, 5].map((score) => (
               <Score

@@ -33,7 +33,8 @@ const GoogleCallback = () => {
       localStorage.removeItem('refreshToken');
     }
     if (!fetchedData.isLoading) {
-      localStorage.removeItem('accessToken');
+      console.log(fetchedData.googleLogin.refreshToken);
+      console.log(fetchedData.googleLogin.accessToken);
       localStorage.setItem('accessToken', fetchedData.googleLogin.accessToken);
       localStorage.setItem('userId', fetchedData.googleLogin.userId);
       localStorage.setItem(
