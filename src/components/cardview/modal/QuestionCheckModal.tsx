@@ -8,7 +8,8 @@ import QuestionItemDrag from '../QuestionItemDrag';
 import InfoIcon from '../../../assets/icons/InfoIcon';
 
 import info from '../../../assets/images/InfoIcon-blue.svg';
-import * as StompJs from '@stomp/stompjs';
+import Stomp from '@stomp/stompjs';
+import { Client } from '@stomp/stompjs';
 
 import { useGetAllEvaluations } from '../../../apis/get/useGetAllEvaluations';
 import { useGetEvalQuestion } from '../../../apis/get/useGetEvalQuestion';
@@ -38,6 +39,8 @@ const QuestionCheckModal = ({
   const userIdNumber: number = parseInt(user_id, 10);
   const [isHovered, setIsHovered] = useState(false);
   const [items, setItems] = useState([]);
+  const [isSocketOpen, setIsSocketOpen] = useState(false);
+  const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
 
   //custom hook
   const checkQuestionData = useGetCheckQuestions(userIdNumber);
@@ -47,9 +50,7 @@ const QuestionCheckModal = ({
       console.log('확인 질문 데이터 세팅', checkQuestionData);
       setItems(checkQuestionData.checkQuestion);
     }
-  }, [!checkQuestionData.isLoading]);
-
-  // console.log();
+  }, [!checkQuestionData.isLoading, , checkQuestionData.checkQuestion]);
 
   const moveItem = (dragIndex: number, hoverIndex: number) => {
     const draggedItem = items[dragIndex];
@@ -72,7 +73,7 @@ const QuestionCheckModal = ({
   const token = localStorage.getItem('accessToken');
 
   //클라이언트 객체 생성
-  const socket = new StompJs.Client({
+  const socket = new Client({
     brokerURL: `wss://gotchaa.shop/ws`,
     debug: function (str) {
       console.log(str);
@@ -87,23 +88,65 @@ const QuestionCheckModal = ({
 
   //메세지 보내기
   const handlePubQuestion = ({ questionId, questionBody }: QuestionProps) => {
-    const strQeustionBody = JSON.stringify(questionBody);
-    socket.publish({
-      destination: `/pub/question/${questionId}`,
-      body: strQeustionBody,
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const strQuestionBody = JSON.stringify(questionBody);
+    if (stompClient && stompClient.connected) {
+      stompClient.publish({
+        destination: `/pub/question/${questionId}`,
+        body: strQuestionBody,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    }
   };
   //메세지 받기 연결
   const handleConnectSubQuestion = (questionId: number) => {
-    socket.subscribe(`/sub/question/${questionId}`, handleGetSubQuestion, {
-      Authorization: `Bearer ${token}`,
-    });
+    if (stompClient && stompClient.connected) {
+      stompClient.subscribe(
+        `/sub/question/${questionId}`,
+        (message: any) => handleGetSubQuestion(message, questionId),
+        {
+          Authorization: `Bearer ${token}`,
+        }
+      );
+    }
   };
   //메세지 받으면 실행되는 콜백함수
-  const handleGetSubQuestion = (message: any) => {
+  const handleGetSubQuestion = (message: any, questionId: number) => {
     if (message.body) {
-      alert('got message with body ' + message.body);
+      const parsedBody = JSON.parse(message.body);
+
+      // Find the item with the matching questionId
+      const updatedItems = items.map((currentItem) => {
+        if (currentItem.id === questionId) {
+          // Check the type of the message and update accordingly
+          switch (parsedBody.type) {
+            case 'IMPORTANCE':
+              currentItem.importance = parsedBody.value;
+              break;
+            case 'CONTENT':
+              currentItem.content = parsedBody.value;
+              break;
+            case 'DELETE':
+              // Remove the item from the array
+              return null;
+            default:
+              // Handle other types if needed
+              break;
+          }
+        }
+        return currentItem;
+      });
+
+      // Remove null values (deleted items) from the array
+      const filteredItems = updatedItems.filter((item) => item !== null);
+
+      // Update the state with the modified array
+      setItems(filteredItems);
+
+      alert(
+        `Updated item with questionId ${questionId}. New state: ${JSON.stringify(
+          filteredItems
+        )}`
+      );
     } else {
       alert('got empty message');
     }
@@ -112,19 +155,18 @@ const QuestionCheckModal = ({
   //연결시 실행할 함수
   socket.onConnect = (frame) => {
     console.log('소켓 연결 성공');
+    setStompClient(socket);
+    setIsSocketOpen(true);
 
-    //test
-    // handlePubQuestion({
-    //   questionId: 42,
-    //   questionBody: { value: '수정', type: 'CONTENT' },
-    // });
-    // handleConnectSubQuestion(42);
+    console.log(items);
 
     //item당 열기
-    items.forEach(function (item) {
-      //구독 소켓 연결
-      handleConnectSubQuestion(item.id);
-    });
+    if (items.length > 0) {
+      items.forEach(function (item) {
+        console.log('열려라' + item.id);
+        handleConnectSubQuestion(item.id);
+      });
+    }
   };
 
   socket.onStompError = function (frame) {
@@ -133,17 +175,15 @@ const QuestionCheckModal = ({
   };
 
   useEffect(() => {
-    //mount
     console.log('소켓 연결 시작');
     socket.activate();
     return () => {
       //unmount
       console.log('소켓 연결 끝');
       socket.deactivate();
+      setIsSocketOpen(false);
     };
   }, []);
-
-  //useEffect(() => {}, [items]);
 
   return (
     <>
@@ -176,8 +216,13 @@ const QuestionCheckModal = ({
                     isCommon={item?.common}
                     content={item?.content}
                     importance={item.importance}
-                    index={index}
+                    index={item?.id}
                     moveItem={moveItem}
+                    //wss
+                    handleSub={handleConnectSubQuestion}
+                    handlePub={handlePubQuestion}
+                    isSocketOpen={isSocketOpen}
+                    socket={socket}
                   />
                 ))}
               </DndProvider>
