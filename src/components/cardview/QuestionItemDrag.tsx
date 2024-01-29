@@ -78,6 +78,7 @@ const QuestionItemDrag = ({
   };
 
   const handleEditSubmit = () => {
+    console.log("수정 함수 실행!");
     props.handlePub({
       questionId: index,
       questionBody: { value: editedContent, type: "CONTENT" },

@@ -153,11 +153,12 @@ const Ready = () => {
   const handleNext = () => {
     postReadyData.readyToPost(userIdNumber);
     setIsOpen(!isOpen);
+    setRender(render - 1);
   };
 
   const handleCheckModal = () => {
     setIsOpen(!isOpen);
-    window.location.reload();
+    setRender(render - 1);
   };
 
   return (
