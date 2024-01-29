@@ -47,10 +47,9 @@ const QuestionCheckModal = ({
 
   useEffect(() => {
     if (!checkQuestionData.isLoading) {
-      console.log('확인 질문 데이터 세팅', checkQuestionData);
       setItems(checkQuestionData.checkQuestion);
     }
-  }, [!checkQuestionData.isLoading, , checkQuestionData.checkQuestion]);
+  }, [!checkQuestionData.isLoading]);
 
   const moveItem = (dragIndex: number, hoverIndex: number) => {
     const draggedItem = items[dragIndex];
@@ -81,8 +80,8 @@ const QuestionCheckModal = ({
       Authorization: `Bearer ${token}`,
     },
     reconnectDelay: 5000, // 자동 재 연결
-    heartbeatIncoming: 4000,
-    heartbeatOutgoing: 4000,
+    heartbeatIncoming: 3000,
+    heartbeatOutgoing: 3000,
   });
   //메세지 보내기
   const handlePubQuestion = ({ questionId, questionBody }: QuestionProps) => {
@@ -130,24 +129,21 @@ const QuestionCheckModal = ({
   //연결시 실행할 함수
   socket.onConnect = (frame) => {
     console.log('소켓 연결 성공');
-    setStompClient(socket);
     setIsSocketOpen(true);
 
     console.log(items);
-    //item당 열기
-    if (items.length > 0) {
-      items.forEach(function (item) {
-        console.log('열려라' + item.id);
-        socket.subscribe(
-          `/sub/question/${item.id}`,
-          (message: any) => handleGetSubQuestion(message, item.id),
-          {
-            Authorization: `Bearer ${token}`,
-          }
-        );
-      });
-    }
+    items.forEach(function (item) {
+      console.log('열려라' + item.id);
+      socket.subscribe(
+        `/sub/question/${item.id}`,
+        (message: any) => handleGetSubQuestion(message, item.id),
+        {
+          Authorization: `Bearer ${token}`,
+        }
+      );
+    });
   };
+
   socket.onStompError = function (frame) {
     console.log('Broker reported error: ' + frame.headers['message']);
     console.log('Additional details: ' + frame.body);
@@ -155,14 +151,23 @@ const QuestionCheckModal = ({
 
   useEffect(() => {
     console.log('소켓 연결 시작');
+    setStompClient(socket);
     socket.activate();
     return () => {
       //unmount
       console.log('소켓 연결 끝');
       socket.deactivate();
       setIsSocketOpen(false);
+      setStompClient(null);
     };
   }, []);
+
+  useEffect(() => {
+    if (items.length !== 0 && isSocketOpen) {
+      console.log('연결');
+      socket.activate();
+    }
+  }, [items, isSocketOpen]);
 
   return (
     <>
