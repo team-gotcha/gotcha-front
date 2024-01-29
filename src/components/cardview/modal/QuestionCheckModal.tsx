@@ -71,7 +71,6 @@ const QuestionCheckModal = ({
    * 웹소켓 파트
    */
   const token = localStorage.getItem('accessToken');
-
   //클라이언트 객체 생성
   const socket = new Client({
     brokerURL: `wss://gotchaa.shop/ws`,
@@ -85,7 +84,6 @@ const QuestionCheckModal = ({
     heartbeatIncoming: 4000,
     heartbeatOutgoing: 4000,
   });
-
   //메세지 보내기
   const handlePubQuestion = ({ questionId, questionBody }: QuestionProps) => {
     const strQuestionBody = JSON.stringify(questionBody);
@@ -97,33 +95,18 @@ const QuestionCheckModal = ({
       });
     }
   };
-  //메세지 받기 연결
-  const handleConnectSubQuestion = (questionId: number) => {
-    if (stompClient && stompClient.connected) {
-      stompClient.subscribe(
-        `/sub/question/${questionId}`,
-        (message: any) => handleGetSubQuestion(message, questionId),
-        {
-          Authorization: `Bearer ${token}`,
-        }
-      );
-    }
-  };
-  //메세지 받으면 실행되는 콜백함수
+  //메세지 받기
   const handleGetSubQuestion = (message: any, questionId: number) => {
     if (message.body) {
       const parsedBody = JSON.parse(message.body);
-
-      // Find the item with the matching questionId
-      const updatedItems = items.map((currentItem) => {
-        if (currentItem.id === questionId) {
-          // Check the type of the message and update accordingly
+      const updatedItems = items.map((item) => {
+        if (item.id === questionId) {
           switch (parsedBody.type) {
             case 'IMPORTANCE':
-              currentItem.importance = parsedBody.value;
+              item.importance = parsedBody.value;
               break;
             case 'CONTENT':
-              currentItem.content = parsedBody.value;
+              item.content = parsedBody.value;
               break;
             case 'DELETE':
               // Remove the item from the array
@@ -133,20 +116,12 @@ const QuestionCheckModal = ({
               break;
           }
         }
-        return currentItem;
+        return item;
       });
-
       // Remove null values (deleted items) from the array
       const filteredItems = updatedItems.filter((item) => item !== null);
-
       // Update the state with the modified array
       setItems(filteredItems);
-
-      alert(
-        `Updated item with questionId ${questionId}. New state: ${JSON.stringify(
-          filteredItems
-        )}`
-      );
     } else {
       alert('got empty message');
     }
@@ -159,16 +134,20 @@ const QuestionCheckModal = ({
     setIsSocketOpen(true);
 
     console.log(items);
-
     //item당 열기
     if (items.length > 0) {
       items.forEach(function (item) {
         console.log('열려라' + item.id);
-        handleConnectSubQuestion(item.id);
+        socket.subscribe(
+          `/sub/question/${item.id}`,
+          (message: any) => handleGetSubQuestion(message, item.id),
+          {
+            Authorization: `Bearer ${token}`,
+          }
+        );
       });
     }
   };
-
   socket.onStompError = function (frame) {
     console.log('Broker reported error: ' + frame.headers['message']);
     console.log('Additional details: ' + frame.body);
@@ -219,7 +198,6 @@ const QuestionCheckModal = ({
                     index={item?.id}
                     moveItem={moveItem}
                     //wss
-                    handleSub={handleConnectSubQuestion}
                     handlePub={handlePubQuestion}
                     isSocketOpen={isSocketOpen}
                     socket={socket}
@@ -233,7 +211,6 @@ const QuestionCheckModal = ({
     </>
   );
 };
-
 export default QuestionCheckModal;
 
 const Container = styled.div`

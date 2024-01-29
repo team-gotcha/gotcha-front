@@ -29,7 +29,6 @@ interface QuestionItemProps {
   moveItem?: (dragIndex: number, hoverIndex: number) => void;
 
   //wss
-  handleSub?: (questionId: number) => void;
   handlePub?: ({ questionId, questionBody }: QuestionProps) => void;
   isSocketOpen?: boolean;
   socket?: object;
@@ -43,7 +42,7 @@ const QuestionItemDrag = ({
   moveItem = () => {},
   ...props
 }: QuestionItemProps) => {
-  const [selectedScore, setSelectedScore] = useState<number | null>(importance);
+  //const [selectedScore, setSelectedScore] = useState<number | null>(importance);
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -109,6 +108,7 @@ const QuestionItemDrag = ({
   });
 
   const opacity = isDragging ? 0.5 : 1;
+
   return (
     <Wrapper
       onMouseEnter={() => setIsHovered(true)}
@@ -123,7 +123,7 @@ const QuestionItemDrag = ({
             {[1, 2, 3, 4, 5].map((score) => (
               <Score
                 key={score}
-                selected={selectedScore === score}
+                selected={importance === score}
                 onClick={() => handleScoreClick(score)}
                 isCommon={isCommon}
               >
