@@ -140,6 +140,7 @@ const SideBar = () => {
 export default SideBar;
 
 const ItemTop = styled.div<{ isActive?: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -278,6 +279,20 @@ const InterviewDiv = styled.div`
 
   padding: 1.4rem 1rem;
   overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 0.4rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #e6e6e6; /* 스크롤바의 색상 */
+
+    border-radius: 0.4rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
 `;
 
 const InterviewItem = styled.div`
