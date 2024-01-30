@@ -72,20 +72,23 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 `;
 
 const Background = styled.div`
   position: fixed;
   z-index: 5;
+  top: 15.8rem;
+  left: 31.2rem;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: var(--gray-background-gray-55, rgba(50, 50, 50, 0.55));
   backdrop-filter: blur(6px);
 `;
 
 const Container = styled.div`
   position: absolute;
-  z-index: 10;
+  z-index: 5;
   background-color: #fff;
   border-radius: 1.2rem;
 

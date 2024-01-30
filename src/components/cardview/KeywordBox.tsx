@@ -180,7 +180,7 @@ const InfoIcon = styled.img`
 const KeywordDiv = styled.div`
   display: flex;
   align-items: center;
-  width: 32.4rem;
+  width: 14.5vw;
   gap: 0.8rem;
 
   flex-wrap: wrap;
@@ -207,6 +207,7 @@ const Keyword = styled.div`
 const Input = styled.input`
   display: flex;
   padding: 0.5rem 1rem;
+  width: 8vw;
   justify-content: center;
   align-items: center;
   border-radius: 20px;

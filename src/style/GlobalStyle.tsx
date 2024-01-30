@@ -44,6 +44,19 @@ ${reset}
 body {
   font-family: "Pretendard";
 
+  &::-webkit-scrollbar {
+    width: 0.4rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #e6e6e6; /* 스크롤바의 색상 */
+
+    border-radius: 0.4rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
    /* overflow: hidden; // 이 속성을 랜딩이랑 온보딩만 안 주는 방법 없나? */
  

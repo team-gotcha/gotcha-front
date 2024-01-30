@@ -25,6 +25,8 @@ interface QuestionProps {
   commentTargetId: number;
   content: string;
   id: number;
+  like: boolean;
+  likeCount: number;
   writerName: string;
   writerProfile: string;
 }
@@ -42,8 +44,9 @@ const MemoItem = ({ item, reply }: MemoItemProps) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [replys, setReplys] = useState([]);
 
-  const render = useRecoilValue(renderState);
-  const setRender = useSetRecoilState(renderState);
+  // const render = useRecoilValue(renderState);
+  // const setRender = useSetRecoilState(renderState);
+  const [render, setRender] = useRecoilState(renderState);
   const [inputValue, setInputValue] = useState("");
 
   const postDetailData = usePostIndivQuestions();
@@ -67,11 +70,13 @@ const MemoItem = ({ item, reply }: MemoItemProps) => {
 
   const handleChatClick = () => {
     setIsChatClicked(!isChatClicked);
+    setRender(render - 1);
   };
 
   const handleHeartClick = (question_id: number) => {
     postLikes.postLike(item.id);
-    setIsHeartClicked(!isHeartClicked);
+    setRender(render - 1);
+    // setIsHeartClicked(!isHeartClicked);
   };
 
   const handleInputFocus = () => {
@@ -126,14 +131,14 @@ const MemoItem = ({ item, reply }: MemoItemProps) => {
             </ReplyBtn>
             <HeartBtn
               onClick={() => handleHeartClick(item.id)}
-              isHeartClicked={isHeartClicked}
+              isHeartClicked={item.like}
             >
               <HeartIcon
                 width="16"
                 height="15"
-                fill={isHeartClicked ? "#fff" : "#ff2070"}
+                fill={item.like ? "#fff" : "#ff2070"}
               />
-              {/* 원래 값이 들어가야 하는데... */}
+              {item.likeCount}
             </HeartBtn>
           </BtnDiv>
         </ContentDiv>

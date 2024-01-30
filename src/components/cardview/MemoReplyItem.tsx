@@ -23,6 +23,8 @@ interface MemoReplyItemProps {
     commentTargetId: number;
     content: string;
     id: number;
+    like: boolean;
+    likeCount: number;
     writerName: string;
     writerProfile: string;
   };
@@ -30,12 +32,11 @@ interface MemoReplyItemProps {
 
 const MemoReplyItem = ({ item }: MemoReplyItemProps) => {
   const [isQuestionClicked, setIsQuestionClicked] = useState(false);
-  const [isChatClicked, setIsChatClicked] = useState<boolean>(false);
   const [isHeartClicked, setIsHeartClicked] = useState<boolean>(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
 
-  const render = useRecoilValue(renderState);
-  const setRender = useSetRecoilState(renderState);
+  // const render = useRecoilValue(renderState);
+  // const setRender = useSetRecoilState(renderState);
+  const [render, setRender] = useRecoilState(renderState);
   const postLikes = usePostLike();
   const openStatus = usePatchQOpen();
 
@@ -44,21 +45,10 @@ const MemoReplyItem = ({ item }: MemoReplyItemProps) => {
     setRender(render + 1);
   };
 
-  const handleChatClick = () => {
-    setIsChatClicked(!isChatClicked);
-  };
-
   const handleHeartClick = () => {
     postLikes.postLike(item.id);
     setIsHeartClicked(!isHeartClicked);
-  };
-
-  const handleInputFocus = () => {
-    setIsInputFocused(true);
-  };
-
-  const handleInputBlur = () => {
-    setIsInputFocused(false);
+    setRender(render - 1);
   };
 
   return (
@@ -80,39 +70,18 @@ const MemoReplyItem = ({ item }: MemoReplyItemProps) => {
           <ContentDiv>
             <Content>{item.content}</Content>
             <BtnDiv>
-              {/* <ReplyBtn onClick={handleChatClick} isChatClicked={isChatClicked}>
-                <ChatIcon
-                  width="16"
-                  height="15"
-                  fill={isChatClicked ? "#fff" : "#3733ff"}
-                />
-                0
-              </ReplyBtn> */}
-              <HeartBtn
-                onClick={handleHeartClick}
-                isHeartClicked={isHeartClicked}
-              >
+              <HeartBtn onClick={handleHeartClick} isHeartClicked={item.like}>
                 <HeartIcon
                   width="16"
                   height="15"
-                  fill={isHeartClicked ? "#fff" : "#ff2070"}
+                  fill={item.like ? "#fff" : "#ff2070"}
                 />
-                0
+                {item.likeCount}
               </HeartBtn>
             </BtnDiv>
           </ContentDiv>
         </StaticDiv>
       </Container>
-      {/* {isChatClicked && (
-        <InputDiv isInputFocused={isInputFocused}>
-          <Input
-            placeholder="팀원의 이야기에 덧글을 달아보세요."
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-          />
-          {isInputFocused ? <SendOnIcon /> : <SendOffIcon />}
-        </InputDiv>
-      )} */}
     </>
   );
 };
@@ -209,25 +178,6 @@ const BtnDiv = styled.div`
   gap: 1.2rem;
 `;
 
-const ReplyBtn = styled.button<{ isChatClicked: boolean }>`
-  display: flex;
-  padding: 0px 8px;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-
-  border-radius: 10px;
-  background: ${({ isChatClicked }) => (isChatClicked ? "#3733FF" : "#f6f6f6")};
-  color: ${({ isChatClicked }) => (isChatClicked ? "#f6f6f6" : "#3733FF")};
-
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 160%;
-  letter-spacing: -0.036px;
-`;
-
 const HeartBtn = styled.div<{ isHeartClicked: boolean }>`
   display: flex;
   padding: 0px 8px;
@@ -246,23 +196,4 @@ const HeartBtn = styled.div<{ isHeartClicked: boolean }>`
   font-weight: 400;
   line-height: 160%;
   letter-spacing: -0.036px;
-`;
-
-const InputDiv = styled.div<{ isInputFocused: boolean }>`
-  display: flex;
-  gap: 0.8rem;
-  width: 100%;
-  border-radius: 0 0 1.2rem 1.2rem;
-  padding: 16px 20px;
-
-  border-top: 1px solid #e6e6e6;
-  background: ${({ isInputFocused }) =>
-    isInputFocused ? "#fff" : "var(--Gray-200, #F6F6F6)"};
-`;
-
-const Input = styled.input`
-  width: 100%;
-  border: none;
-  outline: none;
-  background-color: transparent;
 `;

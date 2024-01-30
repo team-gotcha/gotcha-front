@@ -1,14 +1,14 @@
 // Layout.tsx
-import React, { ReactNode } from 'react';
-import { styled } from 'styled-components';
+import React, { ReactNode } from "react";
+import { styled } from "styled-components";
 
-import Header from './Header';
-import SideBar from './SideBar';
-import NavigationBar from './NavigationBar';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { modalContent, modalState } from '../../recoil/modal';
-import { useToggleModal } from '../../hooks/useToggleModal';
-import ReviewModal from '../cardview/modal/ReviewModal';
+import Header from "./Header";
+import SideBar from "./SideBar";
+import NavigationBar from "./NavigationBar";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { modalContent, modalState } from "../../recoil/modal";
+import { useToggleModal } from "../../hooks/useToggleModal";
+import ReviewModal from "../cardview/modal/ReviewModal";
 
 interface LayoutProps {
   children: ReactNode;
@@ -43,6 +43,7 @@ const Main = styled.main`
   margin: 15.8rem 0 0 31.2rem;
   width: calc(100% - 31.2rem);
   height: calc(100% - 15.8rem);
+  overflow: hidden;
 `;
 const ModalContentWrapper = styled.main`
   z-index: 45;

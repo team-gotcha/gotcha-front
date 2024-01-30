@@ -4,6 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { usePostOneliner } from "../../../apis/post/usePostOneliner";
 
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import { userDetailInfoState } from "../../../recoil/cardview";
+
 interface BaseModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,10 +17,11 @@ const ReviewModal = ({ isOpen, setIsOpen }: BaseModalProps) => {
   let { user_id } = useParams();
   const userIdNumber: number = parseInt(user_id, 10);
   let { interview_id } = useParams();
+  const [oneLiner, setOneLiner] = useState("");
 
   const postOnlinerData = usePostOneliner();
 
-  const [oneLiner, setOneLiner] = useState("");
+  const userDetailInfo = useRecoilValue(userDetailInfoState);
 
   const handleBtn = () => {
     postOnlinerData.addOneliner({
@@ -30,7 +34,7 @@ const ReviewModal = ({ isOpen, setIsOpen }: BaseModalProps) => {
   return (
     <Container>
       <TopContent>
-        <span>갓차린</span>님에 대한 한줄평을 남겨주세요.
+        <span>{userDetailInfo.name}</span>님에 대한 한줄평을 남겨주세요.
       </TopContent>
       <InputField
         value={oneLiner}
