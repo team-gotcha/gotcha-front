@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import ResultInfoItem from "../components/cardview/ResultInfoItem";
+import ResultInfoItem from '../components/cardview/ResultInfoItem';
 
-import { useGetFinApplicants } from "../apis/get/useGetFinApplicants";
+import { useGetFinApplicants } from '../apis/get/useGetFinApplicants';
+import { Client, Stomp } from '@stomp/stompjs';
+import { usePatchInterviewComplete } from '../apis/patch/usePatchInterviewComplete';
+
+interface ApplicantResultProps {
+  value: string;
+}
 
 const Result = () => {
   const navigate = useNavigate();
   let { interview_id } = useParams();
   const InterviewIdNumber: number = parseInt(interview_id, 10);
   const [results, setResults] = useState([]);
+  const [isPassArr, setIsPassArr] = useState([]);
 
   const finApplicantsData = useGetFinApplicants(InterviewIdNumber);
   console.log(finApplicantsData);
@@ -20,6 +27,128 @@ const Result = () => {
       setResults(finApplicantsData.allFinApplicants);
     }
   }, [!finApplicantsData.isLoading]);
+
+  const [isSocketOpen, setIsSocketOpen] = useState(false);
+  const [stompClient, setStompClient] = useState<Client | null>(null);
+
+  /**
+   * 탈락지원자 상태 업데이트 custom-hook
+   */
+  const fetchData = usePatchInterviewComplete();
+
+  const handleInterviewComplete = () => {
+    console.log('소켓 연결 끝');
+    socket.deactivate();
+    setIsSocketOpen(false);
+    setStompClient(null);
+
+    fetchData.interviewComplete(interview_id);
+    console.log('go');
+    navigate(`/main/result/${interview_id}`);
+  };
+
+  /**
+   * 웹소켓 파트
+   */
+  const token = localStorage.getItem('accessToken');
+
+  //클라이언트 객체 생성
+  const socket = new Client({
+    brokerURL: `wss://gotchaa.shop/ws`,
+    debug: function (str) {
+      console.log(str);
+    },
+    connectHeaders: {
+      Authorization: `Bearer ${token}`,
+    },
+    reconnectDelay: 5000, // 자동 재 연결
+    heartbeatIncoming: 3000,
+    heartbeatOutgoing: 3000,
+  });
+  //메세지 보내기
+  const handlePubResult = (isPass: boolean, applicantId: number) => {
+    const strResultBody = isPass
+      ? JSON.stringify({ value: 'PASS' })
+      : JSON.stringify({ value: 'FAIL' });
+
+    console.log(strResultBody);
+
+    if (stompClient && stompClient.connected) {
+      stompClient.publish({
+        destination: `/pub/applicant/${applicantId}`,
+        body: strResultBody,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    }
+  };
+  //메세지 받기
+  const handleSubResult = (message: any, applicantId: number) => {
+    if (message.body) {
+      const parsedBody = JSON.parse(message.body);
+      console.log(applicantId + message.body);
+
+      setIsPassArr((prevResults) => {
+        return {
+          ...prevResults,
+          [applicantId]: parsedBody.value === 'PASS',
+        };
+      });
+    } else {
+      console.log('got empty message');
+    }
+  };
+
+  //연결시 실행할 함수
+  socket.onConnect = (frame) => {
+    console.log('소켓 연결 성공');
+    setIsSocketOpen(true);
+    results.forEach(function (result) {
+      console.log('열려라' + result.applicantId);
+      socket.subscribe(
+        `/sub/applicant/${result.applicantId}`,
+        (message: any) => handleSubResult(message, result.applicantId),
+        {
+          Authorization: `Bearer ${token}`,
+        }
+      );
+    });
+  };
+
+  socket.onStompError = function (frame) {
+    console.log('Broker reported error: ' + frame.headers['message']);
+    console.log('Additional details: ' + frame.body);
+  };
+
+  useEffect(() => {
+    console.log('소켓 연결 시작');
+    setStompClient(socket);
+    socket.activate();
+    return () => {
+      //unmount
+      console.log('소켓 연결 끝');
+      socket.deactivate();
+      setIsSocketOpen(false);
+      setStompClient(null);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (results.length !== 0 && isSocketOpen) {
+      console.log('연결');
+      console.log(results);
+      const newIsPassArr = results.reduce((acc, result) => {
+        acc[result.applicantId] = false;
+        return acc;
+      }, {});
+      setIsPassArr(newIsPassArr);
+      socket.activate();
+    }
+  }, [results, isSocketOpen]);
+
+  useEffect(() => {
+    console.log(`냥냥냥냥냥`);
+    console.log(isPassArr);
+  }, [isPassArr]);
 
   return (
     <Wrapper>
@@ -32,9 +161,14 @@ const Result = () => {
               data={data}
               userIdNumber={data.applicantId}
               InterviewIdNumber={InterviewIdNumber}
+              //wss
+              handlePub={handlePubResult}
+              isSocketOpen={isSocketOpen}
+              socket={socket}
+              isPass={isPassArr[data.applicantId]}
             />
           ))}
-        <ResultBtn onClick={() => navigate(`/main/result/${interview_id}`)}>
+        <ResultBtn onClick={handleInterviewComplete}>
           합격자 선정 완료
         </ResultBtn>
       </Container>
