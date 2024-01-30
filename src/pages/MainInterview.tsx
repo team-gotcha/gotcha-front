@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 import Banner from '../components/main/Banner';
 import ViewListStack from '../components/main/ViewListStack';
@@ -20,7 +20,6 @@ import { useGetViewer } from '../apis/get/useGetViewer';
 import { usePostSendPassEmail } from '../apis/post/usePostSendPassEmail';
 import { useGetPassApplicants } from '../apis/get/useGetPassApplicants';
 
-
 const MainInterview = () => {
   const navigate = useNavigate();
   const [isInterviewEmpty, setIsInterviewEmpty] = useState(false);
@@ -31,17 +30,18 @@ const MainInterview = () => {
   const [preparationApplierList, setPreparationApplierList] = useState([]);
   const [inProgressApplierList, setInProgressApplierList] = useState([]);
   const [completionApplierList, setCompletionApplierList] = useState([]);
+
   const location = useLocation();
   const { pathname } = location;
-  let interview_id = "";
-  let project_id = "";
+  let interview_id = '';
+  let project_id = '';
   // pathname에서 interview_id 또는 project_id 추출
-  const pathSegments = pathname.split("/");
-  if (pathSegments.includes("interview")) {
-    const index = pathSegments.indexOf("interview");
+  const pathSegments = pathname.split('/');
+  if (pathSegments.includes('interview')) {
+    const index = pathSegments.indexOf('interview');
     interview_id = pathSegments[index + 1];
-  } else if (pathSegments.includes("project")) {
-    const index = pathSegments.indexOf("project");
+  } else if (pathSegments.includes('project')) {
+    const index = pathSegments.indexOf('project');
     project_id = pathSegments[index + 1];
   }
 
@@ -50,7 +50,7 @@ const MainInterview = () => {
   const [modalItem, setModalItem] = useRecoilState(modalContent);
 
   const handleAddCommonQuestions = () => {
-    console.log("모달");
+    console.log('모달');
     setModalItem(<AddCommonQuestionModal interviewId={interview_id} />);
     openModal();
   };

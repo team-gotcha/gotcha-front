@@ -30,6 +30,7 @@ interface InterviewDataProps {
   handlePub?: (isPass: boolean, applicantId: number) => void;
   isSocketOpen?: boolean;
   socket?: object;
+  isPass?: boolean;
 }
 
 const ResultInfoItem = ({
@@ -39,7 +40,7 @@ const ResultInfoItem = ({
   ...props
 }: InterviewDataProps) => {
   const navigate = useNavigate();
-  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [isButtonClicked, setIsButtonClicked] = useState(props.isPass);
 
   const handleButtonClick = () => {
     setIsButtonClicked(!isButtonClicked);
@@ -61,7 +62,7 @@ const ResultInfoItem = ({
           <Title>UX/UI 디자이너 면접</Title>
         </InfoDiv>
         <RightDiv>
-          <FinBtn onClick={handleButtonClick} clicked={isButtonClicked}>
+          <FinBtn onClick={handleButtonClick} clicked={!props.isPass}>
             최종 합격
           </FinBtn>
         </RightDiv>

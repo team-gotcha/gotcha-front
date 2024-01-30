@@ -17,6 +17,7 @@ const Result = () => {
   let { interview_id } = useParams();
   const InterviewIdNumber: number = parseInt(interview_id, 10);
   const [results, setResults] = useState([]);
+  const [isPassArr, setIsPassArr] = useState([]);
 
   const finApplicantsData = useGetFinApplicants(InterviewIdNumber);
   console.log(finApplicantsData);
@@ -84,9 +85,16 @@ const Result = () => {
   const handleSubResult = (message: any, applicantId: number) => {
     if (message.body) {
       const parsedBody = JSON.parse(message.body);
-      alert(applicantId + message.body);
+      console.log(applicantId + message.body);
+
+      setIsPassArr((prevResults) => {
+        return {
+          ...prevResults,
+          [applicantId]: parsedBody.value === 'PASS',
+        };
+      });
     } else {
-      alert('got empty message');
+      console.log('got empty message');
     }
   };
 
@@ -94,8 +102,6 @@ const Result = () => {
   socket.onConnect = (frame) => {
     console.log('소켓 연결 성공');
     setIsSocketOpen(true);
-
-    console.log(results);
     results.forEach(function (result) {
       console.log('열려라' + result.applicantId);
       socket.subscribe(
@@ -129,9 +135,20 @@ const Result = () => {
   useEffect(() => {
     if (results.length !== 0 && isSocketOpen) {
       console.log('연결');
+      console.log(results);
+      const newIsPassArr = results.reduce((acc, result) => {
+        acc[result.applicantId] = false;
+        return acc;
+      }, {});
+      setIsPassArr(newIsPassArr);
       socket.activate();
     }
   }, [results, isSocketOpen]);
+
+  useEffect(() => {
+    console.log(`냥냥냥냥냥`);
+    console.log(isPassArr);
+  }, [isPassArr]);
 
   return (
     <Wrapper>
@@ -148,6 +165,7 @@ const Result = () => {
               handlePub={handlePubResult}
               isSocketOpen={isSocketOpen}
               socket={socket}
+              isPass={isPassArr[data.applicantId]}
             />
           ))}
         <ResultBtn onClick={handleInterviewComplete}>
