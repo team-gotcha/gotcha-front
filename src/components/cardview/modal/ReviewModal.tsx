@@ -25,7 +25,7 @@ const ReviewModal = ({ isOpen, setIsOpen }: BaseModalProps) => {
       content: oneLiner,
     });
     setIsOpen(false);
-    navigate(`/result/${interview_id}`);
+    navigate(`/main/interview/${interview_id}`);
   };
   return (
     <Container>

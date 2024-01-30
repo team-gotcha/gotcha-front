@@ -40,6 +40,11 @@ const ResultInfoItem = ({
     setIsButtonClicked(!isButtonClicked);
   };
 
+  const handleNavigate = () => {
+    navigate(`/result/${InterviewIdNumber}/${userIdNumber}`);
+    window.location.reload();
+  };
+
   return (
     <Container>
       <TopDiv>
@@ -53,9 +58,7 @@ const ResultInfoItem = ({
           </FinBtn>
         </RightDiv>
       </TopDiv>
-      <Contents
-        onClick={() => navigate(`/result/${InterviewIdNumber}/${userIdNumber}`)}
-      >
+      <Contents onClick={handleNavigate}>
         <InputDiv>
           <ResultViewerInfo data={data} />
         </InputDiv>
@@ -74,6 +77,7 @@ const Container = styled.div`
   border-radius: 1.2rem;
 
   width: 100%;
+  z-index: 5;
 `;
 
 const Contents = styled.div`
