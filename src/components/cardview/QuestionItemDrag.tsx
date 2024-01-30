@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { styled } from "styled-components";
-import { useDrag, useDrop } from "react-dnd";
+import React, { useEffect, useState } from 'react';
+import { styled } from 'styled-components';
+import { useDrag, useDrop } from 'react-dnd';
 
-import MoreDotIcon from "../../assets/icons/MoreDotIcon";
+import MoreDotIcon from '../../assets/icons/MoreDotIcon';
 
 interface QuestionProps {
   questionId: number;
   questionBody: {
     value: Number | String | null;
-    type: "ORDER" | "IMPORTANCE" | "CONTENT" | "DELETE";
+    type: 'ORDER' | 'IMPORTANCE' | 'CONTENT' | 'DELETE';
   };
 }
 
 const ItemTypes = {
-  QUESTION_ITEM: "questionItem",
+  QUESTION_ITEM: 'questionItem',
 };
 
 interface DragItem {
@@ -39,7 +39,7 @@ const QuestionItemDrag = ({
   isCommon = false,
   index = 1,
   id,
-  content = "",
+  content = '',
   importance,
   moveItem = () => {},
   ...props
@@ -53,8 +53,8 @@ const QuestionItemDrag = ({
   const handleScoreClick = (score: number) => {
     //wss score 수정
     props.handlePub({
-      questionId: index,
-      questionBody: { value: score, type: "IMPORTANCE" },
+      questionId: id,
+      questionBody: { value: score, type: 'IMPORTANCE' },
     });
   };
 
@@ -63,13 +63,13 @@ const QuestionItemDrag = ({
   };
 
   const handleOptionClick = (option: string) => {
-    if (option === "삭제하기") {
+    if (option === '삭제하기') {
       //wss 삭제
       props.handlePub({
-        questionId: index,
-        questionBody: { value: null, type: "DELETE" },
+        questionId: id,
+        questionBody: { value: null, type: 'DELETE' },
       });
-    } else if (option === "수정하기") {
+    } else if (option === '수정하기') {
       setIsEditing(true);
     }
 
@@ -78,10 +78,10 @@ const QuestionItemDrag = ({
   };
 
   const handleEditSubmit = () => {
-    console.log("수정 함수 실행!");
+    console.log('수정 함수 실행!');
     props.handlePub({
-      questionId: index,
-      questionBody: { value: editedContent, type: "CONTENT" },
+      questionId: id,
+      questionBody: { value: editedContent, type: 'CONTENT' },
     });
 
     setIsEditing(false);
@@ -143,14 +143,14 @@ const QuestionItemDrag = ({
         <QuestionDiv>
           <QuestionBox isCommon={isCommon}>
             <ClassTag isCommon={isCommon}>
-              {isCommon ? "공통질문" : "개별질문"}
+              {isCommon ? '공통질문' : '개별질문'}
             </ClassTag>
             {isEditing ? (
               <EditInput
                 type="text"
                 value={editedContent}
                 onChange={(e) => setEditedContent(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleEditSubmit()}
+                onKeyDown={(e) => e.key === 'Enter' && handleEditSubmit()}
                 autoFocus
               />
             ) : (
@@ -167,14 +167,14 @@ const QuestionItemDrag = ({
             {isDropdownVisible && (
               <DropdownDiv>
                 <Option
-                  selected={selectedOption === "삭제하기"}
-                  onClick={() => handleOptionClick("삭제하기")}
+                  selected={selectedOption === '삭제하기'}
+                  onClick={() => handleOptionClick('삭제하기')}
                 >
                   삭제하기
                 </Option>
                 <Option
-                  selected={selectedOption === "수정하기"}
-                  onClick={() => handleOptionClick("수정하기")}
+                  selected={selectedOption === '수정하기'}
+                  onClick={() => handleOptionClick('수정하기')}
                 >
                   수정하기
                 </Option>
@@ -206,7 +206,7 @@ const Container = styled.div<{ isCommon: boolean }>`
   grid-template-columns: 1fr 4.8fr;
   width: 100%;
   border-radius: 1.2rem;
-  border: 1px solid ${({ isCommon }) => (isCommon ? "#E6E5FF" : "#FFE2EC")};
+  border: 1px solid ${({ isCommon }) => (isCommon ? '#E6E5FF' : '#FFE2EC')};
   background: var(--Gray-100, #fff);
   box-shadow: 0px 0px 6px 2px rgba(215, 215, 215, 0.15);
 `;
@@ -215,15 +215,15 @@ const ImpScoreDiv = styled.div<{ isCommon: boolean }>`
   display: flex;
   flex-direction: column;
   border-right: 1px solid
-    ${({ isCommon }) => (isCommon ? "#E6E5FF" : "#FFE2EC")};
+    ${({ isCommon }) => (isCommon ? '#E6E5FF' : '#FFE2EC')};
 `;
 
 const Title = styled.div<{ isCommon: boolean }>`
   padding: 1.6rem;
   border-bottom: 1px solid
-    ${({ isCommon }) => (isCommon ? "#E6E5FF" : "#FFE2EC")};
+    ${({ isCommon }) => (isCommon ? '#E6E5FF' : '#FFE2EC')};
 
-  color: ${({ isCommon }) => (isCommon ? "#3733ff" : "#FF2070")};
+  color: ${({ isCommon }) => (isCommon ? '#3733ff' : '#FF2070')};
   text-align: center;
 
   font-size: 14px;
@@ -244,7 +244,7 @@ const ScoreBox = styled.div`
 const Score = styled.div<{ selected: boolean; isCommon: boolean }>`
   cursor: pointer;
   color: ${({ selected, isCommon }) =>
-    selected ? (isCommon ? "#3733FF" : "#FF2070") : "#999"};
+    selected ? (isCommon ? '#3733FF' : '#FF2070') : '#999'};
 
   text-align: center;
 
@@ -267,7 +267,7 @@ const QuestionBox = styled.div<{ isCommon: boolean }>`
   padding: 1.6rem;
   width: 100%;
   border-bottom: 1px solid
-    ${({ isCommon }) => (isCommon ? "#E6E5FF" : "#FFE2EC")};
+    ${({ isCommon }) => (isCommon ? '#E6E5FF' : '#FFE2EC')};
 `;
 
 const ClassTag = styled.div<{ isCommon: boolean }>`
@@ -279,8 +279,8 @@ const ClassTag = styled.div<{ isCommon: boolean }>`
   align-items: center;
 
   border-radius: 2rem;
-  background: ${({ isCommon }) => (isCommon ? "#f4f7ff" : "#FFE2EC")};
-  color: ${({ isCommon }) => (isCommon ? "#8280ff" : "#FF2070")};
+  background: ${({ isCommon }) => (isCommon ? '#f4f7ff' : '#FFE2EC')};
+  color: ${({ isCommon }) => (isCommon ? '#8280ff' : '#FF2070')};
 
   font-size: 12px;
   font-style: normal;
@@ -360,9 +360,9 @@ const Option = styled.div<{ selected: boolean }>`
   align-items: center;
   align-self: stretch;
   background: ${({ selected }) =>
-    selected ? "var(--purple-100, #F3F2FF)" : "var(--Gray-100, #fff)"};
+    selected ? 'var(--purple-100, #F3F2FF)' : 'var(--Gray-100, #fff)'};
   color: ${({ selected }) =>
-    selected ? "var(--Gray-1100, #1A1A1A)" : "var(--Gray-500, #b3b3b3)"};
+    selected ? 'var(--Gray-1100, #1A1A1A)' : 'var(--Gray-500, #b3b3b3)'};
   text-align: center;
   border-bottom: 1px solid var(--Gray-300, #e6e6e6);
   font-size: 1rem;
