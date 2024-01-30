@@ -268,6 +268,9 @@ const ModalBackground = styled.div`
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+
+  width: 100vw;
+  background-color: white;
 `;
 
 const Video = styled.video`
@@ -284,9 +287,11 @@ const Video = styled.video`
 //NavBar
 const NavBody = styled.div`
   display: flex;
-  width: 100%;
+  justify-content: flex-end;
 
-  padding-left: 7%;
+  margin-top: 10rem;
+
+  width: 100%;
 `;
 const BodyLeft = styled.div`
   width: 30%;
@@ -299,7 +304,7 @@ const BodyLeft = styled.div`
   padding-bottom: 5rem;
 `;
 const BodyRight = styled.div`
-  width: 100%;
+  width: 60%;
   height: 100%;
 `;
 const NavSubTitle = styled.div`
@@ -351,7 +356,6 @@ const ColumnWrapper = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  margin-left: 15%;
 
   width: 100%;
   height: 80rem;
@@ -360,8 +364,8 @@ const ColumnWrapper = styled.div`
 `;
 const NavBar = styled.div`
   display: flex;
-
-  margin-right: 15%;
+  margin-left: 10%;
+  margin-right: 10%;
 `;
 const NavTitleCenter = styled.button`
   display: flex;
