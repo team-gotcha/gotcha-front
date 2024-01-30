@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import ResultInfoItem from "../components/cardview/ResultInfoItem";
+import ResultInfoItem from '../components/cardview/ResultInfoItem';
 
-import { useGetFinApplicants } from "../apis/get/useGetFinApplicants";
+import { useGetFinApplicants } from '../apis/get/useGetFinApplicants';
+import { Client, Stomp } from '@stomp/stompjs';
+
+interface ApplicantResultProps {
+  value: string;
+}
 
 const Result = () => {
   const navigate = useNavigate();
@@ -21,6 +26,96 @@ const Result = () => {
     }
   }, [!finApplicantsData.isLoading]);
 
+  const [isSocketOpen, setIsSocketOpen] = useState(false);
+  const [stompClient, setStompClient] = useState<Client | null>(null);
+
+  /**
+   * 웹소켓 파트
+   */
+  const token = localStorage.getItem('accessToken');
+
+  //클라이언트 객체 생성
+  const socket = new Client({
+    brokerURL: `wss://gotchaa.shop/ws`,
+    debug: function (str) {
+      console.log(str);
+    },
+    connectHeaders: {
+      Authorization: `Bearer ${token}`,
+    },
+    reconnectDelay: 5000, // 자동 재 연결
+    heartbeatIncoming: 3000,
+    heartbeatOutgoing: 3000,
+  });
+  //메세지 보내기
+  const handlePubResult = (isPass: boolean, applicantId: number) => {
+    const strResultBody = isPass
+      ? JSON.stringify({ value: 'PASS' })
+      : JSON.stringify({ value: 'FAIL' });
+
+    console.log(strResultBody);
+
+    if (stompClient && stompClient.connected) {
+      stompClient.publish({
+        destination: `/pub/applicant/${applicantId}`,
+        body: strResultBody,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    }
+  };
+  //메세지 받기
+  const handleSubResult = (message: any, applicantId: number) => {
+    if (message.body) {
+      const parsedBody = JSON.parse(message.body);
+      alert(applicantId + message.body);
+    } else {
+      alert('got empty message');
+    }
+  };
+
+  //연결시 실행할 함수
+  socket.onConnect = (frame) => {
+    console.log('소켓 연결 성공');
+    setIsSocketOpen(true);
+
+    console.log(results);
+    results.forEach(function (result) {
+      console.log('열려라' + result.applicantId);
+      socket.subscribe(
+        `/sub/applicant/${result.applicantId}`,
+        (message: any) => handleSubResult(message, result.applicantId),
+        {
+          Authorization: `Bearer ${token}`,
+        }
+      );
+    });
+  };
+
+  socket.onStompError = function (frame) {
+    console.log('Broker reported error: ' + frame.headers['message']);
+    console.log('Additional details: ' + frame.body);
+  };
+
+  useEffect(() => {
+    console.log('소켓 연결 시작');
+    setStompClient(socket);
+    socket.activate();
+    return () => {
+      //unmount
+      console.log('소켓 연결 끝');
+      socket.deactivate();
+      setIsSocketOpen(false);
+      setStompClient(null);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (results.length !== 0 && isSocketOpen) {
+      console.log('연결');
+      socket.activate();
+    }
+  }, [results, isSocketOpen]);
+
   return (
     <Wrapper>
       <Background />
@@ -32,6 +127,10 @@ const Result = () => {
               data={data}
               userIdNumber={data.applicantId}
               InterviewIdNumber={InterviewIdNumber}
+              //wss
+              handlePub={handlePubResult}
+              isSocketOpen={isSocketOpen}
+              socket={socket}
             />
           ))}
         <ResultBtn onClick={() => navigate(`/main/result/${interview_id}`)}>

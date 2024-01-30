@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { styled } from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { styled } from 'styled-components';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import ResultViewerInfo from "./ResultviewerInfo";
-import ResultReviewBox from "./ResultReviewBox";
+import ResultViewerInfo from './ResultviewerInfo';
+import ResultReviewBox from './ResultReviewBox';
 
 interface InterviewDataProps {
   data?: {
@@ -26,18 +26,26 @@ interface InterviewDataProps {
   };
   userIdNumber: number;
   InterviewIdNumber: number;
+  //wss
+  handlePub?: (isPass: boolean, applicantId: number) => void;
+  isSocketOpen?: boolean;
+  socket?: object;
 }
 
 const ResultInfoItem = ({
   data,
   userIdNumber,
   InterviewIdNumber,
+  ...props
 }: InterviewDataProps) => {
   const navigate = useNavigate();
   const [isButtonClicked, setIsButtonClicked] = useState(false);
 
   const handleButtonClick = () => {
     setIsButtonClicked(!isButtonClicked);
+
+    //wss결과 전송
+    props.handlePub(isButtonClicked, userIdNumber);
   };
 
   const handleNavigate = () => {
@@ -150,8 +158,8 @@ const FinBtn = styled.button<{ clicked: boolean }>`
 
   border-radius: 16px;
   background: ${({ clicked }) =>
-    clicked ? "#fff" : "var(--purple-600, #3733ff)"};
-  color: ${({ clicked }) => (clicked ? "var(--purple-600, #3733ff)" : "#fff")};
+    clicked ? '#fff' : 'var(--purple-600, #3733ff)'};
+  color: ${({ clicked }) => (clicked ? 'var(--purple-600, #3733ff)' : '#fff')};
 
   font-size: 14px;
   font-style: normal;
