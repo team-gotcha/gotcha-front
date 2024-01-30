@@ -7,6 +7,7 @@ import ResultInfoItem from "../components/cardview/ResultInfoItem";
 import { useGetFinApplicants } from "../apis/get/useGetFinApplicants";
 
 const Result = () => {
+  const navigate = useNavigate();
   let { interview_id } = useParams();
   const InterviewIdNumber: number = parseInt(interview_id, 10);
   const [results, setResults] = useState([]);
@@ -33,7 +34,9 @@ const Result = () => {
               InterviewIdNumber={InterviewIdNumber}
             />
           ))}
-        <ResultBtn>합격자 선정 완료</ResultBtn>
+        <ResultBtn onClick={() => navigate(`/main/result/${interview_id}`)}>
+          합격자 선정 완료
+        </ResultBtn>
       </Container>
     </Wrapper>
   );

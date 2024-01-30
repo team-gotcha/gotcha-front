@@ -1,36 +1,63 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
 
-import CardTitleBoard from '../components/cardview/CardTitleBoard';
-import InterviewerInfo from '../components/cardview/InterviewerInfo';
-import ResultReviewBoxDetail from '../components/cardview/ResultReviewBoxDetail';
-import QuestionItem from '../components/cardview/QuestionItem';
+import CardTitleBoard from "../components/cardview/CardTitleBoard";
+import InterviewerInfo from "../components/cardview/InterviewerInfo";
+import ResultReviewBoxDetail from "../components/cardview/ResultReviewBoxDetail";
+import QuestionResultItem from "../components/cardview/QuestionResultItem";
 
-import DropDownBox from '../components/common/DropDownBox';
+import DropDownQBox from "../components/common/DropDownQBox";
 
-import { useGetRankingPoint } from '../apis/get/useGetRankingPoint';
-import { useGetEvalQuestion } from '../apis/get/useGetEvalQuestion';
-import { useGetAllEvaluations } from '../apis/get/useGetAllEvaluations';
+import { useGetRankingPoint } from "../apis/get/useGetRankingPoint";
+import { useGetEvalQuestion } from "../apis/get/useGetEvalQuestion";
+import { useGetAllEvaluations } from "../apis/get/useGetAllEvaluations";
 
-const questions = ['질문 1', '질문 2', '질문 3'];
+interface QuestionInfo {
+  isCommon: boolean;
+  question: string;
+  evaluations: [
+    {
+      content: string;
+      score: number;
+    }
+  ];
+}
 
 const ResultDetail = () => {
   let { user_id } = useParams();
   const userIdNumber: number = parseInt(user_id, 10);
   const [items, setItems] = useState();
+  const [questionId, setQuestionId] = useState<number>();
+  const [questionInfo, setQuestionInfo] = useState<QuestionInfo | null>(null);
+  const [questions, setQuestions] = useState([]);
 
-  const RankingData = useGetRankingPoint(userIdNumber);
-  const QEvaluationData = useGetEvalQuestion(1); //QuestionId 보내줘야 함
+  const [dropdownQ, setDropdownQ] = useState([]);
+
+  const RankingData = useGetRankingPoint(userIdNumber); //질문 리스트에 보낼 거
+  const QEvaluationData = useGetEvalQuestion(questionId); //선택할 질문에 대한 응답
   const AllEvaluationData = useGetAllEvaluations(userIdNumber);
 
   useEffect(() => {
     if (!AllEvaluationData.isLoading) {
-      console.log('확인 질문 데이터 세팅', AllEvaluationData);
       setItems(AllEvaluationData.allEvaluationsInfo);
-      console.log(RankingData, QEvaluationData, AllEvaluationData);
+      setDropdownQ(RankingData.rankingInfo);
+      setQuestionId(RankingData?.rankingInfo[0]?.id);
+
+      console.log(
+        AllEvaluationData.allEvaluationsInfo,
+        RankingData.rankingInfo
+      );
     }
   }, [!AllEvaluationData.isLoading]);
+
+  useEffect(() => {
+    if (questionId !== undefined) {
+      setQuestionInfo(QEvaluationData.evaluationInfo);
+      setQuestions(QEvaluationData?.evaluationInfo?.evaluations);
+      console.log(QEvaluationData);
+    }
+  }, [!QEvaluationData.isLoading, questionId]);
 
   return (
     <Wrapper>
@@ -50,18 +77,25 @@ const ResultDetail = () => {
             {items && <ResultReviewBoxDetail detailData={items} />}
             <QuestionInfoBox>
               <InfoBox>
-                <DropDownBox />
-                <Comments>
-                  평가 점수가 <span>17.0점</span>으로 가장 높은 질문입니다.
-                </Comments>
+                {dropdownQ && dropdownQ.length > 0 && (
+                  <DropDownQBox
+                    questions={dropdownQ}
+                    setQuestionId={setQuestionId}
+                  />
+                )}
               </InfoBox>
               <QuestionBox>
-                <QuestionItem />
-                <QuestionItem />
-                <QuestionItem />
-                <QuestionItem />
-                <QuestionItem />
-                <QuestionItem />
+                {questions &&
+                  questions.length > 0 &&
+                  questions.map((item) => (
+                    <QuestionResultItem
+                      key={item?.id}
+                      isCommon={questionInfo?.isCommon}
+                      contents={questionInfo?.question}
+                      importance={item.score}
+                      answer={item.content}
+                    />
+                  ))}
               </QuestionBox>
             </QuestionInfoBox>
           </RightBox>
@@ -93,7 +127,7 @@ const Background = styled.div`
 
 const Container = styled.div`
   position: absolute;
-  z-index: 10;
+  z-index: 5;
   background-color: #fff;
   border-radius: 1.2rem;
 

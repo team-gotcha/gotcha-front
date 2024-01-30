@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
 
-import CardTitleBoard from '../components/cardview/CardTitleBoard';
-import InterviewerInfo from '../components/cardview/InterviewerInfo';
-import MemoItem from '../components/cardview/MemoItem';
-import MemoInput from '../components/cardview/MemoInput';
+import CardTitleBoard from "../components/cardview/CardTitleBoard";
+import InterviewerInfo from "../components/cardview/InterviewerInfo";
+import MemoItem from "../components/cardview/MemoItem";
+import MemoInput from "../components/cardview/MemoInput";
 
-import QuestionCheckModal from '../components/cardview/modal/QuestionCheckModal';
-import QuestionOpenModal from '../components/cardview/modal/QuestionOpenModal';
+import QuestionCheckModal from "../components/cardview/modal/QuestionCheckModal";
+import QuestionOpenModal from "../components/cardview/modal/QuestionOpenModal";
 
-import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import {
   filesDataState,
   userPostDataState,
   keywordDataState,
   interviewersDataState,
   renderState,
-} from '../recoil/cardview';
+} from "../recoil/cardview";
 
-import { useGetIndivQuestions } from '../apis/get/useGetIndivQuestions';
+import { useGetIndivQuestions } from "../apis/get/useGetIndivQuestions";
 
-import { usePostUserReady } from '../apis/post/usePostUserReady';
-import { usePostUserDetail } from '../apis/post/usePostUserDetail';
-import { usePatchFiles } from '../apis/patch/usePatchFiles';
+import { usePostUserReady } from "../apis/post/usePostUserReady";
+import { usePostUserDetail } from "../apis/post/usePostUserDetail";
+import { usePatchFiles } from "../apis/patch/usePatchFiles";
 
 //test
 interface DetailInfoProps {
@@ -121,9 +121,9 @@ const Ready = () => {
 
     console.log(resumeFile, portfoliosFile);
 
-    newFilesData.append('applicant-id', String(applicant_id));
-    newFilesData.append('resume', resumeFile);
-    newFilesData.append('portfolio', portfoliosFile);
+    newFilesData.append("applicant-id", String(applicant_id));
+    newFilesData.append("resume", resumeFile);
+    newFilesData.append("portfolio", portfoliosFile);
 
     userPatchData.addFiles({ filesData: newFilesData });
 
@@ -153,6 +153,12 @@ const Ready = () => {
   const handleNext = () => {
     postReadyData.readyToPost(userIdNumber);
     setIsOpen(!isOpen);
+    setRender(render - 1);
+  };
+
+  const handleCheckModal = () => {
+    setIsOpen(!isOpen);
+    setRender(render - 1);
   };
 
   return (
@@ -178,7 +184,7 @@ const Ready = () => {
       </Wrapper>
       {isOpen && (
         <ModalWrapper>
-          <ModalBackground onClick={() => setIsOpen(!isOpen)} />
+          <ModalBackground onClick={handleCheckModal} />
           <QuestionCheckModal
             setIsOpen={setIsOpen}
             isOpen={isOpen}

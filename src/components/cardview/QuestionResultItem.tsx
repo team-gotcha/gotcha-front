@@ -1,138 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { styled } from "styled-components";
-import { useDrag, useDrop } from "react-dnd";
-
-import MoreDotIcon from "../../assets/icons/MoreDotIcon";
-
-interface QuestionProps {
-  questionId: number;
-  questionBody: {
-    value: Number | String | null;
-    type: "ORDER" | "IMPORTANCE" | "CONTENT" | "DELETE";
-  };
-}
-
-const ItemTypes = {
-  QUESTION_ITEM: "questionItem",
-};
-
-interface DragItem {
-  type: string;
-  index: number;
-}
 
 interface QuestionItemProps {
   isCommon?: boolean;
-  id?: number;
-  index?: number;
-  content?: string;
+  questionId?: number | string;
+  contents?: string;
   importance?: number;
-  moveItem?: (dragIndex: number, hoverIndex: number, id: number) => void;
-
-  //wss
-  handlePub?: ({ questionId, questionBody }: QuestionProps) => void;
-  isSocketOpen?: boolean;
-  socket?: object;
+  answer?: string;
 }
 
-const QuestionItemDrag = ({
+const QuestionResultItem = ({
   isCommon = false,
-  index = 1,
-  id,
-  content = "",
+  contents = "",
   importance,
-  moveItem = () => {},
-  ...props
+  answer,
 }: QuestionItemProps) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedContent, setEditedContent] = useState(content);
-
-  const handleScoreClick = (score: number) => {
-    //wss score 수정
-    props.handlePub({
-      questionId: index,
-      questionBody: { value: score, type: "IMPORTANCE" },
-    });
-  };
-
-  const handleMoreDotClick = () => {
-    setIsDropdownVisible((prev) => !prev);
-  };
-
-  const handleOptionClick = (option: string) => {
-    if (option === "삭제하기") {
-      //wss 삭제
-      props.handlePub({
-        questionId: index,
-        questionBody: { value: null, type: "DELETE" },
-      });
-    } else if (option === "수정하기") {
-      setIsEditing(true);
-    }
-
-    setSelectedOption(option);
-    setIsDropdownVisible(false);
-  };
-
-  const handleEditSubmit = () => {
-    console.log("수정 함수 실행!");
-    props.handlePub({
-      questionId: index,
-      questionBody: { value: editedContent, type: "CONTENT" },
-    });
-
-    setIsEditing(false);
-  };
-
-  const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.QUESTION_ITEM,
-    item: { type: ItemTypes.QUESTION_ITEM, index },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  });
-
-  const [, drop] = useDrop({
-    accept: ItemTypes.QUESTION_ITEM,
-    hover: (draggedItem: DragItem, monitor) => {
-      if (!draggedItem || !drag) {
-        return;
-      }
-
-      const dragIndex = draggedItem.index;
-      const hoverIndex = index;
-
-      if (dragIndex === hoverIndex) {
-        return;
-      }
-
-      moveItem(dragIndex, hoverIndex, id);
-
-      draggedItem.index = hoverIndex;
-    },
-  });
-
-  const opacity = isDragging ? 0.5 : 1;
+  const [selectedScore, setSelectedScore] = useState<number | null>(importance);
 
   return (
-    <Wrapper
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      ref={(node) => drag(drop(node))}
-      style={{ opacity }}
-    >
+    <Wrapper>
       <Container isCommon={isCommon}>
         <ImpScoreDiv isCommon={isCommon}>
-          <Title isCommon={isCommon}>중요도</Title>
+          <Title isCommon={isCommon}>점수</Title>
           <ScoreBox>
             {[1, 2, 3, 4, 5].map((score) => (
               <Score
                 key={score}
-                selected={importance === score}
-                onClick={() => handleScoreClick(score)}
+                selected={selectedScore === score}
                 isCommon={isCommon}
               >
                 {score}
@@ -145,44 +39,10 @@ const QuestionItemDrag = ({
             <ClassTag isCommon={isCommon}>
               {isCommon ? "공통질문" : "개별질문"}
             </ClassTag>
-            {isEditing ? (
-              <EditInput
-                type="text"
-                value={editedContent}
-                onChange={(e) => setEditedContent(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleEditSubmit()}
-                autoFocus
-              />
-            ) : (
-              <Question>{content}</Question>
-            )}
-
-            {isHovered && (
-              <MoreDotIcon
-                width={24}
-                height={24}
-                onClick={handleMoreDotClick}
-              />
-            )}
-            {isDropdownVisible && (
-              <DropdownDiv>
-                <Option
-                  selected={selectedOption === "삭제하기"}
-                  onClick={() => handleOptionClick("삭제하기")}
-                >
-                  삭제하기
-                </Option>
-                <Option
-                  selected={selectedOption === "수정하기"}
-                  onClick={() => handleOptionClick("수정하기")}
-                >
-                  수정하기
-                </Option>
-              </DropdownDiv>
-            )}
+            <Question>{contents}</Question>
           </QuestionBox>
           <InputBox>
-            <Answer>면접 시작시 답변창이 활성화됩니다.</Answer>
+            <Answer>{answer}</Answer>
           </InputBox>
         </QuestionDiv>
       </Container>
@@ -190,7 +50,7 @@ const QuestionItemDrag = ({
   );
 };
 
-export default QuestionItemDrag;
+export default QuestionResultItem;
 
 const Wrapper = styled.div`
   position: relative;
@@ -301,19 +161,6 @@ const Question = styled.div`
   letter-spacing: -0.042px;
 `;
 
-const EditInput = styled.input`
-  outline: none;
-  border: none;
-  color: var(--Gray-700, #808080);
-  width: 100%;
-
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 155%; /* 21.7px */
-  letter-spacing: -0.042px;
-`;
-
 const InputBox = styled.div`
   padding: 1.2rem 1.6rem;
   width: 100%;
@@ -331,7 +178,9 @@ const Answer = styled.div`
   line-height: 160%; /* 22.4px */
   letter-spacing: -0.042px;
 
-  color: var(--Gray-500, #b3b3b3);
+  /* & ::placeholder {
+    color: var(--Gray-500, #b3b3b3);
+  } */
 `;
 
 const DropdownDiv = styled.div`

@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
  */
 export const useGetEvalQuestion = (question_id: number) => {
   const { isLoading, data, error } = useQuery({
-    queryKey: ["evaluationInfo"],
+    queryKey: ["evaluationInfo", question_id],
     queryFn: async () => {
       const res = await axiosInstance.get(`/api/evaluations/questions`, {
         params: { "question-id": question_id },

@@ -1,20 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { styled } from 'styled-components';
-import { useNavigate, useParams } from 'react-router-dom';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import React, { useState, useEffect, useRef } from "react";
+import { styled } from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
-import QuestionItemDrag from '../QuestionItemDrag';
-import InfoIcon from '../../../assets/icons/InfoIcon';
+import QuestionItemDrag from "../QuestionItemDrag";
+import InfoIcon from "../../../assets/icons/InfoIcon";
 
-import info from '../../../assets/images/InfoIcon-blue.svg';
-import Stomp from '@stomp/stompjs';
-import { Client } from '@stomp/stompjs';
+import info from "../../../assets/images/InfoIcon-blue.svg";
+import Stomp from "@stomp/stompjs";
+import { Client } from "@stomp/stompjs";
 
-import { useGetAllEvaluations } from '../../../apis/get/useGetAllEvaluations';
-import { useGetEvalQuestion } from '../../../apis/get/useGetEvalQuestion';
-import { useGetRankingPoint } from '../../../apis/get/useGetRankingPoint';
-import { useGetCheckQuestions } from '../../../apis/get/useGetCheckQuestions';
+import { usePostInprogress } from "../../../apis/post/usePostInprogress";
+import { useGetCheckQuestions } from "../../../apis/get/useGetCheckQuestions";
 
 interface BaseModalProps {
   isOpen: boolean;
@@ -26,7 +24,7 @@ interface QuestionProps {
   questionId: number;
   questionBody: {
     value: Number | String | null;
-    type: 'ORDER' | 'IMPORTANCE' | 'CONTENT' | 'DELETE';
+    type: "ORDER" | "IMPORTANCE" | "CONTENT" | "DELETE";
   };
 }
 
@@ -42,7 +40,8 @@ const QuestionCheckModal = ({
   const [isSocketOpen, setIsSocketOpen] = useState(false);
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
 
-  //custom hook
+  //custom-hook
+  const postReadyData = usePostInprogress();
   const checkQuestionData = useGetCheckQuestions(userIdNumber);
 
   useEffect(() => {
@@ -51,7 +50,15 @@ const QuestionCheckModal = ({
     }
   }, [!checkQuestionData.isLoading]);
 
-  const moveItem = (dragIndex: number, hoverIndex: number) => {
+  const moveItem = (dragIndex: number, hoverIndex: number, index: number) => {
+    console.log(
+      "원래 있던 index",
+      dragIndex,
+      "새로 옮긴 index",
+      hoverIndex,
+      "해당 item id",
+      index
+    );
     const draggedItem = items[dragIndex];
     setItems((prevItems) => {
       const newItems = [...prevItems];
@@ -62,6 +69,7 @@ const QuestionCheckModal = ({
   };
 
   const handleBtn = () => {
+    postReadyData.readyToProgress(userIdNumber);
     setIsOpenModal(true);
     setIsOpen(!isOpen);
   };
@@ -69,7 +77,8 @@ const QuestionCheckModal = ({
   /**
    * 웹소켓 파트
    */
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem("accessToken");
+
   //클라이언트 객체 생성
   const socket = new Client({
     brokerURL: `wss://gotchaa.shop/ws`,
@@ -101,13 +110,13 @@ const QuestionCheckModal = ({
       const updatedItems = items.map((item) => {
         if (item.id === questionId) {
           switch (parsedBody.type) {
-            case 'IMPORTANCE':
+            case "IMPORTANCE":
               item.importance = parsedBody.value;
               break;
-            case 'CONTENT':
+            case "CONTENT":
               item.content = parsedBody.value;
               break;
-            case 'DELETE':
+            case "DELETE":
               // Remove the item from the array
               return null;
             default:
@@ -122,18 +131,18 @@ const QuestionCheckModal = ({
       // Update the state with the modified array
       setItems(filteredItems);
     } else {
-      alert('got empty message');
+      alert("got empty message");
     }
   };
 
   //연결시 실행할 함수
   socket.onConnect = (frame) => {
-    console.log('소켓 연결 성공');
+    console.log("소켓 연결 성공");
     setIsSocketOpen(true);
 
     console.log(items);
     items.forEach(function (item) {
-      console.log('열려라' + item.id);
+      console.log("열려라" + item.id);
       socket.subscribe(
         `/sub/question/${item.id}`,
         (message: any) => handleGetSubQuestion(message, item.id),
@@ -145,17 +154,17 @@ const QuestionCheckModal = ({
   };
 
   socket.onStompError = function (frame) {
-    console.log('Broker reported error: ' + frame.headers['message']);
-    console.log('Additional details: ' + frame.body);
+    console.log("Broker reported error: " + frame.headers["message"]);
+    console.log("Additional details: " + frame.body);
   };
 
   useEffect(() => {
-    console.log('소켓 연결 시작');
+    console.log("소켓 연결 시작");
     setStompClient(socket);
     socket.activate();
     return () => {
       //unmount
-      console.log('소켓 연결 끝');
+      console.log("소켓 연결 끝");
       socket.deactivate();
       setIsSocketOpen(false);
       setStompClient(null);
@@ -164,7 +173,7 @@ const QuestionCheckModal = ({
 
   useEffect(() => {
     if (items.length !== 0 && isSocketOpen) {
-      console.log('연결');
+      console.log("연결");
       socket.activate();
     }
   }, [items, isSocketOpen]);
@@ -197,10 +206,11 @@ const QuestionCheckModal = ({
                 {items.map((item, index) => (
                   <QuestionItemDrag
                     key={item?.id}
+                    id={item?.id}
                     isCommon={item?.common}
                     content={item?.content}
-                    importance={item.importance}
-                    index={item?.id}
+                    importance={item?.importance}
+                    index={index}
                     moveItem={moveItem}
                     //wss
                     handlePub={handlePubQuestion}

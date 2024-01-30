@@ -10,6 +10,7 @@ import SendOnIcon from "../../assets/icons/SendOnIcon";
 import MemoReplyItem from "./MemoReplyItem";
 
 import { usePostIndivQuestions } from "../../apis/post/usePostIndivQuestions";
+import { usePostLike } from "../../apis/post/usePostLike";
 import { usePatchQOpen } from "../../apis/patch/usePatchQOpen";
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
@@ -46,6 +47,7 @@ const MemoItem = ({ item, reply }: MemoItemProps) => {
   const [inputValue, setInputValue] = useState("");
 
   const postDetailData = usePostIndivQuestions();
+  const postLikes = usePostLike();
   const openStatus = usePatchQOpen();
 
   useEffect(() => {
@@ -67,7 +69,8 @@ const MemoItem = ({ item, reply }: MemoItemProps) => {
     setIsChatClicked(!isChatClicked);
   };
 
-  const handleHeartClick = () => {
+  const handleHeartClick = (question_id: number) => {
+    postLikes.postLike(item.id);
     setIsHeartClicked(!isHeartClicked);
   };
 
@@ -119,10 +122,10 @@ const MemoItem = ({ item, reply }: MemoItemProps) => {
                 height="15"
                 fill={isChatClicked ? "#fff" : "#3733ff"}
               />
-              0
+              {replys.length}
             </ReplyBtn>
             <HeartBtn
-              onClick={handleHeartClick}
+              onClick={() => handleHeartClick(item.id)}
               isHeartClicked={isHeartClicked}
             >
               <HeartIcon
@@ -130,7 +133,7 @@ const MemoItem = ({ item, reply }: MemoItemProps) => {
                 height="15"
                 fill={isHeartClicked ? "#fff" : "#ff2070"}
               />
-              0
+              {/* 원래 값이 들어가야 하는데... */}
             </HeartBtn>
           </BtnDiv>
         </ContentDiv>
@@ -251,7 +254,7 @@ const BtnDiv = styled.div`
 
 const ReplyBtn = styled.button<{ isChatClicked: boolean }>`
   display: flex;
-  padding: 0px 8px;
+  padding: 2px 8px;
   justify-content: center;
   align-items: center;
   gap: 6px;
@@ -270,7 +273,7 @@ const ReplyBtn = styled.button<{ isChatClicked: boolean }>`
 
 const HeartBtn = styled.div<{ isHeartClicked: boolean }>`
   display: flex;
-  padding: 0px 8px;
+  padding: 2px 8px;
   justify-content: center;
   align-items: center;
   gap: 6px;
