@@ -6,6 +6,7 @@ import ResultInfoItem from '../components/cardview/ResultInfoItem';
 
 import { useGetFinApplicants } from '../apis/get/useGetFinApplicants';
 import { Client, Stomp } from '@stomp/stompjs';
+import { usePatchInterviewComplete } from '../apis/patch/usePatchInterviewComplete';
 
 interface ApplicantResultProps {
   value: string;
@@ -28,6 +29,22 @@ const Result = () => {
 
   const [isSocketOpen, setIsSocketOpen] = useState(false);
   const [stompClient, setStompClient] = useState<Client | null>(null);
+
+  /**
+   * 탈락지원자 상태 업데이트 custom-hook
+   */
+  const fetchData = usePatchInterviewComplete();
+
+  const handleInterviewComplete = () => {
+    console.log('소켓 연결 끝');
+    socket.deactivate();
+    setIsSocketOpen(false);
+    setStompClient(null);
+
+    fetchData.interviewComplete(interview_id);
+    console.log('go');
+    navigate(`/main/result/${interview_id}`);
+  };
 
   /**
    * 웹소켓 파트
@@ -133,7 +150,7 @@ const Result = () => {
               socket={socket}
             />
           ))}
-        <ResultBtn onClick={() => navigate(`/main/result/${interview_id}`)}>
+        <ResultBtn onClick={handleInterviewComplete}>
           합격자 선정 완료
         </ResultBtn>
       </Container>

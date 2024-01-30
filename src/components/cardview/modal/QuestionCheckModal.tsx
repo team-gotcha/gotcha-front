@@ -66,6 +66,11 @@ const QuestionCheckModal = ({
       newItems.splice(hoverIndex, 0, draggedItem);
       return newItems;
     });
+
+    // handlePubQuestion({
+    //   questionId: index,
+    //   questionBody: { value: dragIndex, type: 'ORDER' },
+    // });
   };
 
   const handleBtn = () => {
@@ -210,7 +215,7 @@ const QuestionCheckModal = ({
                     isCommon={item?.common}
                     content={item?.content}
                     importance={item?.importance}
-                    index={item?.id}
+                    index={index}
                     moveItem={moveItem}
                     //wss
                     handlePub={handlePubQuestion}
