@@ -31,13 +31,7 @@ const MainCallback = () => {
       setUserInfo(fetchedProjectData.projectList);
       console.log(isEmailSet);
       //이메일 여부 판단
-      if (fetchedProjectData.projectList.userEmail === null && !isEmailSet) {
-        console.log('이메일입력');
-        //이메일입력 모달
-        setModalItem(<AddEmailModal />);
-        openModal();
-        navigate('/');
-      } else if (fetchedProjectData.projectList.projects.length > 0) {
+      if (fetchedProjectData.projectList.projects.length > 0) {
         console.log('메인으로!');
         const firstProjectId =
           fetchedProjectData.projectList.projects[0].projectId;

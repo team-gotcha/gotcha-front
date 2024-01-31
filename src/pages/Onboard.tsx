@@ -29,7 +29,8 @@ const Onboard = () => {
       name: interviewName,
       emails: emailList,
     });
-    navigate('/main/callback');
+    //alert('갓챠 시작하기를 클릭해주세요!');
+    navigate('/main/project/0');
   };
 
   //페이지 이동
