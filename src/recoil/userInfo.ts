@@ -1,32 +1,47 @@
-import { ReactNode } from 'react';
-import { atom, selector } from 'recoil';
+import { ReactNode } from "react";
+import { atom, selector } from "recoil";
 
 //Recoil Atom 선언
 export const userInfoState = atom({
-  key: 'userInfoState',
+  key: "userInfoState",
   default: {
-    profileUrl: '',
-    userEmail: '',
-    userName: '',
+    profileUrl: "",
+    userEmail: "",
+    userName: "",
     projects: [
       {
         interviews: [
           {
             interviewId: 0,
-            interviewName: '',
+            interviewName: "",
           },
         ],
         projectId: 0,
-        projectName: '',
+        projectName: "",
       },
     ],
   },
 });
 
+export const interviewNameListState = atom({
+  key: "interviewNameListState",
+  default: [
+    {
+      interviewId: 0,
+      interviewName: "",
+    },
+  ],
+});
+
+export const interviewNameState = atom({
+  key: "interviewNameState",
+  default: "",
+});
+
 export const defaultProjectId = atom({
-  key: 'defaultProjectId',
+  key: "defaultProjectId",
   default: selector({
-    key: 'defaultProjectId/Default',
+    key: "defaultProjectId/Default",
     get: ({ get }) => {
       const projects = get(userInfoState).projects;
       return projects.length > 0 ? projects[0].projectId : 0;
@@ -35,22 +50,22 @@ export const defaultProjectId = atom({
 });
 
 export const userInfoStateDefaultSelector = selector({
-  key: 'userInfoStateDefaultSelector',
+  key: "userInfoStateDefaultSelector",
   get: ({ get }) => {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = localStorage.getItem("accessToken");
     return accessToken !== null && accessToken !== undefined;
   },
 });
 
 export const loginStateDefaultSelector = selector({
-  key: 'loginStateDefaultSelector',
+  key: "loginStateDefaultSelector",
   get: ({ get }) => {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = localStorage.getItem("accessToken");
     return accessToken !== null && accessToken !== undefined;
   },
 });
 
 export const loginState = atom<boolean>({
-  key: 'loginState',
+  key: "loginState",
   default: loginStateDefaultSelector,
 });

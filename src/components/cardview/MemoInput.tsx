@@ -7,6 +7,7 @@ import SendOnIcon from "../../assets/icons/SendOnIcon";
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import { renderState } from "../../recoil/cardview";
+import { userInfoState } from "../../recoil/userInfo";
 
 import { usePostIndivQuestions } from "../../apis/post/usePostIndivQuestions";
 
@@ -29,6 +30,8 @@ const MemoInput = () => {
   // const render = useRecoilValue(renderState);
   // const setRender = useSetRecoilState(renderState);
   const [render, setRender] = useRecoilState(renderState);
+  const userInfo = useRecoilValue(userInfoState);
+  console.log(userInfo.profileUrl, userInfo.userName);
 
   const postDetailData = usePostIndivQuestions();
 
@@ -64,15 +67,15 @@ const MemoInput = () => {
       <StaticDiv>
         <TopDiv>
           <UserDiv>
-            <UserProfile />
-            <UserName>작성자 이름</UserName>
+            <UserProfile src={userInfo.profileUrl} />
+            <UserName>{userInfo.userName}</UserName>
           </UserDiv>
-          <QuestionBtn
+          {/* <QuestionBtn
             onClick={handleQuestionClick}
             isClicked={isQuestionClicked}
           >
             면접 때 질문하기
-          </QuestionBtn>
+          </QuestionBtn> */}
         </TopDiv>
       </StaticDiv>
       <InputDiv isInputFocused={isInputFocused}>
@@ -104,8 +107,9 @@ const FontStyle = styled.div`
 `;
 
 const Container = styled.div`
+  /* position: absolute;
+  bottom: 0; */
   display: flex;
-  /* width: 72rem; */
   flex-direction: column;
 
   flex-shrink: 0;
@@ -128,10 +132,10 @@ const TopDiv = styled.div`
 const UserDiv = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.8rem;
 `;
 
-const UserProfile = styled.div`
+const UserProfile = styled.img`
   width: 3.2rem;
   height: 3.2rem;
 

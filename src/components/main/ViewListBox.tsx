@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useGetApplicants } from '../../apis/get/useGetApplicants';
-import ViewListStack from './ViewListStack';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { useGetApplicants } from "../../apis/get/useGetApplicants";
+import ViewListStack from "./ViewListStack";
+import { useNavigate } from "react-router-dom";
+
 interface ViewListBoxProps {
   interview_id?: number;
   isEmptyNeed?: boolean;
 }
+
 const ViewListBox = ({ ...props }: ViewListBoxProps) => {
   const [applicantsList, setApplicantsList] = useState([]);
   const navigate = useNavigate();

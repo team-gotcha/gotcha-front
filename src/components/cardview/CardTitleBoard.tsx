@@ -1,14 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 
 import CloseIcon from "../../assets/icons/CloseIcon";
 
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import {
+  interviewNameState,
+  interviewNameListState,
+} from "../../recoil/userInfo";
+
 const CardTitleBoard = ({
   state = "면접 진행 중",
-  title = "UXUI 디자이너 면접",
   btnText = "면접 준비 완료",
-  subFunc = () => {},
+
   btnFunc = () => {},
   info = false,
   color = 1,
@@ -18,6 +23,18 @@ const CardTitleBoard = ({
   let background_color;
   const navigate = useNavigate();
   let { interview_id } = useParams();
+  const InterviewIdNumber: number = parseInt(interview_id, 10);
+
+  const interviewNameInfo = useRecoilValue(interviewNameListState);
+  const [interviewName, setInterviewName] = useRecoilState(interviewNameState);
+
+  useEffect(() => {
+    interviewNameInfo.map((item) => {
+      if (item.interviewId === InterviewIdNumber) {
+        setInterviewName(item.interviewName);
+      }
+    });
+  }, [interviewNameInfo]);
 
   switch (color) {
     case 1:
@@ -42,10 +59,9 @@ const CardTitleBoard = ({
     <TopDiv color={background_color}>
       <InfoDiv color={font_color}>
         <InterviewState>{state}</InterviewState>
-        <Title>{title}</Title>
+        <Title>{interviewName}</Title>
       </InfoDiv>
       <RightDiv>
-        {color === 1 && <FinBtn onClick={subFunc}>임시 POST</FinBtn>}
         <FinBtn onClick={btnFunc}>{btnText}</FinBtn>
         {del && (
           <CloseIcon
@@ -91,6 +107,7 @@ const InterviewState = styled.div`
   font-weight: 600;
   line-height: 140%; /* 28px */
   letter-spacing: -0.06px;
+  white-space: nowrap;
 `;
 
 const Title = styled.div`
@@ -125,4 +142,5 @@ const FinBtn = styled.button`
   letter-spacing: -0.042px;
 
   box-shadow: 0px 0px 6px 2px rgba(215, 215, 215, 0.15);
+  white-space: nowrap;
 `;

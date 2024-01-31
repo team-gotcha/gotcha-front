@@ -12,10 +12,28 @@ import {
   userDetailInfoState,
   userPostDataState,
   filesDataState,
+  keywordDataState,
+  interviewersDataState,
+  renderState,
 } from "../../recoil/cardview";
-import { useGetUserDetail } from "../../apis/get/useGetUserDetail";
 
-const InterviewerInfo = ({ modify = true, wide = true }) => {
+import { useGetUserDetail } from "../../apis/get/useGetUserDetail";
+import { usePostUserDetail } from "../../apis/post/usePostUserDetail";
+import { usePatchFiles } from "../../apis/patch/usePatchFiles";
+
+interface InterviewerInfoProps {
+  modify?: boolean;
+  wide?: boolean;
+  setIsModify?: (value: boolean) => void;
+}
+
+const InterviewerInfo = ({
+  modify = true,
+  wide = true,
+  setIsModify,
+}: InterviewerInfoProps) => {
+  const navigate = useNavigate();
+
   let { user_id } = useParams();
   const userIdNumber: number = parseInt(user_id, 10);
   let { interview_id } = useParams();
@@ -29,13 +47,15 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
   const [email, setEmail] = useState("");
   const [position, setPosition] = useState("");
   const [path, setPath] = useState("");
+  const [allFieldsFilled, setAllFieldsFilled] = useState(false);
 
   //api 연결 관련 코드
   const userDetailInfo = useRecoilValue(userDetailInfoState);
   const setUserDetailInfo = useSetRecoilState(userDetailInfoState);
 
-  const userPostInfo = useRecoilValue(userPostDataState);
-  const setUserPostInfo = useSetRecoilState(userPostDataState);
+  const interviewData = useRecoilValue(interviewersDataState);
+  const keywordData = useRecoilValue(keywordDataState);
+  const filesData = useRecoilValue(filesDataState);
 
   const setFilesData = useSetRecoilState(filesDataState);
   const [resumeFiles, setResumeFiles] = useState<File>();
@@ -43,32 +63,31 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
 
   //custom hook
   const userDetailData = useGetUserDetail(userIdNumber);
+  const postDetailData = usePostUserDetail();
+  const userPatchData = usePatchFiles();
+
+  const firstCharacter = name[0] || (modify ? name[0] : userDetailInfo.name[0]);
 
   useEffect(() => {
     if (!userDetailData.isLoading && !modify) {
-      console.log(
-        "유저 상세 데이터 세팅",
-
-        userIdNumber,
-        userDetailData
-      );
       setUserDetailInfo(userDetailData.userInfo);
     }
   }, [!userDetailData.isLoading, userDetailInfo]);
 
   //기본 정보 세팅
   useEffect(() => {
-    setUserPostInfo({
-      name: name,
-      date: date,
-      age: age,
-      education: education,
-      position: position,
-      phoneNumber: phoneNumber,
-      path: path,
-      email: email,
-      interviewId: interview_id,
-    });
+    const isAllFilled = !!(
+      name &&
+      date &&
+      age &&
+      phoneNumber &&
+      education &&
+      email &&
+      position &&
+      path
+    );
+
+    setAllFieldsFilled(isAllFilled);
   }, [name, date, age, phoneNumber, education, email, position, path]);
 
   //파일 업로드 정보
@@ -118,19 +137,75 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
     window.open(url);
   };
 
+  //지원자 정보 post 했을 때 applicantId 받아오기
+  useEffect(() => {
+    if (postDetailData.isSuccess) {
+      console.log(postDetailData.data.applicantId);
+      handleAfterPost(Number(postDetailData.data.applicantId));
+    }
+  }, [postDetailData.isSuccess]);
+
+  const handleAfterPost = async (applicant_id: number) => {
+    const newFilesData = new FormData();
+
+    const resumeFile = filesData.resume;
+    const portfoliosFile = filesData.portfolio;
+
+    console.log(resumeFile, portfoliosFile);
+
+    newFilesData.append("applicant-id", String(applicant_id));
+    newFilesData.append("resume", resumeFile);
+    newFilesData.append("portfolio", portfoliosFile);
+
+    userPatchData.addFiles({ filesData: newFilesData });
+
+    setIsModify(false);
+    navigate(`/ready/${interview_id}/${applicant_id}`);
+    window.location.reload();
+  };
+
+  const handleSubmit = async () => {
+    if (modify) {
+      postDetailData.detailPost({
+        name: name,
+        date: date,
+        interviewers: interviewData,
+        age: age,
+        education: education,
+        position: position,
+        phoneNumber: phoneNumber,
+        path: path,
+        email: email,
+        keywords: keywordData,
+        interviewId: interview_id,
+      });
+    }
+  };
+
   return (
     <Wrapper wide={wide}>
       <UserProfileDiv>
-        <UserProfile></UserProfile>
-        {modify ? (
-          <UserNameInput
-            type="text"
-            placeholder="지원자"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          ></UserNameInput>
-        ) : (
-          <UserName>{userDetailInfo?.name}</UserName>
+        <ProfInfoBox>
+          <UserProfile>{firstCharacter}</UserProfile>
+          {modify ? (
+            <UserNameInput
+              type="text"
+              placeholder="지원자"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            ></UserNameInput>
+          ) : (
+            <UserName>{userDetailInfo?.name}</UserName>
+          )}
+        </ProfInfoBox>
+        {modify && (
+          <InfoPostBtn
+            onClick={handleSubmit}
+            allFieldsFilled={allFieldsFilled}
+            disabled={!allFieldsFilled}
+          >
+            지원자 정보 저장
+          </InfoPostBtn>
         )}
       </UserProfileDiv>
       <InterviewDiv wide={wide}>
@@ -235,7 +310,7 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
                 />
               </Docs>
             )}
-            {!modify && (
+            {!modify && userDetailInfo.resumeLink && (
               <Docs onClick={() => handleDocsClick(userDetailInfo.resumeLink)}>
                 지원서
               </Docs>
@@ -266,7 +341,7 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
                 />
               </Docs>
             )}
-            {!modify && (
+            {!modify && userDetailInfo.portfolio && (
               <Docs onClick={() => handleDocsClick(userDetailInfo.portfolio)}>
                 포트폴리오
               </Docs>
@@ -296,23 +371,38 @@ const InterviewerInfo = ({ modify = true, wide = true }) => {
 export default InterviewerInfo;
 
 const Wrapper = styled.div<{ wide: boolean }>`
-  padding: ${({ wide }) => (wide ? "6.8rem 3.5rem" : "2.5rem 2.1rem")};
-  /* padding: ${({ wide }) => (wide ? "0" : "2.5rem 2.1rem")}; */
+  padding: ${({ wide }) => (wide ? "5vw 3vw" : "3vw 2vw")};
 `;
 
 const UserProfileDiv = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const ProfInfoBox = styled.div`
+  display: flex;
+  align-items: center;
   gap: 3.6rem;
-  width: 24rem;
 `;
 
 const UserProfile = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 48px;
   height: 48px;
   border-radius: 50%;
 
   background-color: var(--blue-200, #e5ecff);
+
+  color: var(--Gray-900, #4d4d4d);
+
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%;
 `;
 
 const FontStyle = styled.div`
@@ -322,6 +412,8 @@ const FontStyle = styled.div`
 `;
 
 const UserName = styled(FontStyle)`
+  display: flex;
+  align-items: center;
   color: var(--purple-900, #161466);
   font-size: 36px;
   width: 16rem;
@@ -345,35 +437,61 @@ const UserNameInput = styled.input`
   }
 `;
 
+const InfoPostBtn = styled.button<{ allFieldsFilled: boolean }>`
+  display: flex;
+  padding: 6px 26px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  border-radius: 16px;
+  background: ${({ allFieldsFilled }) =>
+    allFieldsFilled ? "#3733ff" : "#E6E6E6"};
+  color: var(--Gray-100, #fff);
+
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 155%;
+  letter-spacing: -0.042px;
+
+  box-shadow: 0px 0px 6px 2px rgba(215, 215, 215, 0.15);
+  white-space: nowrap;
+`;
+
 const InterviewDiv = styled.div<{ wide: boolean }>`
-  width: 100%;
   display: grid;
   grid-template-columns: ${({ wide }) => (wide ? "repeat(2, 1fr)" : "1fr")};
-  gap: 2rem 4.5rem;
+  gap: 2rem 2vw;
   margin: 3rem 0 5.5rem;
 `;
 
 const InterviewBox = styled.div`
   display: flex;
   align-items: flex-start;
+  /* width: 16vw; */
   margin-top: 0.3rem;
-  gap: 4rem;
+  gap: 3.2rem;
 `;
 
 const InterviewTitle = styled(FontStyle)`
   color: var(--purple-600, #3733ff);
-  width: 5.5rem;
+  width: 5.2rem;
   font-size: 14px;
+  white-space: nowrap;
 `;
 
 const ChoiceDate = styled.input`
   border: none;
+  outline: none;
+  /* width: 10vw; */
+  width: 100%;
 `;
 
 const BasicInfoDiv = styled.div<{ wide: boolean }>`
   display: grid;
   grid-template-columns: ${({ wide }) => (wide ? "repeat(2, 1fr)" : "1fr")};
-  gap: 1.2rem 3.8rem;
+  gap: 1.2rem 2vw;
 `;
 
 const InfoBox = styled.div`
@@ -387,21 +505,25 @@ const Info = styled(FontStyle)`
   color: var(--Gray-1100, #1a1a1a);
   width: 5.2rem;
   font-size: 14px;
+  white-space: nowrap;
 `;
 
 const InfoResult = styled(FontStyle)`
   color: var(--Gray-1100, #1a1a1a);
-  width: 23.8rem;
+
   text-align: start;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: -0.042px;
+  white-space: nowrap;
 `;
 
 const InfoInput = styled.input`
   display: flex;
   padding: 0.2rem 1rem;
-  width: 238px;
+  /* width: 10vw; */
+  width: 100%;
+
   height: 24px;
   justify-content: flex-start;
   align-items: center;
@@ -415,7 +537,7 @@ const InfoInput = styled.input`
 const KeywordDiv = styled.div<{ wide: boolean }>`
   display: grid;
   grid-template-columns: ${({ wide }) => (wide ? "repeat(2, 1fr)" : "1fr")};
-  gap: 3.4rem 3.6rem;
+  gap: 3.4rem 2vw;
   margin: 5rem 0 0;
 `;
 
@@ -424,7 +546,7 @@ const Document = styled.div``;
 const DocsDiv = styled.div`
   display: flex;
   align-items: center;
-  width: 30rem;
+  width: 14.5vw;
   flex-wrap: wrap;
   gap: 0.8rem;
 `;

@@ -16,6 +16,7 @@ interface Interviewer {
 }
 
 const InterviewerBox = ({ modify = true }) => {
+  let { user_id } = useParams();
   let { interview_id } = useParams();
   const InterviewIdNumber: number = parseInt(interview_id, 10);
   const setInterviewerData = useSetRecoilState(interviewersDataState);
@@ -38,7 +39,7 @@ const InterviewerBox = ({ modify = true }) => {
       const newData = userDetailInfo.interviewerNames || [];
       setResultViewers(newData);
     }
-  }, [!interviewerData.isLoading]);
+  }, [!interviewerData.isLoading, userDetailInfo, user_id]);
 
   const handleToggleSelection = (option: Interviewer) => {
     const isSelected = selectedOptions.includes(option.id);
@@ -74,7 +75,7 @@ const InterviewerBox = ({ modify = true }) => {
   return (
     <Container>
       <TopDiv>
-        <KeyTitle>면접관</KeyTitle>
+        <KeyTitle>면접관 </KeyTitle>
         {modify ? (
           <DropdownDiv>
             <SelectBar onClick={() => setDropdownView(!isDropdownView)}>
@@ -121,33 +122,39 @@ const Container = styled.div`
   align-items: flex-start;
   justify-content: center;
   gap: 0.5rem;
+  width: 100%;
 `;
 
 const TopDiv = styled.div`
   display: flex;
   align-items: center;
-  gap: 3rem;
+  gap: 3.2rem;
+  width: 100%;
 `;
 
 const KeyTitle = styled.div`
   color: var(--purple-600, #3733ff);
-  width: 5.5rem;
+  width: 5.2rem;
   font-size: 14px;
   font-style: normal;
   font-weight: 600;
   line-height: 160%; /* 22.4px */
   letter-spacing: -0.036px;
+  white-space: nowrap;
 `;
 
 const DropdownDiv = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 `;
 
 const SelectBar = styled.div`
   display: flex;
-  width: 238px;
+  /* width: 10vw; */
+  width: 100%;
+
   height: 24px;
   padding: 2px 10px;
   justify-content: flex-start;
@@ -167,13 +174,16 @@ const SelectBar = styled.div`
   letter-spacing: -0.042px;
 
   cursor: pointer;
+  white-space: nowrap;
 `;
 
 const Wrapper = styled.div`
   position: absolute;
   top: 2.9rem;
   display: flex;
-  width: 238px;
+  /* width: 10vw; */
+  width: 100%;
+
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
@@ -205,9 +215,9 @@ const ListItem = styled.div<{ isSelected: boolean }>`
 const KeywordDiv = styled.div`
   display: flex;
   align-items: center;
-  width: 30rem;
+  width: 14.5vw;
   gap: 0.8rem;
-  margin-left: 8.5rem;
+  padding-left: 8.5rem;
 
   flex-wrap: wrap;
 `;
@@ -234,7 +244,8 @@ const Keyword = styled.div`
 const ResultBox = styled.div`
   display: flex;
   align-items: center;
-  width: 30rem;
+  width: 10vw;
+
   gap: 0.8rem;
 
   flex-wrap: wrap;

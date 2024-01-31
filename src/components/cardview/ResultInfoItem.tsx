@@ -5,6 +5,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ResultViewerInfo from './ResultviewerInfo';
 import ResultReviewBox from './ResultReviewBox';
 
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import { interviewNameState } from "../../recoil/userInfo";
+
 interface InterviewDataProps {
   data?: {
     applicantId: number;
@@ -40,7 +43,9 @@ const ResultInfoItem = ({
   ...props
 }: InterviewDataProps) => {
   const navigate = useNavigate();
+  const interviewName = useRecoilValue(interviewNameState);
   const [isButtonClicked, setIsButtonClicked] = useState(props.isPass);
+
 
   const handleButtonClick = () => {
     setIsButtonClicked(!isButtonClicked);
@@ -59,7 +64,7 @@ const ResultInfoItem = ({
       <TopDiv>
         <InfoDiv>
           <InterviewState>면접 완료</InterviewState>
-          <Title>UX/UI 디자이너 면접</Title>
+          <Title>{interviewName}</Title>
         </InfoDiv>
         <RightDiv>
           <FinBtn onClick={handleButtonClick} clicked={!props.isPass}>
@@ -98,7 +103,7 @@ const InputDiv = styled.div`
   overflow-y: auto;
   border-right: 0.1rem solid #e6e6e6;
 
-  padding: 5rem 7rem;
+  padding: 5rem 3vw;
 
   &::-webkit-scrollbar {
     display: none;

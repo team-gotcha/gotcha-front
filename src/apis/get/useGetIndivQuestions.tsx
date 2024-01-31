@@ -12,10 +12,13 @@ export const useGetIndivQuestions = (applicant_id: number, render: number) => {
   const { isLoading, data, error } = useQuery({
     queryKey: ["indivQuestion", render],
     queryFn: async () => {
+      if (applicant_id === 0) {
+        return null;
+      }
       const res = await axiosInstance.get(`/api/questions`, {
         params: { "applicant-id": applicant_id },
       });
-      console.log(res.data);
+
       return res.data;
     },
   });

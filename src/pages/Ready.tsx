@@ -11,13 +11,7 @@ import QuestionCheckModal from "../components/cardview/modal/QuestionCheckModal"
 import QuestionOpenModal from "../components/cardview/modal/QuestionOpenModal";
 
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import {
-  filesDataState,
-  userPostDataState,
-  keywordDataState,
-  interviewersDataState,
-  renderState,
-} from "../recoil/cardview";
+import { renderState } from "../recoil/cardview";
 
 import { useGetIndivQuestions } from "../apis/get/useGetIndivQuestions";
 
@@ -59,21 +53,13 @@ const Ready = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [comments, setComments] = useState([]);
   const [reply, setReply] = useState([]);
-  const [applicantId, setApplicantId] = useState<number>();
   const [isModify, setIsModify] = useState(true);
-
-  const basicData = useRecoilValue(userPostDataState);
-  const interviewData = useRecoilValue(interviewersDataState);
-  const keywordData = useRecoilValue(keywordDataState);
-  const filesData = useRecoilValue(filesDataState);
 
   const render = useRecoilValue(renderState);
   const setRender = useSetRecoilState(renderState);
 
   //custom-hook
   const postReadyData = usePostUserReady();
-  const postDetailData = usePostUserDetail();
-  const userPatchData = usePatchFiles();
 
   const getIndivQuestionData = useGetIndivQuestions(userIdNumber, render);
 
@@ -104,52 +90,6 @@ const Ready = () => {
     }
   }, [!getIndivQuestionData.isLoading, render]);
 
-  //지원자 정보 post 했을 때 applicantId 받아오기
-  useEffect(() => {
-    if (postDetailData.isSuccess) {
-      console.log(postDetailData.data.applicantId);
-      handleAfterPost(Number(postDetailData.data.applicantId));
-    }
-  }, [postDetailData.isSuccess]);
-
-  const handleAfterPost = async (applicant_id: number) => {
-    setApplicantId(Number(applicant_id));
-    const newFilesData = new FormData();
-
-    const resumeFile = filesData.resume;
-    const portfoliosFile = filesData.portfolio;
-
-    console.log(resumeFile, portfoliosFile);
-
-    newFilesData.append("applicant-id", String(applicant_id));
-    newFilesData.append("resume", resumeFile);
-    newFilesData.append("portfolio", portfoliosFile);
-
-    userPatchData.addFiles({ filesData: newFilesData });
-
-    setIsModify(false);
-    navigate(`/ready/${interview_id}/${applicant_id}`);
-    window.location.reload();
-  };
-
-  const handleSubmit = async () => {
-    if (isModify) {
-      postDetailData.detailPost({
-        name: basicData.name,
-        date: basicData.date,
-        interviewers: interviewData,
-        age: basicData.age,
-        education: basicData.education,
-        position: basicData.position,
-        phoneNumber: basicData.phoneNumber,
-        path: basicData.path,
-        email: basicData.email,
-        keywords: keywordData,
-        interviewId: interview_id,
-      });
-    }
-  };
-
   const handleNext = () => {
     postReadyData.readyToPost(userIdNumber);
     setIsOpen(!isOpen);
@@ -166,10 +106,10 @@ const Ready = () => {
       <Wrapper>
         <Background />
         <Container>
-          <CardTitleBoard btnFunc={handleNext} subFunc={handleSubmit} />
+          <CardTitleBoard btnFunc={handleNext} />
           <Contents>
             <InputDiv>
-              <InterviewerInfo modify={isModify} />
+              <InterviewerInfo modify={isModify} setIsModify={setIsModify} />
             </InputDiv>
             <MemoDiv>
               {comments &&
@@ -177,7 +117,11 @@ const Ready = () => {
                   <MemoItem key={index} item={item} reply={reply} />
                 ))}
 
-              {!isModify && <MemoInput />}
+              {isModify ? (
+                <Memo>지원자 정보를 먼저 입력해주세요!</Memo>
+              ) : (
+                <MemoInput />
+              )}
             </MemoDiv>
           </Contents>
         </Container>
@@ -252,12 +196,13 @@ const InputDiv = styled.div`
 `;
 
 const MemoDiv = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   /* justify-content: flex-end; */
   // 위 속성 먹이면 스크롤이 안 됨...
-  padding: 2rem;
-  margin-bottom: 1rem;
+  padding: 2rem 2rem 0 2rem;
+  margin-bottom: 2rem;
   border-left: 0.1rem solid #e6e6e6;
   overflow-y: auto;
 
@@ -266,6 +211,16 @@ const MemoDiv = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+
+const Memo = styled.span`
+  color: var(--Gray-300, #e6e6e6);
+  font-size: 2.6rem;
+  text-align: center;
+
+  font-style: normal;
+  font-weight: 600;
+  line-height: 155%;
 `;
 
 const ModalWrapper = styled.div`

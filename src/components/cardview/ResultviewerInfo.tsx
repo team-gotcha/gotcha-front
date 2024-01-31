@@ -59,7 +59,7 @@ const UserProfileDiv = styled.div`
   align-items: center;
   gap: 4.4rem;
 
-  width: 24.3rem;
+  width: 100%;
 `;
 
 const UserProfile = styled.div`
@@ -80,6 +80,7 @@ const UserName = styled(FontStyle)`
   color: var(--purple-900, #161466);
   font-size: 36px;
   font-weight: 600;
+  white-space: nowrap;
 `;
 
 const InterviewDiv = styled.div`
@@ -94,7 +95,7 @@ const InterviewBox = styled.div`
   align-items: center;
   gap: 4.4rem;
 
-  width: 26.5rem;
+  width: 100%;
 `;
 
 const InterviewTitle = styled(FontStyle)`
@@ -102,6 +103,7 @@ const InterviewTitle = styled(FontStyle)`
 
   font-size: 14px;
   font-weight: 500;
+  white-space: nowrap;
 `;
 
 const ResultDiv = styled.div`
@@ -117,4 +119,5 @@ const Result = styled(FontStyle)`
   font-weight: 400;
   line-height: 155%; /* 24.8px */
   letter-spacing: -0.048px;
+  white-space: nowrap;
 `;

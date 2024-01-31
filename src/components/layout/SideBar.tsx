@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { styled } from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { styled } from "styled-components";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import AddIcon from '../../assets/icons/AddIcon';
-import { ReactComponent as FavIcon } from '../../assets/images/FavIcon.svg';
-import { ReactComponent as NotiIcon } from '../../assets/images/NotiIcon.svg';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { modalContent, modalState } from '../../recoil/modal';
-import { useToggleModal } from '../../hooks/useToggleModal';
-import AddProjectModal from '../common/modal/AddProjectModal';
-import { loginState, userInfoState } from '../../recoil/userInfo';
-import { useGetUserInfo } from '../../apis/get/useGetUserInfo';
-import { useGetProjectList } from '../../apis/get/useGetProjectList';
-import AddInterviewModal from '../common/modal/AddInterviewModal';
-import { useLocation, useNavigate } from 'react-router-dom';
+import AddIcon from "../../assets/icons/AddIcon";
+import { ReactComponent as FavIcon } from "../../assets/images/FavIcon.svg";
+import { ReactComponent as NotiIcon } from "../../assets/images/NotiIcon.svg";
+
+import { useRecoilState, useRecoilValue } from "recoil";
+import { modalContent, modalState } from "../../recoil/modal";
+import { loginState, userInfoState } from "../../recoil/userInfo";
+
+import { useToggleModal } from "../../hooks/useToggleModal";
+import AddProjectModal from "../common/modal/AddProjectModal";
+import AddInterviewModal from "../common/modal/AddInterviewModal";
+
+import { useGetUserInfo } from "../../apis/get/useGetUserInfo";
+import { useGetProjectList } from "../../apis/get/useGetProjectList";
 
 const SideBar = () => {
   //전역상태
@@ -28,7 +31,7 @@ const SideBar = () => {
   const fetchedProjectData = useGetProjectList();
   useEffect(() => {
     if (isLogin && !fetchedProjectData.isLoading) {
-      console.log('유저데이터 세팅');
+      console.log("유저데이터 세팅");
       setUserInfo(fetchedProjectData.projectList);
     }
   }, [fetchedProjectData.isLoading]);
@@ -54,18 +57,18 @@ const SideBar = () => {
 
   const location = useLocation();
   const { pathname } = location;
-  let interview_id = '';
-  let project_id = '';
+  let interview_id = "";
+  let project_id = "";
   // pathname에서 interview_id 또는 project_id 추출
-  const pathSegments = pathname.split('/');
-  if (pathSegments.includes('interview')) {
-    const index = pathSegments.indexOf('interview');
+  const pathSegments = pathname.split("/");
+  if (pathSegments.includes("interview")) {
+    const index = pathSegments.indexOf("interview");
     interview_id = pathSegments[index + 1];
-  } else if (pathSegments.includes('ready')) {
-    const index = pathSegments.indexOf('ready');
+  } else if (pathSegments.includes("ready")) {
+    const index = pathSegments.indexOf("ready");
     interview_id = pathSegments[index + 1];
-  } else if (pathSegments.includes('project')) {
-    const index = pathSegments.indexOf('project');
+  } else if (pathSegments.includes("project")) {
+    const index = pathSegments.indexOf("project");
     project_id = pathSegments[index + 1];
   }
   return (
@@ -137,6 +140,7 @@ const SideBar = () => {
 export default SideBar;
 
 const ItemTop = styled.div<{ isActive?: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -153,7 +157,7 @@ const ItemTop = styled.div<{ isActive?: boolean }>`
 
   //활성화된 대주제
   background-color: ${(props) =>
-    props.isActive ? 'var(--purple-200, #E6E5FF)' : 'transparent'};
+    props.isActive ? "var(--purple-200, #E6E5FF)" : "transparent"};
 `;
 
 const SubTitle = styled.div<{ isActive?: boolean }>`
@@ -169,10 +173,10 @@ const SubTitle = styled.div<{ isActive?: boolean }>`
   //활성화
   color: ${(props) =>
     props.isActive
-      ? '#3733FF'
-      : '${(props) => props.theme.colors.gray.gray500}'};
+      ? "#3733FF"
+      : "${(props) => props.theme.colors.gray.gray500}"};
 
-  display: ${(props) => (props.isActive ? 'flex' : 'none')};
+  display: ${(props) => (props.isActive ? "flex" : "none")};
 
   flex-direction: column;
   gap: 1rem;
@@ -275,6 +279,20 @@ const InterviewDiv = styled.div`
 
   padding: 1.4rem 1rem;
   overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 0.4rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #e6e6e6; /* 스크롤바의 색상 */
+
+    border-radius: 0.4rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
 `;
 
 const InterviewItem = styled.div`

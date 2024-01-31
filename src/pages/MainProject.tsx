@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import Banner from '../components/main/Banner';
-import ViewListStack from '../components/main/ViewListStack';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { modalContent, modalState } from '../recoil/modal';
-import { useToggleModal } from '../hooks/useToggleModal';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { userInfoState } from '../recoil/userInfo';
-import { useGetApplicants } from '../apis/get/useGetApplicants';
-import ViewListBox from '../components/main/ViewListBox';
-import AddInterviewModal from '../components/common/modal/AddInterviewModal';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import Banner from "../components/main/Banner";
+import ViewListStack from "../components/main/ViewListStack";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { modalContent, modalState } from "../recoil/modal";
+import { useToggleModal } from "../hooks/useToggleModal";
+import { useLocation, useNavigate } from "react-router-dom";
+import { userInfoState, interviewNameListState } from "../recoil/userInfo";
+import { useGetApplicants } from "../apis/get/useGetApplicants";
+import ViewListBox from "../components/main/ViewListBox";
+import AddInterviewModal from "../components/common/modal/AddInterviewModal";
 
 const MainProject = () => {
   const [interviewList, setInterviewList] = useState([]);
@@ -28,22 +28,25 @@ const MainProject = () => {
 
   const location = useLocation();
   const { pathname } = location;
-  let interview_id = '';
-  let project_id = '';
+  let interview_id = "";
+  let project_id = "";
   // pathname에서 interview_id 또는 project_id 추출
-  const pathSegments = pathname.split('/');
-  if (pathSegments.includes('interview')) {
-    const index = pathSegments.indexOf('interview');
+  const pathSegments = pathname.split("/");
+  if (pathSegments.includes("interview")) {
+    const index = pathSegments.indexOf("interview");
     interview_id = pathSegments[index + 1];
-  } else if (pathSegments.includes('project')) {
-    const index = pathSegments.indexOf('project');
+  } else if (pathSegments.includes("project")) {
+    const index = pathSegments.indexOf("project");
     project_id = pathSegments[index + 1];
   }
 
   //전역변수
   const GlobalUserInfo = useRecoilValue(userInfoState);
+  const [interviewNameList, setInterviewNameList] = useRecoilState(
+    interviewNameListState
+  );
 
-  if (project_id === '0') {
+  if (project_id === "0") {
     //초기화면
     project_id = String(GlobalUserInfo.projects[0].projectId);
     navigate(`/main/project/${project_id}`);
@@ -55,6 +58,7 @@ const MainProject = () => {
       .map((project) => project.interviews)[0];
 
     setInterviewList(filteredList || []);
+    setInterviewNameList(filteredList);
   }, [GlobalUserInfo, project_id]);
 
   useEffect(() => {
