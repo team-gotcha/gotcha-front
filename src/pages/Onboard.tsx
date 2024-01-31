@@ -30,7 +30,7 @@ const Onboard = () => {
       emails: emailList,
     });
     //alert('갓챠 시작하기를 클릭해주세요!');
-    navigate('/main/project/0');
+    navigate('/main/project/1');
   };
 
   //페이지 이동
