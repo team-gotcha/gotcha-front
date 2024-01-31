@@ -42,13 +42,17 @@ const MemoReplyItem = ({ item }: MemoReplyItemProps) => {
 
   const handleQuestionClick = (question_id: number) => {
     openStatus.setQuestions({ questionId: question_id });
-    setRender(render + 1);
+    setTimeout(() => {
+      setRender(render + 1);
+    }, 400);
   };
 
   const handleHeartClick = () => {
     postLikes.postLike(item.id);
     setIsHeartClicked(!isHeartClicked);
-    setRender(render - 1);
+    setTimeout(() => {
+      setRender(render + 1);
+    }, 400);
   };
 
   return (
@@ -196,4 +200,5 @@ const HeartBtn = styled.div<{ isHeartClicked: boolean }>`
   font-weight: 400;
   line-height: 160%;
   letter-spacing: -0.036px;
+  cursor: pointer;
 `;

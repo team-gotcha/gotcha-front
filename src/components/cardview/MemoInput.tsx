@@ -31,7 +31,6 @@ const MemoInput = () => {
   // const setRender = useSetRecoilState(renderState);
   const [render, setRender] = useRecoilState(renderState);
   const userInfo = useRecoilValue(userInfoState);
-  console.log(userInfo.profileUrl, userInfo.userName);
 
   const postDetailData = usePostIndivQuestions();
 
@@ -40,8 +39,11 @@ const MemoInput = () => {
       content: inputValue,
       applicantId: userIdNumber,
     });
-    setRender(render + 1);
+
     setInputValue("");
+    setTimeout(() => {
+      setRender(render + 1);
+    }, 400);
   };
 
   const handleQuestionClick = () => {
