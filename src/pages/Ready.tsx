@@ -86,7 +86,6 @@ const Ready = () => {
           )
         );
       }
-      console.log(render);
     }
   }, [!getIndivQuestionData.isLoading, render]);
 
