@@ -26,7 +26,7 @@ const Landing = () => {
 
   const [selectedNavItem, setSelectedNavItem] = useState(0);
   const navigate = useNavigate();
-  const loginUrl = `https://accounts.google.com/o/oauth2/v2/auth?include_granted_scopes=true&scope=profile&state=state_parameter_passthrough_value&response_type=code&redirect_uri=${process.env.REACT_APP_GOOGLE_AUTH_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}`;
+  const loginUrl = `https://accounts.google.com/o/oauth2/v2/auth?include_granted_scopes=true&scope=profile email&state=state_parameter_passthrough_value&response_type=code&redirect_uri=${process.env.REACT_APP_GOOGLE_AUTH_REDIRECT_URI}&client_id=${process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}`;
   const handleLogin = () => {
     window.location.href = loginUrl;
   };

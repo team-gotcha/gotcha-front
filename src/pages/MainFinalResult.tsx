@@ -32,8 +32,8 @@ const MainFinalResult = () => {
     <Wrapper>
       <FinalBoard>
         <TopBar>
-          <Title>면접 상태입력</Title>
-          <SubTitle>세부면접 폴더</SubTitle>
+          <Title>세오스 19기</Title>
+          <SubTitle>프론트 신입</SubTitle>
         </TopBar>
         {applicantsList.map((data, index) => (
           <FinalApplierStack key={index} {...data} />
