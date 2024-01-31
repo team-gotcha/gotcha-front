@@ -55,27 +55,33 @@ const MemoItem = ({ item, reply }: MemoItemProps) => {
 
   useEffect(() => {
     if (reply !== null) {
-      setReplys(
-        reply.filter(
-          (comment: QuestionProps) => comment.commentTargetId === item.id
-        )
+      const filteredReplies = reply.filter(
+        (comment: QuestionProps) => comment.commentTargetId === item.id
       );
+
+      if (filteredReplies.length > 0) {
+        setReplys(filteredReplies);
+        setIsChatClicked(true);
+      }
     }
   }, [reply]);
 
   const handleQuestionClick = (question_id: number) => {
     openStatus.setQuestions({ questionId: question_id });
-    setRender(render + 1);
+    setTimeout(() => {
+      setRender(render + 1);
+    }, 400);
   };
 
   const handleChatClick = () => {
     setIsChatClicked(!isChatClicked);
-    setRender(render - 1);
   };
 
   const handleHeartClick = (question_id: number) => {
     postLikes.postLike(item.id);
-    setRender(render - 1);
+    setTimeout(() => {
+      setRender(render - 1);
+    }, 400);
     // setIsHeartClicked(!isHeartClicked);
   };
 
@@ -93,8 +99,11 @@ const MemoItem = ({ item, reply }: MemoItemProps) => {
       applicantId: userIdNumber,
       commentTargetId: item.id,
     });
-    setRender(render + 1);
+
     setInputValue("");
+    setTimeout(() => {
+      setRender(render + 1);
+    }, 400);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -145,20 +154,28 @@ const MemoItem = ({ item, reply }: MemoItemProps) => {
       </StaticDiv>
 
       {isChatClicked && (
-        <InputDiv isInputFocused={isInputFocused}>
-          <Input
-            placeholder="팀원의 이야기에 덧글을 달아보세요."
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          {isInputFocused ? <SendOnIcon /> : <SendOffIcon />}
-        </InputDiv>
+        <>
+          {replys &&
+            replys.map((item, index) => (
+              <MemoReplyItem key={index} item={item} />
+            ))}
+          <InputDiv isInputFocused={isInputFocused}>
+            <Input
+              placeholder="팀원의 이야기에 덧글을 달아보세요."
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            {isInputFocused ? (
+              <SendOnIcon onMouseDown={handleSend} />
+            ) : (
+              <SendOffIcon />
+            )}
+          </InputDiv>
+        </>
       )}
-      {replys &&
-        replys.map((item, index) => <MemoReplyItem key={index} item={item} />)}
     </Container>
   );
 };
@@ -274,6 +291,7 @@ const ReplyBtn = styled.button<{ isChatClicked: boolean }>`
   font-weight: 400;
   line-height: 160%;
   letter-spacing: -0.036px;
+  cursor: pointer;
 `;
 
 const HeartBtn = styled.div<{ isHeartClicked: boolean }>`
@@ -294,6 +312,7 @@ const HeartBtn = styled.div<{ isHeartClicked: boolean }>`
   font-weight: 400;
   line-height: 160%;
   letter-spacing: -0.036px;
+  cursor: pointer;
 `;
 
 const InputDiv = styled.div<{ isInputFocused: boolean }>`
