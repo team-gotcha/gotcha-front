@@ -7,6 +7,7 @@ import ThinMessageIcon from '../../assets/icons/ThinMessageIcon';
 import MailIcon from '../../assets/icons/MailIcon';
 import CommonGroupMembers from '../common/CommonGroupMembers';
 import { usePostSendPassEmail } from '../../apis/post/usePostSendPassEmail';
+import { useLocation, useNavigate } from 'react-router';
 
 interface ViewFinalSuccessfulApplierProps {
   isComplete?: boolean; //합격자 선정 완료 여부
@@ -18,6 +19,24 @@ const ViewFinalSuccessfulApplier = ({
   isComplete = false,
   ...props
 }: ViewFinalSuccessfulApplierProps) => {
+  const location = useLocation();
+  const { pathname } = location;
+  let interview_id = '';
+  let project_id = '';
+  // pathname에서 interview_id 또는 project_id 추출
+  const pathSegments = pathname.split('/');
+  if (pathSegments.includes('interview')) {
+    const index = pathSegments.indexOf('interview');
+    interview_id = pathSegments[index + 1];
+  } else if (pathSegments.includes('project')) {
+    const index = pathSegments.indexOf('project');
+    project_id = pathSegments[index + 1];
+  }
+
+  const navigate = useNavigate();
+  const handleMoveToResult = () => {
+    navigate(`/result/${interview_id}`);
+  };
   return (
     <Wrapper>
       <ViewStack isComplete={isComplete}>
@@ -26,7 +45,11 @@ const ViewFinalSuccessfulApplier = ({
             최종 합격자
           </NotiOnTitle>
         )}
-        {!isComplete && <NotiOffTitle>합격자 발표를 완료해주세요</NotiOffTitle>}
+        {!isComplete && (
+          <NotiOffTitle onClick={handleMoveToResult}>
+            합격자 발표를 완료해주세요
+          </NotiOffTitle>
+        )}
         <CommonGroupMembers showNum={4} groupMemberList={props.groupMembers} />
       </ViewStack>
       <MailButton
@@ -100,7 +123,7 @@ const NotiOnTitle = styled.div`
   -webkit-text-fill-color: transparent;
 `;
 
-const NotiOffTitle = styled.div`
+const NotiOffTitle = styled.button`
   ${(props) => props.theme.fontStyles.subtitle.subtitleRegular};
   font-size: 1.6rem;
   font-style: normal;
