@@ -7,6 +7,8 @@ import { useRecoilState } from 'recoil';
 import { userInfoState } from '../recoil/userInfo';
 
 import { Client, Stomp } from '@stomp/stompjs';
+import CommonButton from '../components/common/CommonButton';
+import { usePostSendPassEmail } from '../apis/post/usePostSendPassEmail';
 
 const MainFinalResult = () => {
   const [applicantsList, setApplicantsList] = useState([]);
@@ -28,7 +30,9 @@ const MainFinalResult = () => {
     project_id = pathSegments[index + 1];
   }
 
+  //custom-hook
   const fetchedData = useGetPassApplicants(Number(interview_id));
+  const fetchEmail = usePostSendPassEmail();
   useEffect(() => {
     if (!fetchedData.isLoading) {
       setApplicantsList(fetchedData.passApplicants);
@@ -37,6 +41,13 @@ const MainFinalResult = () => {
 
   useEffect(() => {
     if (interview_id !== '') {
+      const matchingInterview = userInfo.projects
+        .flatMap((project) => project.interviews)
+        .find(
+          (interview) => interview.interviewId === parseInt(interview_id, 10)
+        );
+
+      setSubtitle(matchingInterview ? matchingInterview.interviewName : '');
       const matchingProject = userInfo.projects.find((project) =>
         project.interviews.some(
           (interview) => interview.interviewId === parseInt(interview_id, 10)
@@ -162,8 +173,20 @@ const MainFinalResult = () => {
     <Wrapper>
       <FinalBoard>
         <TopBar>
-          <Title>{title}</Title>
-          <SubTitle>{subtitle}</SubTitle>
+          <RowBox>
+            <Title>{title}</Title>
+            <SubTitle>{subtitle}</SubTitle>
+          </RowBox>
+          <div>
+            <CommonButton
+              color="fillBlue"
+              size="small"
+              children="합격자 메일 발송"
+              onClick={() => {
+                fetchEmail.sendPassEmail(Number(interview_id));
+              }}
+            />
+          </div>
         </TopBar>
         {applicantsList.map((data, index) => (
           <FinalApplierStack
@@ -187,6 +210,12 @@ const Wrapper = styled.div`
 
   padding: 5rem;
 `;
+const RowBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+`;
 
 const TopBar = styled.div`
   width: 100%;
@@ -198,8 +227,11 @@ const TopBar = styled.div`
 
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding-left: 4rem;
   gap: 1.6rem;
+
+  padding-right: 4rem;
 `;
 const Title = styled.div`
   font-size: 2rem;
