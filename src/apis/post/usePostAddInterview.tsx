@@ -21,6 +21,13 @@ export const usePostAddInterview = () => {
   const { mutate, isPending, error, isSuccess } = useMutation({
     mutationKey: ['addInterview'],
     mutationFn: async (data: InterviewProps) => {
+      for (let i = 0; i < data.emails.length; i++) {
+        const email = data.emails[i];
+        if (!email.endsWith('@gmail.com')) {
+          alert('올바른 Gmail 주소가 아닙니다: ' + email);
+          throw new Error('올바른 Gmail 주소가 아닙니다: ' + email);
+        }
+      }
       const res = await axiosInstance.post(`/api/interviews`, data);
       //응답 처리
       console.log(res);

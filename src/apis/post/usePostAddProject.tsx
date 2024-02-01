@@ -18,6 +18,13 @@ export const usePostAddProject = () => {
   const { mutate, isPending, error, isSuccess } = useMutation({
     mutationKey: ['addProject'],
     mutationFn: async (data: ProjectProps) => {
+      for (let i = 0; i < data.emails.length; i++) {
+        const email = data.emails[i];
+        if (!email.endsWith('@gmail.com')) {
+          alert('올바른 Gmail 주소가 아닙니다: ' + email);
+          throw new Error('올바른 Gmail 주소가 아닙니다: ' + email);
+        }
+      }
       const res = await axiosInstance.post(`/api/projects`, data);
       return res.data;
     },

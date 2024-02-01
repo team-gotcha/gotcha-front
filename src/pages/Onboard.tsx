@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -29,9 +29,15 @@ const Onboard = () => {
       name: interviewName,
       emails: emailList,
     });
-    //alert('갓챠 시작하기를 클릭해주세요!');
-    navigate('/main/project/1');
   };
+
+  useEffect(() => {
+    if (fetchData.isSuccess) {
+      navigate('/main/project/1');
+    } else {
+      navigate('/onboarding/2');
+    }
+  }, [fetchData.isSuccess]);
 
   //페이지 이동
   const { id } = useParams();
