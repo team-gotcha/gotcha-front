@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -18,6 +18,7 @@ const ReviewModal = ({ isOpen, setIsOpen }: BaseModalProps) => {
   const userIdNumber: number = parseInt(user_id, 10);
   let { interview_id } = useParams();
   const [oneLiner, setOneLiner] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const postOnlinerData = usePostOneliner();
 
@@ -31,6 +32,11 @@ const ReviewModal = ({ isOpen, setIsOpen }: BaseModalProps) => {
     setIsOpen(false);
     navigate(`/main/interview/${interview_id}`);
   };
+
+  useEffect(() => {
+    setIsButtonDisabled(oneLiner.trim() === "");
+  }, [oneLiner]);
+
   return (
     <Container>
       <TopContent>
@@ -41,7 +47,13 @@ const ReviewModal = ({ isOpen, setIsOpen }: BaseModalProps) => {
         onChange={(e) => setOneLiner(e.target.value)}
         placeholder="지원자에 대한 생각을 간략하게 적어주세요. 이후 모든 구성원의 한줄평을 한번에 확인할 수 있어요."
       />
-      <FinishBtn onClick={handleBtn}>면접 완료</FinishBtn>
+      <FinishBtn
+        disabled={isButtonDisabled}
+        onClick={handleBtn}
+        isButtonDisabled={isButtonDisabled}
+      >
+        면접 완료
+      </FinishBtn>
     </Container>
   );
 };
@@ -114,14 +126,15 @@ const InputField = styled.textarea`
   }
 `;
 
-const FinishBtn = styled.button`
+const FinishBtn = styled.button<{ isButtonDisabled: boolean }>`
   display: flex;
   width: 19rem;
   padding: 0.4rem 3rem;
   justify-content: center;
   align-items: center;
   border-radius: 2rem;
-  background: var(--purple-600, #3733ff);
+  background: ${({ isButtonDisabled }) =>
+    isButtonDisabled ? "#b3b3b3" : "#3733FF"};
 
   color: var(--Gray-100, #fff);
 
