@@ -71,13 +71,12 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
 
   const handleApplicantClick = () => {
     if (props.applicantData?.status === 'COMPLETION') {
-      navigate(`/main/result/${props.interviewId}`);
+      navigate(`/result/${props.interviewId}`);
     } else {
       navigate(
         `/${navigateRoute}/${props.interviewId}/${props.applicantData.id}`
       );
       window.location.reload();
-
     }
   };
 
