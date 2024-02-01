@@ -28,6 +28,10 @@ const TokenRefresher = () => {
               'expirationTime',
               String(new Date().getTime() + 25 * 60 * 1000)
             );
+            setAuth({
+              accessToken: newAccessToken,
+              expirationTime: localStorage.getItem('expirationTime'),
+            });
           });
       } catch (error) {
         // 오류 처리

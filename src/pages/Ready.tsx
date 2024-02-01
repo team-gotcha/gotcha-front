@@ -74,6 +74,7 @@ const Ready = () => {
   useEffect(() => {
     if (!getIndivQuestionData.isLoading && !isModify) {
       const newData = getIndivQuestionData.indivQuestion || [];
+      console.log(getIndivQuestionData.indivQuestion);
       if (newData.length !== 0) {
         setComments(
           newData?.filter(
@@ -87,7 +88,7 @@ const Ready = () => {
         );
       }
     }
-  }, [!getIndivQuestionData.isLoading, render]);
+  }, [!getIndivQuestionData.isLoading, render, user_id]);
 
   const handleNext = () => {
     postReadyData.readyToPost(userIdNumber);
