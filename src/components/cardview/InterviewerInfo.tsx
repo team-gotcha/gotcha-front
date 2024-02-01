@@ -66,7 +66,7 @@ const InterviewerInfo = ({
   const postDetailData = usePostUserDetail();
   const userPatchData = usePatchFiles();
 
-  const firstCharacter = name[0] || (modify ? name[0] : userDetailInfo.name[0]);
+  const firstCharacter = modify ? name[0] : userDetailInfo?.name[0];
 
   useEffect(() => {
     if (!userDetailData.isLoading && !modify) {

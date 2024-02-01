@@ -35,6 +35,14 @@ const QuestionItem = ({
     });
   };
 
+  const handleBlurClick = () => {
+    postQCommentData.addQComment({
+      questionId: questionId,
+      score: selectedScore,
+      content: comment,
+    });
+  };
+
   const handleMoreDotClick = () => {
     setIsDropdownVisible((prev) => !prev);
   };
@@ -100,6 +108,7 @@ const QuestionItem = ({
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="답변을 입력해주세요."
+              onBlur={handleBlurClick}
             />
           </InputBox>
         </QuestionDiv>

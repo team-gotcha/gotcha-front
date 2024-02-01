@@ -32,7 +32,7 @@ const InterviewerBox = ({ modify = true }) => {
   const interviewerData = useGetViewer(InterviewIdNumber);
 
   useEffect(() => {
-    if (modify) {
+    if (user_id === "0") {
       const newData = interviewerData.interviewerInfo || [];
       setViewers(newData);
     } else {
