@@ -17,6 +17,7 @@ interface ButtonType {
   width?: string;
   height?: string;
   padding?: string;
+  disabled?: boolean;
 }
 
 const CommonButton = ({ ...props }: ButtonType) => {
@@ -24,7 +25,7 @@ const CommonButton = ({ ...props }: ButtonType) => {
 };
 
 const StyledButton = styled.button<ButtonType>`
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -37,9 +38,17 @@ const StyledButton = styled.button<ButtonType>`
   ${({ width }) => width && `width: ${width};`}
   ${({ height }) => height && `height: ${height};`}
   ${({ padding }) => padding && `padding: ${padding};`}
+  
+  /* Disabled styles */
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      opacity: 0.5;
+      pointer-events: none;
+    `}
 
   &:hover {
-    ${({ color }) => getButtonColor('fillBlue')};
+    ${({ color, disabled }) => !disabled && getButtonColor('fillBlue')};
   }
   z-index: 1;
 `;

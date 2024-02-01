@@ -108,6 +108,11 @@ const MainInterview = () => {
         <ViewFinalSuccessfulApplier
           groupMembers={memberList}
           handleSendPassEmail={handleSendPassEmail}
+          disabled={completionApplierList.length === 0}
+          isComplete={
+            completionApplierList.length === applicantsList.length &&
+            completionApplierList.length !== 0
+          }
         />
         <AddCommonQuestionButton onClick={handleAddCommonQuestions}>
           공통 질문 작성하기
@@ -129,7 +134,11 @@ const MainInterview = () => {
               </AddApplierButton>
             </BoardStackTitle>
             {preparationApplierList.map((item, index) => (
-              <ViewBoardStack isEmpty={false} applicantData={item} />
+              <ViewBoardStack
+                isEmpty={false}
+                applicantData={item}
+                interviewId={interview_id}
+              />
             ))}
             {!preparationApplierList.length && (
               <ViewBoardStack isEmpty={true} />
@@ -139,14 +148,22 @@ const MainInterview = () => {
           <BoardBox>
             <BoardStackTitle>면접 진행 중</BoardStackTitle>
             {inProgressApplierList.map((item, index) => (
-              <ViewBoardStack isEmpty={false} applicantData={item} />
+              <ViewBoardStack
+                isEmpty={false}
+                applicantData={item}
+                interviewId={interview_id}
+              />
             ))}
           </BoardBox>
 
           <BoardBox>
             <BoardStackTitle>면접 완료</BoardStackTitle>
-            {completionApplierList.length && (
-              <ViewFinalStack>
+            {completionApplierList.length !== 0 && (
+              <ViewFinalStack
+                onClick={() => {
+                  navigate(`/result/${interview_id}`);
+                }}
+              >
                 <FinalStackTitle>
                   <CheckIcon />
                   {completionApplierList.length}
@@ -234,6 +251,8 @@ const ViewFinalStack = styled.div`
   width: 100%;
   flex-shrink: 0;
   gap: 0.5rem;
+
+  cursor: pointer;
 
   border-radius: 0.75rem 0.75rem 0rem 0rem;
   border: 1px solid ${(props) => props.theme.colors.purple.purple200};

@@ -5,8 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ResultViewerInfo from './ResultviewerInfo';
 import ResultReviewBox from './ResultReviewBox';
 
-import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import { interviewNameState } from "../../recoil/userInfo";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
+import { interviewNameState } from '../../recoil/userInfo';
 
 interface InterviewDataProps {
   data?: {
@@ -46,12 +46,10 @@ const ResultInfoItem = ({
   const interviewName = useRecoilValue(interviewNameState);
   const [isButtonClicked, setIsButtonClicked] = useState(props.isPass);
 
-
   const handleButtonClick = () => {
-    setIsButtonClicked(!isButtonClicked);
-
     //wss결과 전송
-    props.handlePub(isButtonClicked, userIdNumber);
+    props.handlePub(!isButtonClicked, userIdNumber);
+    setIsButtonClicked(!isButtonClicked);
   };
 
   const handleNavigate = () => {

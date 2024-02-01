@@ -19,7 +19,7 @@ axiosInstance.interceptors.request.use((config) => {
 // 응답 인터셉터
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log(response);
+    // console.log(response);
     return response;
   },
   (error) => {

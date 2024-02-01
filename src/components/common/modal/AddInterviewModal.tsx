@@ -12,6 +12,8 @@ import areaOptions from '../../../assets/data/areaOptions.json';
 import positionOptions from '../../../assets/data/positionOptions.json';
 import { useRecoilState } from 'recoil';
 import { userInfoState } from '../../../recoil/userInfo';
+import { useGetProjectList } from '../../../apis/get/useGetProjectList';
+import { useGetProjectMembers } from '../../../apis/get/useGetProjectMembers';
 interface AddInterviewModalProps {
   children?: string;
   projectId?: number | undefined;
@@ -25,11 +27,12 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
   const [memberEmail, setMemberEmail] = useState('');
   const [memberEmailList, setMemberEmailList] = useState([]);
   const { openModal } = useToggleModal();
+  const [projectMemberList, setProjectMemberList] = useState([]);
 
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
-  const [selectedArea, setSelectedArea] = useState('SERVICE');
-  const [selectedPosition, setSelectedPosition] = useState('MARKETING');
+  const [selectedArea, setSelectedArea] = useState('');
+  const [selectedPosition, setSelectedPosition] = useState('');
   const handleSelectField = (option: string) => {
     setSelectedArea(option);
   };
@@ -39,6 +42,22 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
 
   //custom-hook
   const fetchData = usePostAddInterview();
+  const fetchedEmails = useGetProjectMembers(String(props.projectId));
+
+  useEffect(() => {
+    if (!fetchedEmails.isLoading) {
+      const transformedEmails = fetchedEmails.projectMembers.emails.map(
+        (email: string, index: number) => ({
+          id: index + 1,
+          label: email,
+          value: email,
+        })
+      );
+
+      setProjectMemberList(transformedEmails);
+      console.log(transformedEmails);
+    }
+  }, [fetchedEmails.isLoading]);
 
   /**
    * project 데이터 전송해 생성하는 기능
@@ -72,7 +91,13 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
    */
   const handleInvite = () => {
     console.log(memberEmail);
-    if (memberEmail !== '') {
+    if (memberEmail === '') {
+      alert('입력값을 확인해주세요!');
+    } else if (!memberEmail.endsWith('@gmail.com')) {
+      alert('올바른 Gmail 주소가 아닙니다: ' + memberEmail);
+    } else if (memberEmailList.includes(memberEmail)) {
+      alert('이미 초대했습니다!');
+    } else {
       memberEmailList.push(memberEmail);
     }
     setMemberEmail('');
@@ -109,7 +134,7 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
         <div>
           <SubTitle>초대하기</SubTitle>
           <InviteWrapper>
-            <CommonInput
+            {/* <CommonInput
               placeholder="gotcha@gmail.com"
               size="small"
               type="off"
@@ -119,8 +144,14 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
               onChange={(e) => {
                 setMemberEmail(e.currentTarget.value);
               }}
+            /> */}
+            <DropDownBox
+              options={projectMemberList} // projectMemberList를 options로 전달
+              width="30rem"
+              onChangeValue={(selectedValue) => {
+                setMemberEmail(selectedValue); // 선택된 값으로 memberEmail을 설정
+              }}
             />
-
             <CommonButton
               color={'lineGray'}
               size={'small'}
@@ -149,8 +180,18 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
           <SelectWrapper>
             <SubTitle>면접 유형</SubTitle>
             <DropDownWrapper>
-              <DropDownBox options={areaOptions} />
-              <DropDownBox options={positionOptions} />
+              <DropDownBox
+                options={areaOptions}
+                onChangeValue={(selectedValue) => {
+                  setSelectedArea(selectedValue); // 선택된 값으로  설정
+                }}
+              />
+              <DropDownBox
+                options={positionOptions}
+                onChangeValue={(selectedValue) => {
+                  setSelectedPosition(selectedValue); // 선택된 값으로설정
+                }}
+              />
             </DropDownWrapper>
           </SelectWrapper>
 

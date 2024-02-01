@@ -28,9 +28,19 @@ export const usePostAddInterview = () => {
           throw new Error('올바른 Gmail 주소가 아닙니다: ' + email);
         }
       }
+
+      if (
+        data.emails.length === 0 ||
+        data.name === '' ||
+        data.area === '' ||
+        data.position === ''
+      ) {
+        alert('입력을 완료해주세요!');
+        throw new Error('입력을 완료해주세요!');
+      }
       const res = await axiosInstance.post(`/api/interviews`, data);
       //응답 처리
-      console.log(res);
+      //console.log(res);
       return res.data;
     },
   });

@@ -33,14 +33,15 @@ const GoogleCallback = () => {
       localStorage.removeItem('refreshToken');
     }
     if (!fetchedData.isLoading) {
-      console.log(fetchedData.googleLogin.refreshToken);
-      console.log(fetchedData.googleLogin.accessToken);
+      const expiredTime = new Date().getTime() + 25 * 60 * 1000;
+      console.log(new Date(expiredTime));
       localStorage.setItem('accessToken', fetchedData.googleLogin.accessToken);
       localStorage.setItem('userId', fetchedData.googleLogin.userId);
       localStorage.setItem(
         'refreshToken',
         fetchedData.googleLogin.refreshToken
       );
+      localStorage.setItem('expirationTime', String(expiredTime));
       console.log('로그인 성공');
       setIsLogin(true);
       navigate('/main/callback');

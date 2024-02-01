@@ -7,6 +7,7 @@ import GlobalStyle from './style/GlobalStyle';
 import { RecoilRoot } from 'recoil';
 import './assets/fonts/font.css';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import TokenRefresher from './components/auth/TokenRefresher';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -17,6 +18,7 @@ root.render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
+          <TokenRefresher />
           <GlobalStyle />
           <App />
         </ThemeProvider>

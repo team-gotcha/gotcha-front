@@ -1,12 +1,12 @@
-import React, { useState, useRef } from "react";
-import { styled } from "styled-components";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef } from 'react';
+import { styled } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
-import useClickOutside from "../../hooks/useClickOutside";
-import ExpandMoreIcon from "../../assets/icons/ExpandMoreIcon";
+import useClickOutside from '../../hooks/useClickOutside';
+import ExpandMoreIcon from '../../assets/icons/ExpandMoreIcon';
 
 //components
-import DropDown from "./DropDown";
+import DropDown from './DropDown';
 
 interface DropDownBoxProps {
   options?: Array<{ id: number; value: string; label: string }>;
@@ -14,12 +14,13 @@ interface DropDownBoxProps {
   onChangeValue?: (selectedOption: string) => void;
 
   questions?: Array<{ id: number; totalScore: number }>;
+  width?: string;
 }
 
-const DropDownBox = ({ options, questions }: DropDownBoxProps) => {
+const DropDownBox = ({ options, questions, ...props }: DropDownBoxProps) => {
   const [isDropdownView, setDropdownView] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("전체");
-  const [selectedLabel, seSelectedLabel] = useState("전체");
+  const [selectedOption, setSelectedOption] = useState('전체');
+  const [selectedLabel, seSelectedLabel] = useState('전체');
   const dropdownRef = useRef<HTMLLabelElement>(null);
 
   useClickOutside(dropdownRef, () => {
@@ -33,6 +34,10 @@ const DropDownBox = ({ options, questions }: DropDownBoxProps) => {
   };
 
   const handleSelect = (id: number, value: string, label: string) => {
+    console.log(value);
+    if (props.onChangeValue) {
+      props.onChangeValue(value); // 선택된 값으로 onChangeValue 콜백 호출
+    }
     setSelectedOption(value);
     seSelectedLabel(label);
     setDropdownView(false);
@@ -62,8 +67,8 @@ const Wrapper = styled.div`
   cursor: pointer;
 `;
 
-const Container = styled.label`
-  width: 10rem;
+const Container = styled.label<DropDownBoxProps>`
+  width: ${(props) => (props.width ? props.width : '15rem')};
   height: 3rem;
   padding: 0.5rem 0.625rem 0.5rem 1rem;
 
