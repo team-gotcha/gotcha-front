@@ -31,7 +31,7 @@ const SideBar = () => {
   const fetchedProjectData = useGetProjectList();
   useEffect(() => {
     if (isLogin && !fetchedProjectData.isLoading) {
-      console.log('유저데이터 세팅');
+      //console.log('유저데이터 세팅');
       setUserInfo(fetchedProjectData.projectList);
     }
   }, [fetchedProjectData.isLoading]);

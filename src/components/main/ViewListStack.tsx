@@ -70,8 +70,9 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
   }
 
   const handleApplicantClick = () => {
-    navigate(`/ready/${props.interviewId}/${props.applicantData.id}`);
-    // window.location.reload();
+    navigate(
+      `/${navigateRoute}/${props.interviewId}/${props.applicantData.id}`
+    );
   };
 
   return (
