@@ -23,11 +23,6 @@ const TokenRefresher = () => {
             const newAccessToken = res.data.access_token;
             console.log(`새 accessToken저장!:${newAccessToken}`);
             // 얻어온 새로운 accessToken으로 상태 및 localStorage 갱신
-            setAuth({
-              ...auth,
-              accessToken: newAccessToken,
-              expirationTime: String(new Date().getTime() + 25 * 60 * 1000),
-            });
             localStorage.setItem('accessToken', newAccessToken);
             localStorage.setItem(
               'expirationTime',
