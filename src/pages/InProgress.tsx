@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import CardTitleBoard from "../components/cardview/CardTitleBoard";
-import InterviewerInfo from "../components/cardview/InterviewerInfo";
-import QuestionItem from "../components/cardview/QuestionItem";
-import ReviewModal from "../components/cardview/modal/ReviewModal";
+import CardTitleBoard from '../components/cardview/CardTitleBoard';
+import InterviewerInfo from '../components/cardview/InterviewerInfo';
+import QuestionItem from '../components/cardview/QuestionItem';
+import ReviewModal from '../components/cardview/modal/ReviewModal';
 
-import { useGetAllQuestion } from "../apis/get/useGetAllQuestion";
+import { useGetAllQuestion } from '../apis/get/useGetAllQuestion';
 
 const InProgress = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const InProgress = () => {
 
   useEffect(() => {
     if (!allQuestionData.isLoading) {
-      console.log("모든 질문 데이터 세팅", allQuestionData);
+      console.log('모든 질문 데이터 세팅', allQuestionData);
       setItems(allQuestionData.allQuestion);
     }
   }, [!allQuestionData.isLoading]);
@@ -47,7 +47,7 @@ const InProgress = () => {
               {items?.map((item) => (
                 <QuestionItem
                   key={item?.id}
-                  isCommon={item?.common}
+                  isCommon={item?.isCommon}
                   questionId={item?.id}
                   content={item?.content}
                   importance={item.importance}
