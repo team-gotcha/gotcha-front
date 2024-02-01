@@ -103,7 +103,9 @@ const Ready = () => {
   return (
     <>
       <Wrapper>
-        <Background />
+        <Background
+          onClick={() => navigate(`/main/interview/${interview_id}`)}
+        />
         <Container>
           <CardTitleBoard btnFunc={handleNext} />
           <Contents>

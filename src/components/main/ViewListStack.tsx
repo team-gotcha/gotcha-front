@@ -67,7 +67,7 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
 
   const handleApplicantClick = () => {
     navigate(`/ready/${props.interviewId}/${props.applicantData.id}`);
-    window.location.reload();
+    // window.location.reload();
   };
 
   return (
