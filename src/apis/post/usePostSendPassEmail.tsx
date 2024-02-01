@@ -16,6 +16,9 @@ export const usePostSendPassEmail = () => {
       const res = await axiosInstance.post(`/api/applicants/send-email`, {
         interviewId: interviewId,
       });
+      if (isSuccess) {
+        alert('합격 메일 발송 성공!');
+      }
       return res.data;
     },
   });

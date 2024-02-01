@@ -13,6 +13,7 @@ interface ViewFinalSuccessfulApplierProps {
   isComplete?: boolean; //합격자 선정 완료 여부
   groupMembers?: Array<string>;
   handleSendPassEmail?: () => void;
+  disabled?: boolean;
 }
 
 const ViewFinalSuccessfulApplier = ({
@@ -35,7 +36,11 @@ const ViewFinalSuccessfulApplier = ({
 
   const navigate = useNavigate();
   const handleMoveToResult = () => {
-    navigate(`/result/${interview_id}`);
+    if (props.disabled) {
+      alert('결과를 확인할 면접자가 없어요!');
+    } else {
+      navigate(`/result/${interview_id}`);
+    }
   };
   return (
     <Wrapper>

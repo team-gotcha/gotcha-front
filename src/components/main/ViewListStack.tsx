@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { styled } from "styled-components";
-import StarOffIcon from "../../assets/icons/StarOffIcon";
-import CommonTag from "../common/CommonTag";
-import MessageIcon from "../../assets/icons/MessageIcon";
+import React, { useState } from 'react';
+import { styled } from 'styled-components';
+import StarOffIcon from '../../assets/icons/StarOffIcon';
+import CommonTag from '../common/CommonTag';
+import MessageIcon from '../../assets/icons/MessageIcon';
 import {
   formatDateString,
   useGetTodayDate,
   useGetTodayDateDotFormat,
-} from "../../hooks/useGetTodayDate";
-import StarOnIcon from "../../assets/icons/StarOnIcon";
-import CommonGroupMembers from "../common/CommonGroupMembers";
-import { useNavigate } from "react-router-dom";
+} from '../../hooks/useGetTodayDate';
+import StarOnIcon from '../../assets/icons/StarOnIcon';
+import CommonGroupMembers from '../common/CommonGroupMembers';
+import { useNavigate } from 'react-router-dom';
 
 interface ViewListStackProps {
   isStar?: boolean; //즐찾표시 여부 api수정후 applicantData에 포함시킴
@@ -29,17 +29,17 @@ interface ViewListStackProps {
 }
 
 const ViewListStack = ({ ...props }: ViewListStackProps) => {
-  const InterviewStateList = ["면접 준비중", "면접 진행중", "면접 전형 완료"];
+  const InterviewStateList = ['면접 준비중', '면접 진행중', '면접 전형 완료'];
   const navigate = useNavigate();
   const applicantName = props.applicantData
     ? props.applicantData.name
-    : "새로운 지원자를 추가하세요!";
+    : '새로운 지원자를 추가하세요!';
   const keywords = props.applicantData
     ? props.applicantData.keywords
-    : [{ name: "태그" }, { name: "태그" }, { name: "태그" }];
+    : [{ name: '태그' }, { name: '태그' }, { name: '태그' }];
   const questionCount = props.applicantData
     ? props.applicantData.questionCount
-    : "0";
+    : '0';
   const groupMemberList = props.applicantData
     ? props.applicantData.interviewerEmails
     : [];
@@ -48,20 +48,24 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
   const dueDate = props.applicantData
     ? formatDateString(props.applicantData.date)
     : todayDate;
-
+  let navigateRoute = '';
   let statusText;
   switch (props.applicantData?.status) {
-    case "PREPARATION":
-      statusText = "면접 준비중";
+    case 'PREPARATION':
+      statusText = '면접 준비중';
+      navigateRoute = 'ready';
       break;
-    case "IN_PROGRESS":
-      statusText = "면접 진행중";
+    case 'IN_PROGRESS':
+      statusText = '면접 진행중';
+      navigateRoute = 'inprogress';
       break;
-    case "COMPLETION":
-      statusText = "면접 전형 완료";
+    case 'COMPLETION':
+      statusText = '면접 전형 완료';
+      navigateRoute = 'result';
       break;
     default:
-      statusText = "면접 진행단계";
+      statusText = '면접 진행단계';
+      navigateRoute = 'ready';
       break;
   }
 
@@ -88,7 +92,7 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
           ))}
         </TagList>
         <MemoBox>
-          <MessageIcon width={"2.6rem"} height={"2.8rem"} />
+          <MessageIcon width={'2.6rem'} height={'2.8rem'} />
           <MessageAlert>{questionCount}</MessageAlert>
         </MemoBox>
         <CommonGroupMembers groupMemberList={groupMemberList} showNum={5} />
@@ -117,11 +121,11 @@ const Wrapper = styled.button<{ statusText?: string }>`
   border-bottom: 0.1rem solid ${(props) => props.theme.colors.purple.purple200};
   border-left: ${(props) => {
     switch (props.statusText) {
-      case "면접 준비중":
+      case '면접 준비중':
         return `0.5rem solid ${props.theme.colors.blue.blue300}`;
-      case "면접 진행중":
+      case '면접 진행중':
         return `0.5rem solid ${props.theme.colors.blue.blue500}`;
-      case "면접 전형 완료":
+      case '면접 전형 완료':
         return `0.5rem solid ${props.theme.colors.blue.blue200}`;
       default:
         return `0.5rem solid ${props.theme.colors.blue.blue300}`;
@@ -194,7 +198,7 @@ const InterviewState = styled.div<{ statusText?: string }>`
   font-weight: 400;
   color: ${(props) => {
     switch (props.statusText) {
-      case "면접 진행단계":
+      case '면접 진행단계':
         return `${props.theme.colors.gray.gray600}`;
       default:
         return `${props.theme.colors.purple.purple600}`;
