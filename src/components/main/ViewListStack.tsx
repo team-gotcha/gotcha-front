@@ -76,6 +76,8 @@ const ViewListStack = ({ ...props }: ViewListStackProps) => {
       navigate(
         `/${navigateRoute}/${props.interviewId}/${props.applicantData.id}`
       );
+      window.location.reload();
+
     }
   };
 
