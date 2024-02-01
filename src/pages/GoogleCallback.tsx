@@ -41,7 +41,7 @@ const GoogleCallback = () => {
         'refreshToken',
         fetchedData.googleLogin.refreshToken
       );
-      localStorage.setItem('expiredTime', String(expiredTime));
+      localStorage.setItem('expirationTime', String(expiredTime));
       console.log('로그인 성공');
       setIsLogin(true);
       navigate('/main/callback');

@@ -30,7 +30,7 @@ const TokenRefresher = () => {
             });
             localStorage.setItem('accessToken', newAccessToken);
             localStorage.setItem(
-              'expiredTime',
+              'expirationTime',
               String(new Date().getTime() + 25 * 60 * 1000)
             );
           });
@@ -39,7 +39,7 @@ const TokenRefresher = () => {
         console.error('Error refreshing token:', error);
       }
     } else {
-      console.log('안전한 토큰~');
+      console.log('accessToken 말쨩!');
     }
   };
   useEffect(() => {

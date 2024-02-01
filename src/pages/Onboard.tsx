@@ -14,30 +14,19 @@ const Onboard = () => {
   const [interviewName, setInterviewName] = useState('');
   const [emailList, setEmailList] = useState(['']);
 
-  const handleEmailListChange = (updatedEmailList: string[]) => {
-    setEmailList(updatedEmailList);
-  };
-
   //custom-hook
   const fetchData = usePostAddProject();
 
   /**
    * project 데이터 전송해 생성하는 기능
    */
-  const handleSubmit = () => {
+  const handleSubmit = (emailList: string[]) => {
     fetchData.addProject({
       name: interviewName,
       emails: emailList,
     });
+    navigate('/main/callback');
   };
-
-  useEffect(() => {
-    if (fetchData.isSuccess) {
-      navigate('/main/project/1');
-    } else {
-      navigate('/onboarding/2');
-    }
-  }, [fetchData.isSuccess]);
 
   //페이지 이동
   const { id } = useParams();
@@ -80,11 +69,7 @@ const Onboard = () => {
       )}
       {id === '2' && (
         <>
-          <OnboardEmail
-            emailList={emailList}
-            onEmailListChange={handleEmailListChange}
-            onSubmit={handleSubmit}
-          />
+          <OnboardEmail onSubmit={handleSubmit} />
         </>
       )}
     </>

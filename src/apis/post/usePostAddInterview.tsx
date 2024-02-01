@@ -40,7 +40,7 @@ export const usePostAddInterview = () => {
       }
       const res = await axiosInstance.post(`/api/interviews`, data);
       //응답 처리
-      console.log(res);
+      //console.log(res);
       return res.data;
     },
   });
