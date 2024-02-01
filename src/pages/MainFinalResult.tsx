@@ -3,9 +3,14 @@ import styled from 'styled-components';
 import FinalApplierStack from '../components/main/FinalApplierStack';
 import { useGetPassApplicants } from '../apis/get/useGetPassApplicants';
 import { useLocation } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { userInfoState } from '../recoil/userInfo';
 
 const MainFinalResult = () => {
   const [applicantsList, setApplicantsList] = useState([]);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const [title, setTitle] = useState('');
+  const [subtitle, setSubtitle] = useState('');
 
   const location = useLocation();
   const { pathname } = location;
@@ -28,12 +33,28 @@ const MainFinalResult = () => {
     }
   }, [fetchedData.isLoading, interview_id]);
 
+  useEffect(() => {
+    if (interview_id !== '') {
+      const matchingProject = userInfo.projects.find((project) =>
+        project.interviews.some(
+          (interview) => interview.interviewId === parseInt(interview_id, 10)
+        )
+      );
+      if (matchingProject) {
+        setTitle(matchingProject.projectName);
+      } else {
+        setTitle('세오스 19기');
+      }
+    } else {
+      setSubtitle('프론트');
+    }
+  }, [interview_id, userInfo, setTitle]);
   return (
     <Wrapper>
       <FinalBoard>
         <TopBar>
-          <Title>세오스 19기</Title>
-          <SubTitle>프론트 신입</SubTitle>
+          <Title>{title}</Title>
+          <SubTitle>{subtitle}</SubTitle>
         </TopBar>
         {applicantsList.map((data, index) => (
           <FinalApplierStack key={index} {...data} />
