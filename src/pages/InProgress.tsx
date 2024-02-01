@@ -10,6 +10,8 @@ import ReviewModal from "../components/cardview/modal/ReviewModal";
 import { useGetAllQuestion } from "../apis/get/useGetAllQuestion";
 
 const InProgress = () => {
+  const navigate = useNavigate();
+  let { interview_id } = useParams();
   let { user_id } = useParams();
   const userIdNumber: number = parseInt(user_id, 10);
 
@@ -28,7 +30,9 @@ const InProgress = () => {
   return (
     <>
       <Wrapper>
-        <Background />
+        <Background
+          onClick={() => navigate(`/main/interview/${interview_id}`)}
+        />
         <Container>
           <CardTitleBoard
             color={2}

@@ -25,6 +25,8 @@ interface QuestionInfo {
 }
 
 const ResultDetail = () => {
+  const navigate = useNavigate();
+  let { interview_id } = useParams();
   let { user_id } = useParams();
   const userIdNumber: number = parseInt(user_id, 10);
   const [items, setItems] = useState();
@@ -61,7 +63,7 @@ const ResultDetail = () => {
 
   return (
     <Wrapper>
-      <Background />
+      <Background onClick={() => navigate(`/result/${interview_id}`)} />
       <Container>
         <CardTitleBoard
           state="면접 완료"
