@@ -158,7 +158,7 @@ const MainInterview = () => {
 
           <BoardBox>
             <BoardStackTitle>면접 완료</BoardStackTitle>
-            {completionApplierList.length && (
+            {completionApplierList.length !== 0 && (
               <ViewFinalStack
                 onClick={() => {
                   navigate(`/result/${interview_id}`);
