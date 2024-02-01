@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import CommonButton from '../common/CommonButton';
 interface FinalApplierStackProps {
@@ -8,15 +8,26 @@ interface FinalApplierStackProps {
   rank?: string;
   keywords?: Array<string>;
   favorite?: boolean;
+  //wss
+  handlePub?: (isPass: boolean, applicantId: number) => void;
+  isSocketOpen?: boolean;
+  socket?: object;
+  isPass?: boolean;
 }
 const FinalApplierStack = ({ ...props }: FinalApplierStackProps) => {
+  const [isButtonClicked, setIsButtonClicked] = useState(props.isPass);
+  const handleButtonClick = () => {
+    //wss결과 전송
+    props.handlePub(!isButtonClicked, props.id);
+    setIsButtonClicked(!isButtonClicked);
+  };
   return (
     <Wrapper>
       <Circle />
       <Title>{props.name}</Title>
       <Score>{props.score}</Score>
       <Comment>
-        전체 <SubTitle>{props.rank}</SubTitle>인 면접자 입니다.
+        전체 <SubTitle>{props.rank}위</SubTitle>인 면접자 입니다.
         <KeywordList>
           {props.keywords.map((keyword, index) => (
             <SubTitle key={index}>{keyword}</SubTitle>
@@ -24,7 +35,21 @@ const FinalApplierStack = ({ ...props }: FinalApplierStackProps) => {
         </KeywordList>
         의 키워드를 가지고 있어요.
       </Comment>
-      <CommonButton color="lineBlue" size="small" children="합격 철회 완료" />
+      {isButtonClicked ? (
+        <CommonButton
+          color="lineBlue"
+          disabled={true}
+          size="small"
+          children="합격 철회 완료"
+        />
+      ) : (
+        <CommonButton
+          color="lineGray"
+          size="small"
+          children="합격 철회"
+          onClick={handleButtonClick}
+        />
+      )}
     </Wrapper>
   );
 };
@@ -94,4 +119,5 @@ const SubTitle = styled.span`
 
 const KeywordList = styled.span`
   // 키워드 스타일 정의
+  gap: 1rem;
 `;

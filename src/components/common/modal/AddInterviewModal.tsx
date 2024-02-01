@@ -57,7 +57,7 @@ const AddInterviewModal = ({ ...props }: AddInterviewModalProps) => {
       setProjectMemberList(transformedEmails);
       console.log(transformedEmails);
     }
-  }, [fetchedEmails.isLoading, fetchedEmails.projectMembers.emails]);
+  }, [fetchedEmails.isLoading]);
 
   /**
    * project 데이터 전송해 생성하는 기능
