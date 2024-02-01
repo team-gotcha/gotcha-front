@@ -34,6 +34,7 @@ const Header = () => {
 export default Header;
 
 const Wrapper = styled.header`
+  position: fixed;
   display: flex;
   justify-content: space-between;
   padding-right: 5rem;
