@@ -43,16 +43,18 @@ const Wrapper = styled.div`
   border-radius: 1.6rem;
   background: #fff;
   z-index: 100;
+
+  overflow-y: auto;
 `;
 
 const ListItem = styled.div<{ isSelected: boolean }>`
   display: flex;
-  width: 10rem;
-  height: 4.8rem;
+  width: 15rem;
+  height: 2rem;
   justify-content: center;
   align-items: center;
 
-  font-size: 1.4rem;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 400;
 
