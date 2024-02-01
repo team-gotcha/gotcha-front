@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent, KeyboardEvent } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { styled } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -18,6 +18,7 @@ interface Interviewer {
 const InterviewerBox = ({ modify = true }) => {
   let { user_id } = useParams();
   let { interview_id } = useParams();
+  const dropdownRef = useRef(null);
   const InterviewIdNumber: number = parseInt(interview_id, 10);
   const setInterviewerData = useSetRecoilState(interviewersDataState);
   const userDetailInfo = useRecoilValue(userDetailInfoState);
@@ -40,6 +41,22 @@ const InterviewerBox = ({ modify = true }) => {
       setResultViewers(newData);
     }
   }, [!interviewerData.isLoading, userDetailInfo, user_id]);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownView(false); // Close the dropdown
+      }
+    };
+
+    if (isDropdownView) {
+      document.addEventListener("click", handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [isDropdownView]);
 
   const handleToggleSelection = (option: Interviewer) => {
     const isSelected = selectedOptions.includes(option.id);
@@ -77,7 +94,7 @@ const InterviewerBox = ({ modify = true }) => {
       <TopDiv>
         <KeyTitle>면접관 </KeyTitle>
         {modify ? (
-          <DropdownDiv>
+          <DropdownDiv ref={dropdownRef}>
             <SelectBar onClick={() => setDropdownView(!isDropdownView)}>
               면접관 추가
             </SelectBar>
@@ -217,7 +234,7 @@ const KeywordDiv = styled.div`
   align-items: center;
   width: 14.5vw;
   gap: 0.8rem;
-  padding-left: 8.5rem;
+  padding-left: 6.8rem;
 
   flex-wrap: wrap;
 `;
