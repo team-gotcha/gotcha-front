@@ -11,6 +11,7 @@ import {
   useGetTodayDate,
   useGetTodayDateDotFormat,
 } from '../../hooks/useGetTodayDate';
+import { useNavigate } from 'react-router-dom';
 
 interface ViewBoardStackProps {
   applierName?: string; //면접자이름
@@ -23,6 +24,7 @@ interface ViewBoardStackProps {
 
   isStar?: boolean; //즐찾표시 여부
   isEmpty?: boolean; //빈
+  interviewId?: string;
 
   applicantData?: {
     id?: number;
@@ -40,7 +42,7 @@ interface GroupMemberImgProps {
 }
 
 const ViewBoardStack = ({ ...props }: ViewBoardStackProps) => {
-  console.log(props.applicantData);
+  const navigate = useNavigate();
   // Check if applicantData exists before accessing its properties
   const applicantName = props.applicantData
     ? props.applicantData.name
@@ -56,12 +58,37 @@ const ViewBoardStack = ({ ...props }: ViewBoardStackProps) => {
     : ['A'];
 
   const todayDate = useGetTodayDateDotFormat();
+  let navigateRoute = '';
+  let statusText;
+  switch (props.applicantData?.status) {
+    case 'PREPARATION':
+      statusText = '면접 준비중';
+      navigateRoute = 'ready';
+      break;
+    case 'IN_PROGRESS':
+      statusText = '면접 진행중';
+      navigateRoute = 'inprogress';
+      break;
+    case 'COMPLETION':
+      statusText = '면접 전형 완료';
+      navigateRoute = 'result';
+      break;
+    default:
+      statusText = '면접 진행단계';
+      navigateRoute = 'ready';
+      break;
+  }
   const dueDate = props.applicantData
     ? formatDateSmallString(props.applicantData.date)
     : 'dueDate';
+  const handleApplicantClick = () => {
+    navigate(
+      `/${navigateRoute}/${props.interviewId}/${props.applicantData.id}`
+    );
+  };
 
   return (
-    <Wrapper>
+    <Wrapper onClick={handleApplicantClick}>
       <BoardTop>
         <ApplierName>{applicantName}</ApplierName>
         <InterviewDate>{dueDate}</InterviewDate>
@@ -99,6 +126,8 @@ const Wrapper = styled.div`
   background-color: ${(props) => props.theme.colors.gray.gray100};
 
   margin-bottom: 0.8rem;
+
+  cursor: pointer;
 `;
 
 const BoardTop = styled.div`
